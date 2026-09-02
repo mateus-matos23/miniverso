@@ -1,5 +1,5 @@
 import Image from "next/image";
-import logo from "../../../docs/miniverso.png";
+import logo from "../../../public/miniverso.png";
 
 export function BrandMark({ compact = false }: { compact?: boolean }) {
   return (
