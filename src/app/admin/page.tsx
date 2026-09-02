@@ -13,7 +13,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-import logo from "../../../docs/miniverso.png";
+import logo from "../../../public/miniverso.png";
 
 const contentItems = [
   {

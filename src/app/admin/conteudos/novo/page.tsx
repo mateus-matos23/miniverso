@@ -2,7 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import logo from "../../../../../docs/miniverso.png";
+import logo from "../../../../../public/miniverso.png";
 import ContentEditor from "./content-editor";
 
 export default function NewContentPage() {
