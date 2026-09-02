@@ -12,7 +12,7 @@ Ao final da visita, a pessoa deve conseguir responder: quem é a Miniverso, qual
 
 ## Direção selecionada
 
-**Mapa de Mundos.** A página funciona como um atlas navegável: a identidade aparece como território, seções como regiões e projetos como pontos de interesse. A primeira dobra deve explicar a proposta imediatamente, enquanto linhas, marcadores e camadas dão ritmo de exploração.
+**Collider de Aprendizagem.** A página funciona como um visor técnico-editorial: círculos, eixos e trilhas registram os sinais de realidade virtual, gamificação e aprendizagem socioemocional. A primeira dobra explica a proposta imediatamente, enquanto a precisão visual dá energia sem inventar prova comercial.
 
 ### Percurso do visitante
 
@@ -20,19 +20,19 @@ Ao final da visita, a pessoa deve conseguir responder: quem é a Miniverso, qual
 2. Entender os pilares: aprendizagem segura, criatividade, gamificação e capacidades socioemocionais.
 3. Explorar trabalhos/projetos publicados.
 4. Reconhecer clientes publicados e sua relação com os projetos.
-5. Encontrar Instagram e e-mail para continuar a conversa.
+5. Encontrar Instagram, e-mail, telefone e localização para continuar a conversa.
 
 ### Assinatura de interação
 
-Uma trilha de exploração conecta as seções e revela marcadores de projeto conforme o visitante percorre a página. A interação é complementar: títulos, conteúdo e navegação normal continuam funcionando sem movimento ou efeitos avançados.
+Um pulso discreto no detector cria a assinatura de movimento. Os pilares usam linhas expansíveis nativas, e a navegação ancora diretamente nas seções. A interação é complementar: títulos, conteúdo e navegação normal continuam funcionando sem movimento ou efeitos avançados.
 
 ## Escopo e limites
 
 - Superfície pública responsiva, inicialmente na rota `/`.
 - Módulos propostos: apresentação, atuação/pilares, projetos, clientes e contato.
 - Conteúdo deve vir da área administrativa; não criar cópia comercial definitiva antes dos dados existirem.
-- O mapa é uma estrutura narrativa, não um mapa geográfico real.
-- Não copiar a composição do Melted Studio; reaproveitar apenas a ambição editorial e a ideia de navegação por capítulos como referência de nível.
+- O detector é uma estrutura narrativa, não uma visualização de dados reais.
+- A identidade segue o manual do cliente e não copia a composição do site de referência.
 
 ## Estados e faixas de conteúdo
 
@@ -44,10 +44,10 @@ Uma trilha de exploração conecta as seções e revela marcadores de projeto co
 
 ## Layout e responsividade
 
-Desktop usa uma composição editorial ampla, com o percurso de mapa atravessando as regiões da página. Mobile vira uma sequência vertical de capítulos, com marcadores e linhas simplificados. Nenhum conteúdo depende de hover, arrasto ou largura fixa.
+Desktop usa uma composição editorial ampla, com a declaração de valor à esquerda e o detector de evento à direita. Mobile vira uma sequência vertical de capítulos, com anéis, trilhas e linhas simplificados. Nenhum conteúdo depende de hover, arrasto ou largura fixa.
 
 ## Restrições e decisões abertas
 
-- Definir durante a implementação as famílias tipográficas finais, tokens de espaçamento e breakpoint exato.
+- Famílias tipográficas e paleta seguem o manual em `docs/manual_de_marca_miniverso.pdf`; os tokens de espaçamento e breakpoint são definidos no CSS da superfície.
 - Confirmar o modelo de conteúdo administrável: tipos de projeto, cliente, imagem, ordem, publicação e relação entre itens.
-- Definir CTA principal após confirmar o canal comercial preferido; por enquanto, Instagram e e-mail são os contatos oficiais disponíveis.
+- CTA e contatos confirmados: Instagram, e-mail, telefone e localização de São Luís, Maranhão.
