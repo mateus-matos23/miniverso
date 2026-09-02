@@ -1,96 +1,86 @@
 ---
 name: Miniverso Design System
-description: Seed visual da identidade Mapa de Mundos, estabelecida antes da implementação.
+description: Direção visual Collider de Aprendizagem, baseada no manual de marca do cliente e na direção escolhida com Impeccable.
 ---
 
-<!-- SEED: established with the user before implementation; re-run $impeccable document once there's code to capture the actual tokens and components. -->
+<!-- impeccable:design-system -->
 
 # Design System: Miniverso
 
-## Overview
+## Creative North Star
 
-**Creative North Star: "Mapa de Mundos"**
+**Collider de Aprendizagem.** A Miniverso transforma curiosidade em experiência: a página funciona como um visor técnico que registra sinais de realidade virtual, gamificação e desenvolvimento socioemocional. A precisão dos círculos, eixos e leituras cria confiança; os traços ciano, azul e amarelo dão energia e deixam claro que a tecnologia é o meio, não o produto final.
 
-A Miniverso deve parecer um atlas vivo de experiências de aprendizagem: uma identidade que convida a explorar, mas que comunica método e confiança para potenciais clientes. O sistema combina a precisão de uma cartografia com a energia da realidade virtual e a abertura de um material pedagógico, mantendo o foco no que a empresa faz e nos trabalhos que conseguir comprovar.
+O sistema deve parecer moderno, tecnológico e divertido, como pede o manual de marca. Ele não usa ficção científica para esconder a falta de prova: projetos, clientes e resultados só aparecem quando forem publicados pelo administrador.
 
-A linguagem visual deve organizar a marca como um território conectado. Cada seção é uma região do mesmo mapa, cada projeto é um ponto de interesse e cada chamada é uma sinalização de percurso. A composição pode ser expressiva e imersiva, mas nunca deve esconder a informação nem transformar realidade virtual em um efeito vazio.
+## Brand source of truth
 
-**Key Characteristics:**
-
-- Atlas ilustrado com trilhas, pontos e camadas de descoberta.
-- Azul profundo como território; azul-cobalto e ciano como sinais de navegação.
-- Fundo marfim para preservar calor editorial e legibilidade.
-- Tipografia de display expressiva combinada com texto funcional.
-- Movimento contínuo e limitado, como uma exploração orientada.
+O manual `docs/manual_de_marca_miniverso.pdf` define a paleta e as famílias tipográficas. O site público do cliente (`https://miniversotech.base44.app/#home`) confirma o uso expressivo dessas mesmas fontes. `docs/miniverso.png` é o ativo de marca disponível no repositório.
 
 ## Colors
 
-A paleta parte do azul profundo presente no ativo de marca e adiciona sinais luminosos de exploração sobre um campo marfim.
+### Official palette
 
-### Primary
+- **Violeta Miniverso** `#1E1645`: fundos institucionais, superfícies profundas e destaque de marca.
+- **Azul Miniverso** `#1E4488`: faixas de conteúdo, links secundários e contraste cromático.
+- **Ciano Elétrico** `#00B7E3`: foco, linhas de leitura, sinal ativo e detalhes de realidade virtual.
+- **Preto Marca** `#0C0407`: hero, navegação e texto de máxima densidade.
 
-- **Território Azul Profundo** (#101B4D): fundo principal, contraste e ancoragem institucional.
-- **Rota Cobalto** (#1746C7): links, chamadas primárias, trilhas e pontos ativos.
+### Supporting tokens
 
-### Secondary
+- **Branco de leitura** `#FBFCFF`: superfícies claras e texto em fundos escuros.
+- **Azul névoa** `#AFBDD8`: metadados e texto secundário sobre fundos escuros; nunca para corpo pequeno em fundo claro.
+- **Amarelo de evento** `#F1C84B`: ação principal e momentos de maior energia.
 
-- **Sinal Ciano** (#55D8E8): estados de descoberta, detalhes de realidade virtual e acentos de interação.
-- **Marco Solar** (#F1C84B): destaque pontual para orientação e momentos de maior energia.
+### Named rules
 
-### Neutral
+**The Signal Rarity Rule.** Ciano, amarelo e azul são sinais funcionais. Cada aparição deve indicar foco, ação, conexão ou estado; não são preenchimentos decorativos em toda a interface.
 
-- **Papel Marfim** (#FFF8E8): superfícies claras, leitura editorial e respiro.
-- **Tinta Noturna** (#101426): texto sobre superfícies claras e contraste de apoio.
-- **Linha de Mapa** (#AAB7D6): divisórias e cartografia secundária, nunca como texto principal.
-
-### Named Rules
-
-**The Signal Rarity Rule.** Ciano e amarelo são sinais de percurso, não preenchimento decorativo; devem aparecer em pontos de interação, foco ou descoberta.
+**The Contrast Gate.** Corpo normal mantém pelo menos 4,5:1 e títulos grandes pelo menos 3:1. Foco visível usa ciano com contorno externo; texto secundário nunca substitui o conteúdo principal.
 
 ## Typography
 
-**Display Font:** grotesk variável de personalidade cartográfica [a resolver durante a implementação]
+- **Display:** `Thunder Bold LC`, usado em títulos curtos, grandes e em caixa alta.
+- **Body:** `Random Grotesque Standard`, com `Space Grotesk` como fallback de rede.
+- **Label:** o corpo em peso forte, caixa alta e espaçamento amplo para índices, leituras e metadados.
 
-**Body Font:** sans-serif humanista e altamente legível [a resolver durante a implementação]
-
-**Label/Mono Font:** mono funcional para coordenadas, índices e metadados [a resolver durante a implementação]
-
-**Character:** O display deve ter presença e uma leve sensação de movimento sem perder leitura. Corpo e rótulos devem ser diretos, silenciosos e confiáveis, funcionando como legenda de mapa para a expressão da marca.
-
-### Named Rules
-
-**The Map-and-Legend Rule.** Títulos atraem e orientam; rótulos explicam o território. Nunca usar a tipografia expressiva em campos, botões ou textos longos.
+Títulos podem ser condensados e incisivos, mas precisam continuar legíveis sem depender da imagem. Texto longo usa medida confortável, altura de linha generosa e peso regular. Não usar gradiente no texto, fonte de sistema como display ou tracking apertado em parágrafos.
 
 ## Layout
 
-O sistema usa uma malha editorial com um eixo de exploração claro, conectando regiões de conteúdo por trilhas, linhas e marcadores. A composição alterna áreas abertas para explicar a Miniverso com agrupamentos densos para projetos e clientes. O conteúdo deve permanecer legível como uma página comum mesmo quando a camada de mapa estiver desativada.
+O primeiro viewport é dividido entre uma declaração clara à esquerda e um **detector de evento** à direita. A navegação é curta e ancorada; os índices `/ 01`, `/ 02` e `/ 03` ajudam a escanear a página sem transformar cada seção em um card.
 
-Em telas estreitas, a malha se torna uma coluna de percurso: trilhas e ilustrações se reorganizam verticalmente, sem depender de arrasto horizontal. A ordem semântica, os títulos, os links e os controles permanecem acessíveis; detalhes cartográficos podem ser reduzidos, nunca a informação principal.
+As seções alternam entre preto, violeta, branco e azul. Linhas horizontais, eixos e anéis criam continuidade entre elas. O conteúdo sempre permanece em fluxo vertical normal: mobile empilha a declaração e o detector, reduz a ornamentação e nunca exige arrasto, hover ou largura fixa.
 
-## Elevation & Depth
+## Components and interaction
 
-Profundidade vem de camadas de papel, transparências, recortes, linhas e mudanças de tom, não de uma coleção de cartões com sombras. Superfícies podem se sobrepor como folhas de um atlas e cenas podem ter camadas de profundidade, mas o texto precisa permanecer em uma camada estável e de alto contraste.
+- **BrandMark:** logo existente com respiro; o texto de apoio identifica “educação imersiva”.
+- **DetectorEvent:** SVG editorial feito de anéis, trilhas e rótulos funcionais; é uma visualização da proposta, não um dado real.
+- **SignalRow:** `details/summary` nativo para revelar a explicação de cada pilar sem JavaScript adicional.
+- **EmptyState:** experiências e parcerias exibem estado honesto até que o administrador publique conteúdo.
+- **Buttons:** amarelo para a ação primária e contorno para a ação secundária; ambos têm foco e hover visíveis.
 
-### Named Rules
+## Motion and states
 
-**The Layered Atlas Rule.** Cada camada visual deve orientar, contextualizar ou revelar algo. Se não cumprir uma dessas funções, ela não entra na composição.
+Há uma única animação autoral: o pulso do detector. Ela é lenta, discreta e desligada em `prefers-reduced-motion`. Estados de foco usam ciano; links e botões mudam de cor no hover; seleção de texto é ciano. Novos fluxos devem definir loading, erro, vazio e desabilitado antes de serem publicados.
 
-## Shapes
+## Do's and don'ts
 
-As formas combinam contornos orgânicos de mapas com geometrias de sinalização. Usar cantos suavemente arredondados e linhas precisas, com recortes assimétricos apenas em momentos de destaque. Evitar cápsulas repetidas e a aparência de dashboard genérico.
+### Do
 
-## Do's and Don'ts
+- Mostrar a realidade virtual como meio para uma aprendizagem segura, criativa e socioemocional.
+- Usar dados, projetos, clientes, imagens e depoimentos somente quando vierem do administrador.
+- Preservar o logo e as cores oficiais do manual em todos os pontos de contato.
+- Manter HTML semântico, contraste, `alt`, foco visível e ordem de leitura em telas pequenas.
 
-### Do:
+### Don't
 
-- **Do** tratar projetos, clientes e experiências cadastradas como pontos reais do mapa, com conteúdo verificável.
-- **Do** usar linhas, coordenadas, índices e trilhas para criar hierarquia e orientar a leitura.
-- **Do** manter a marca Miniverso reconhecível e dar ao logo espaço de respiro.
-- **Do** oferecer uma versão reduzida da atmosfera para telas pequenas e `prefers-reduced-motion`.
+- Inventar portfólio, clientes, métricas, depoimentos ou resultados.
+- Copiar a composição ou a identidade do site de referência do cliente.
+- Usar partículas, WebGL, gradientes ou efeitos como substitutos para conteúdo real.
+- Converter cada informação em um card arredondado ou esconder conteúdo atrás de hover.
 
-### Don't:
+## Reference artifact
 
-- **Don't** copiar layout, texto, identidade ou interações específicas do Melted Studio.
-- **Don't** inventar clientes, projetos, métricas, depoimentos ou resultados para preencher o mapa.
-- **Don't** usar gradientes, partículas ou WebGL como substitutos para conteúdo real.
-- **Don't** sacrificar contraste, foco visível ou navegação por teclado em nome da imersão.
+- Direção escolhida: `.impeccable/mocks/decision/assigned.png`.
+- Prompt embutido no artefato: `.impeccable/mocks/decision/assigned.prompt.txt`.
