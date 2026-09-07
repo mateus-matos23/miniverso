@@ -1,11 +1,11 @@
 "use client";
 
-import type * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import type * as React from "react";
 import {
   Button as ButtonPrimitive,
-  Link as LinkPrimitive,
   type ButtonProps as ButtonPrimitiveProps,
+  Link as LinkPrimitive,
   type LinkProps as LinkPrimitiveProps,
 } from "react-aria-components";
 

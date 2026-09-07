@@ -11,11 +11,10 @@ export function StatementSection() {
       <div className="text-[0.65rem] font-bold uppercase tracking-[0.13em] text-brand-blue">
         O QUE MOVE A MINIVERSO
       </div>
-      <div className="mt-[4.5rem] grid grid-cols-[minmax(0,1.15fr)_minmax(17rem,0.65fr)] gap-[clamp(3rem,10vw,11rem)] max-[900px]:mt-12 max-[900px]:grid-cols-1">
+      <div className="mt-[4.5rem] grid grid-cols-[minmax(0,1.15fr)_minmax(17rem,0.65fr)] gap-[clamp(3rem,10vw,11rem)] max-[800px]:mt-12 max-[800px]:grid-cols-1">
         <h2
-          className="m-0 max-w-[9ch] break-words font-display text-[clamp(3rem,15vw,7rem)] font-bold uppercase leading-[0.84] tracking-[-0.02em] text-brand-violet min-[621px]:text-[clamp(3.3rem,7vw,7rem)] max-[620px]:max-w-full"
-          id="statement-title"
-        >
+          className="m-0 max-w-[16ch] font-display text-[clamp(3rem,15vw,7rem)] font-bold uppercase leading-[0.98] tracking-[-0.02em] text-brand-violet min-[621px]:text-[clamp(3.3rem,7vw,7rem)]" id="statement-title">
+      
           A tecnologia é o meio.
           <br />
           <span className="text-brand-cyan">A aprendizagem é o destino.</span>
