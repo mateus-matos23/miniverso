@@ -59,10 +59,10 @@ export function ContactSection() {
         04 / PRÓXIMO PASSO
       </span>
       <h2
-         className="relative z-10 mt-12 max-w-[8ch] break-words font-display text-[clamp(3rem,15vw,7.2rem)] font-bold uppercase leading-[0.84] tracking-[-0.02em] text-brand-white min-[621px]:text-[clamp(3.3rem,7vw,7.2rem)] max-[620px]:max-w-full"
+        className="relative z-10 mt-12 max-w-[14ch] font-display text-[clamp(3rem,15vw,7.2rem)] font-bold uppercase leading-[0.98] tracking-[-0.02em] text-brand-white min-[621px]:text-[clamp(3.3rem,7vw,7.2rem)]"
       >
-        Vamos criar
-        <br />
+      Vamos criar
+      <br />
         <span className="text-brand-cyan">esse mundo?</span>
       </h2>
        <p className="relative z-10 mb-8 mt-12 max-w-[38ch] text-[1.08rem] leading-[1.55] text-[#d3def4]">

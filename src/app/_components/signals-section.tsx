@@ -12,9 +12,7 @@ export function SignalsSection() {
           01 / SINAIS
         </span>
         <h2
-          className="mt-12 max-w-[8ch] break-words font-display text-[clamp(2.8rem,14vw,5rem)] font-bold uppercase leading-[0.84] tracking-[-0.02em] text-brand-violet min-[621px]:text-[clamp(2.8rem,5vw,5.5rem)] max-[620px]:max-w-full"
-          id="signals-title"
-        >
+          className="mt-12 max-w-[14ch] font-display text-[clamp(2.8rem,14vw,5rem)] font-bold uppercase leading-[0.98] tracking-[-0.02em] text-brand-violet min-[621px]:text-[clamp(2.8rem,5vw,5.5rem)]" id="signals-title">
           O que acontece quando aprender vira experiência?
         </h2>
       </div>

@@ -13,8 +13,7 @@ export function HeroSection() {
           MINIVERSO / LABORATÓRIO DE APRENDIZAGEM
         </span>
         <h1
-          className="m-0 max-w-[14ch] font-display text-[clamp(2.5rem,5vw,5.5rem)] font-bold uppercase leading-[0.9] tracking-[-0.02em] max-[620px]:max-w-full"
-          id="hero-title"
+          className="m-0 max-w-[14ch] font-display text-[clamp(2.5rem,5vw,5.5rem)] font-bold uppercase leading-[0.9] tracking-[-0.02em] max-[620px]:max-w-full" id="hero-title"
         >
           Cada experiência
           <br />
