@@ -1,0 +1,1 @@
+Desenvolvimento e Modularização de Componentes da Landing Page: Implementação estruturada das seções de Apresentação e Proposta da vitrine institucional, utilizando componentes modulares em React/Next.js e aplicando rigorosamente os tokens visuais e de tipografia definidos pelo manual de marca da Miniverso.
