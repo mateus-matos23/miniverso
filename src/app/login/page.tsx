@@ -1,9 +1,11 @@
 import Image from "next/image";
-
+import { redirectIfAdmin } from "@/lib/auth";
 import logo from "../../../public/miniverso.png";
 import LoginForm from "./login-form";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  await redirectIfAdmin();
+
   return (
     <main className="grid min-h-screen place-items-center bg-brand-violet px-5 py-10 text-brand-black">
       <section className="w-full max-w-[28rem] rounded-[.8rem] bg-brand-white p-8 shadow-2xl shadow-black/20 max-[560px]:p-6">

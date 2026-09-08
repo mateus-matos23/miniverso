@@ -16,3 +16,14 @@ export async function requireAdmin() {
 
   return { supabase, user };
 }
+
+export async function redirectIfAdmin() {
+  const supabase = createClient(await cookies());
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user && user.app_metadata?.role === "admin") {
+    redirect("/admin");
+  }
+}
