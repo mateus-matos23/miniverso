@@ -1,6 +1,6 @@
 export function DetectorEvent() {
   return (
-    <div className="relative min-h-136 px-0 pb-10 pt-1 before:pointer-events-none before:absolute before:inset-y-0 before:left-[12%] before:right-[12%] before:border-x before:border-[rgba(175,189,216,0.25)] before:border-y-0 before:content-[''] after:pointer-events-none after:absolute after:inset-x-0 after:bottom-[12%] after:top-[12%] after:border-y after:border-[rgba(175,189,216,0.25)] after:border-x-0 after:content-[''] max-[620px]:min-h-92">
+    <div className="relative min-h-[34rem] px-0 pb-10 pt-1 before:pointer-events-none before:absolute before:inset-y-0 before:left-[12%] before:right-[12%] before:border-x before:border-[rgba(175,189,216,0.25)] before:border-y-0 before:content-[''] after:pointer-events-none after:absolute after:inset-x-0 after:bottom-[12%] after:top-[12%] after:border-y after:border-[rgba(175,189,216,0.25)] after:border-x-0 after:content-[''] max-[620px]:min-h-[23rem]">
       <div className="absolute left-[4%] top-[5%] grid max-w-[42%] gap-[0.35rem] text-[0.58rem] uppercase leading-normal tracking-widest text-brand-muted max-[620px]:text-[0.48rem]">
         <span>evento / 001</span>
         <strong className="text-[0.7rem] font-bold text-brand-white max-[620px]:text-[0.57rem]">
@@ -15,55 +15,55 @@ export function DetectorEvent() {
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle
-          className="stroke-[#203866] stroke-1 [stroke-dasharray:2_12]"
+           className="stroke-[#203866] stroke-[1px] [stroke-dasharray:2_12]"
           cx="310"
           cy="310"
           r="276"
         />
         <circle
-          className="stroke-[#31548a] stroke-5 [stroke-dasharray:36_8_4_8]"
+          className="stroke-[#31548a] stroke-[5px] [stroke-dasharray:36_8_4_8]"
           cx="310"
           cy="310"
           r="224"
         />
         <circle
-          className="stroke-[#203866] stroke-1 [stroke-dasharray:2_12]"
+          className="stroke-[#203866] stroke-[1px] [stroke-dasharray:2_12]"
           cx="310"
           cy="310"
           r="174"
         />
         <circle
-          className="stroke-[#5279ae] stroke-1 [stroke-dasharray:2_8]"
+          className="stroke-[#5279ae] stroke-[1px] [stroke-dasharray:2_8]"
           cx="310"
           cy="310"
           r="104"
         />
         <path
-          className="stroke-brand-cyan stroke-2 [stroke-linecap:round]"
+          className="stroke-brand-cyan stroke-[2px] [stroke-linecap:round]"
           d="M310 310C364 246 444 143 582 94"
         />
         <path
-          className="stroke-brand-cyan stroke-2 [stroke-linecap:round]"
+          className="stroke-brand-cyan stroke-[2px] [stroke-linecap:round]"
           d="M310 310C400 328 487 370 583 483"
         />
         <path
-          className="stroke-[#f4c84a] stroke-2 [stroke-linecap:round]"
+          className="stroke-[#f4c84a] stroke-[2px] [stroke-linecap:round]"
           d="M310 310C259 241 171 162 62 132"
         />
         <path
-          className="stroke-[#f4c84a] stroke-2 [stroke-linecap:round]"
+          className="stroke-[#f4c84a] stroke-[2px] [stroke-linecap:round]"
           d="M310 310C253 363 166 448 83 528"
         />
         <path
-          className="stroke-[#83a7ff] stroke-2 [stroke-linecap:round]"
+          className="stroke-[#83a7ff] stroke-[2px] [stroke-linecap:round]"
           d="M310 310C311 235 321 130 337 31"
         />
         <path
-          className="stroke-[#83a7ff] stroke-2 [stroke-linecap:round]"
+          className="stroke-[#83a7ff] stroke-[2px] [stroke-linecap:round]"
           d="M310 310C236 317 133 328 27 355"
         />
         <circle
-          className="fill-brand-cyan stroke-brand-white stroke-3"
+          className="fill-brand-cyan stroke-brand-white stroke-[3px]"
           cx="310"
           cy="310"
           r="13"
@@ -75,7 +75,7 @@ export function DetectorEvent() {
           r="24"
         />
         <path
-          className="stroke-1 stroke-[rgba(175,189,216,0.4)] [stroke-dasharray:1_10]"
+          className="stroke-[1px] stroke-[rgba(175,189,216,0.4)] [stroke-dasharray:1_10]"
           d="M34 310H586M310 34V586"
         />
       </svg>

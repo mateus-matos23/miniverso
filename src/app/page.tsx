@@ -2,6 +2,7 @@ import { ContactSection } from "./_components/contact-section";
 import { ExperiencesSection } from "./_components/experiences-section";
 import { HeroSection } from "./_components/hero-section";
 import { PartnershipsSection } from "./_components/partnerships-section";
+import { ScrollToTop } from "./_components/scroll-to-top";
 import { SignalsSection } from "./_components/signals-section";
 import { SiteHeader } from "./_components/site-header";
 import { StatementSection } from "./_components/statement-section";
@@ -16,6 +17,7 @@ export default function Home() {
       <ExperiencesSection />
       <PartnershipsSection />
       <ContactSection />
+      <ScrollToTop />
     </main>
   );
 }

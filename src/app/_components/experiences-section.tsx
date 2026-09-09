@@ -12,9 +12,9 @@ export function ExperiencesSection() {
           02 / EXPERIÊNCIAS
         </span>
         <h2
-          className="mt-12 max-w-[9ch] break-words font-display text-[clamp(3rem,15vw,7.2rem)] font-bold uppercase leading-[0.84] tracking-[-0.02em] text-brand-white min-[621px]:text-[clamp(3.3rem,7vw,7.2rem)] max-[620px]:max-w-full"
-          id="experiences-title"
-        >
+          className="mt-12 max-w-[16ch] font-display text-[clamp(3rem,15vw,7.2rem)] font-bold uppercase leading-[0.98] tracking-[-0.02em] text-brand-white min-[621px]:text-[clamp(3.3rem,7vw,7.2rem)]"
+            id="experiences-title"
+          >
           O próximo sinal
           <br />
           <span className="text-brand-cyan">ainda está chegando.</span>
