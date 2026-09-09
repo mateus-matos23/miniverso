@@ -9,10 +9,10 @@ export function BrandMark({ compact = false }: { compact?: boolean }) {
     >
       <Image
         alt="Logo da Miniverso"
-        className="block size-[2.625rem] shrink-0 rounded-full object-cover max-[620px]:size-9"
+        className="block h-auto w-auto shrink-0 object-contain"
         height={compact ? 34 : 42}
         src={logo}
-        width={compact ? 34 : 42}
+        width={compact ? 90 : 62}
       />
       <span
         className={`min-w-0 font-display uppercase leading-[0.8] tracking-[0.02em] ${
