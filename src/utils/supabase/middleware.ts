@@ -18,7 +18,7 @@ export const updateSession = async (request: NextRequest) => {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet, headers) {
           cookiesToSet.forEach(({ name, value }) => {
             request.cookies.set(name, value);
           });
@@ -28,14 +28,17 @@ export const updateSession = async (request: NextRequest) => {
           cookiesToSet.forEach(({ name, value, options }) => {
             supabaseResponse.cookies.set(name, value, options);
           });
+          Object.entries(headers ?? {}).forEach(([k, v]) => {
+            supabaseResponse.headers.set(k, v);
+          });
         },
       },
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Nenhum código entre createServerClient e getClaims().
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims ?? null;
 
-  return { response: supabaseResponse, user };
+  return { response: supabaseResponse, claims };
 };
