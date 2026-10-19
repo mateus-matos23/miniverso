@@ -149,7 +149,7 @@ export function DetalheLead({
             {rotulosInteresseLead[lead.interesse] ?? lead.interesse}
           </span>
         </div>
-        <h2 className="font-display text-2xl font-bold break-words text-brand-violet">
+        <h2 className="font-display text-2xl font-bold break-words text-heading">
           {lead.nome}
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -197,14 +197,14 @@ export function DetalheLead({
       </dl>
 
       <section className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold text-brand-violet">Mensagem</h3>
-        <p className="rounded-md bg-muted/50 p-4 leading-relaxed whitespace-pre-line break-words text-brand-ink">
+        <h3 className="text-sm font-semibold text-heading">Mensagem</h3>
+        <p className="rounded-md bg-muted/50 p-4 leading-relaxed whitespace-pre-line break-words text-body">
           {lead.mensagem}
         </p>
       </section>
 
       <section className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold text-brand-violet">Origem</h3>
+        <h3 className="text-sm font-semibold text-heading">Origem</h3>
         <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
           {origem.map(([rotulo, valor]) => (
             <Campo key={rotulo} rotulo={rotulo}>
@@ -216,7 +216,7 @@ export function DetalheLead({
 
       <section className="flex flex-col gap-3">
         <FieldLabel
-          className="font-semibold text-brand-violet"
+          className="font-semibold text-heading"
           htmlFor={`notas-${lead.id}`}
         >
           Notas internas
@@ -281,7 +281,7 @@ function Campo({
   return (
     <div className={cn("flex flex-col gap-1", className)}>
       <dt className="text-sm font-medium text-muted-foreground">{rotulo}</dt>
-      <dd className="text-brand-ink">{children || "—"}</dd>
+      <dd className="text-body">{children || "—"}</dd>
     </div>
   );
 }

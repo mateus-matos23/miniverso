@@ -137,7 +137,7 @@ export default function ProjetosTabela({
                   <Miniatura projeto={projeto} />
                   <div className="flex min-w-0 flex-1 flex-col gap-2">
                     <TituloProjeto projeto={projeto} />
-                    <p className="text-sm text-brand-ink">
+                    <p className="text-sm text-body">
                       {projeto.clienteNome}
                       <span className="text-muted-foreground">
                         {" · "}
@@ -222,7 +222,7 @@ export default function ProjetosTabela({
                       <TableCell>
                         <TituloProjeto projeto={projeto} />
                       </TableCell>
-                      <TableCell className="text-brand-ink">
+                      <TableCell className="text-body">
                         {projeto.clienteNome}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
@@ -257,7 +257,7 @@ function TituloProjeto({ projeto }: { projeto: ProjetoListItem }) {
   return (
     <div className="min-w-0">
       <Link
-        className="break-words font-semibold text-brand-violet hover:underline"
+        className="break-words font-semibold text-heading hover:underline"
         href={`/admin/projetos/${projeto.id}`}
       >
         {projeto.titulo}

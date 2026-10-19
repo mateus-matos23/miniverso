@@ -8,7 +8,7 @@ export default async function LoginPage() {
   await redirectIfAdmin();
 
   return (
-    <main className="grid min-h-svh bg-brand-white lg:grid-cols-[minmax(0,1.1fr)_minmax(28rem,0.9fr)]">
+    <main className="grid min-h-svh bg-background lg:grid-cols-[minmax(0,1.1fr)_minmax(28rem,0.9fr)]">
       <aside
         aria-hidden="true"
         className="relative isolate hidden overflow-hidden bg-brand-aurora p-12 text-brand-white lg:flex lg:flex-col lg:justify-between"
@@ -34,7 +34,7 @@ export default async function LoginPage() {
             preload
             src={logoColor}
           />
-          <h1 className="mt-10 font-display lg:mt-0 text-display-md font-bold text-brand-violet">
+          <h1 className="mt-10 font-display lg:mt-0 text-display-md font-bold text-heading">
             Entrar no painel
           </h1>
           <p className="mt-3 text-muted-foreground">
@@ -43,7 +43,7 @@ export default async function LoginPage() {
           </p>
           <LoginForm />
           <a
-            className="mt-10 inline-flex h-10 items-center text-sm font-medium text-brand-blue underline-offset-4 hover:underline"
+            className="mt-10 inline-flex h-10 items-center text-sm font-medium text-primary underline-offset-4 hover:underline"
             href="/"
           >
             Voltar para o site

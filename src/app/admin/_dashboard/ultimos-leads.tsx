@@ -36,7 +36,7 @@ export function UltimosLeads({
         >
           <div className="min-w-0">
             <Link
-              className="font-semibold text-brand-black underline-offset-4 hover:underline"
+              className="font-semibold text-foreground underline-offset-4 hover:underline"
               href={`/admin/leads?selecionado=${lead.id}`}
             >
               {lead.nome}

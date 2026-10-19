@@ -3,6 +3,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PropsSecao } from "@/lib/landing/navegacao";
 import { getPublishedClientes } from "@/lib/public-content";
+import { cn } from "@/lib/utils";
 import { SectionIndex } from "./section-index";
 import { superficies } from "./superficie";
 
@@ -58,14 +59,22 @@ function LogoStrip({
   return (
     <div className="group/strip overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] motion-reduce:[mask-image:none]">
       <div
-        className={`flex w-max [animation-duration:var(--marquee-duration)] group-focus-within/strip:[animation-play-state:paused] group-hover/strip:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none motion-reduce:justify-center ${reverse ? "animate-marquee-reverse" : "animate-marquee"}`}
+        className={cn(
+          "flex w-max [animation-duration:var(--marquee-duration)] group-focus-within/strip:[animation-play-state:paused] group-hover/strip:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none motion-reduce:justify-center",
+          reverse ? "animate-marquee-reverse" : "animate-marquee",
+        )}
         style={{ "--marquee-duration": `${duration}s` } as React.CSSProperties}
       >
         {Array.from({ length: repeats * 2 }, (_, copy) => (
           <ul
             aria-hidden={copy > 0 || undefined}
             aria-label={copy === 0 ? label : undefined}
-            className={`flex shrink-0 ${copy > 0 ? "motion-reduce:hidden" : "motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-y-8"}`}
+            className={cn(
+              "flex shrink-0",
+              copy > 0
+                ? "motion-reduce:hidden"
+                : "motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-y-8",
+            )}
             // biome-ignore lint/suspicious/noArrayIndexKey: cópias idênticas da mesma lista
             key={copy}
           >

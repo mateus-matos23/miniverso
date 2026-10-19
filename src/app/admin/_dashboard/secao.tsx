@@ -20,7 +20,7 @@ export function Secao({
   return (
     <section aria-labelledby={id} className={cn("mt-12", className)}>
       <div className="mb-4">
-        <h2 className="text-lg font-semibold text-brand-violet" id={id}>
+        <h2 className="text-lg font-semibold text-heading" id={id}>
           {titulo}
         </h2>
         {descricao ? (

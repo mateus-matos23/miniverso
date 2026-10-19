@@ -95,6 +95,10 @@
   --warning-foreground: #fbfcff;
   /* Texto de erro sobre superfícies escuras (o --destructive fica em 3,1:1 sobre preto) */
   --destructive-on-dark: #ffb4ab;
+  /* Papéis de texto e divisória sobre superfície clara (mesmos hex dos tokens da marca) */
+  --heading: #1e1645;
+  --body: #28395c;
+  --line: #c9d2e3;
   --admin-canvas: #f5f7fb;
   --border: #dbe1ec;
   --input: #7d8aa5;
@@ -138,6 +142,9 @@
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-admin-canvas: var(--admin-canvas);
+  --color-heading: var(--heading);
+  --color-body: var(--body);
+  --color-line: var(--line);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

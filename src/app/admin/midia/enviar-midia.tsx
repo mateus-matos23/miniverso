@@ -237,7 +237,7 @@ export function EnviarMidia({
         <p className="min-w-0 text-sm text-muted-foreground">
           {arquivo ? (
             <span className="flex min-w-0 flex-wrap gap-x-3 gap-y-0.5">
-              <span className="min-w-0 truncate font-medium text-brand-black">
+              <span className="min-w-0 truncate font-medium text-foreground">
                 {arquivo.name}
               </span>
               <span className="shrink-0">{formatarTamanho(arquivo.size)}</span>

@@ -62,7 +62,7 @@ export function FormConfigSeo({
             )}
           </div>
           <div className="flex flex-col gap-1 p-3">
-            <p className="truncate text-sm font-semibold text-brand-violet">
+            <p className="truncate text-sm font-semibold text-heading">
               {valor.titulo || "Título da página"}
             </p>
             <p className="line-clamp-2 text-xs text-muted-foreground">

@@ -165,7 +165,7 @@ export default function ContentEditor({
           <input name="id" type="hidden" value={conteudo.id} />
         ) : null}
         <h2
-          className="text-lg font-semibold text-brand-violet"
+          className="text-lg font-semibold text-heading"
           id={`${id}-form-title`}
         >
           Dados do projeto
@@ -315,18 +315,18 @@ export default function ContentEditor({
                   (mediaError || erros.midia) && `${id}-media-error`,
                 )}
                 aria-labelledby={`${id}-media-rotulo`}
-                className="h-auto w-full justify-start gap-4 rounded-md border-dashed border-input bg-muted/40 p-4 text-left font-normal whitespace-normal hover:border-brand-blue"
+                className="h-auto w-full justify-start gap-4 rounded-md border-dashed border-input bg-muted/40 p-4 text-left font-normal whitespace-normal hover:border-primary"
                 variant="outline"
               >
                 <ImagePlusIcon
                   aria-hidden="true"
-                  className="size-5 text-brand-blue"
+                  className="size-5 text-primary"
                 />
                 <span
                   id={`${id}-media-texto`}
                   className="min-w-0 flex-1 text-sm"
                 >
-                  <span className="block truncate font-semibold text-brand-violet">
+                  <span className="block truncate font-semibold text-heading">
                     {media
                       ? media.name
                       : conteudo
@@ -430,7 +430,7 @@ export default function ContentEditor({
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2
-            className="text-lg font-semibold text-brand-violet"
+            className="text-lg font-semibold text-heading"
             id={`${id}-preview-title`}
           >
             Pré-visualização
@@ -464,14 +464,14 @@ export default function ContentEditor({
           </div>
           <div className="p-6">
             {categoria ? (
-              <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-brand-blue">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-primary">
                 {categoria}
               </p>
             ) : null}
-            <h3 className="font-display text-4xl font-bold leading-none text-brand-violet">
+            <h3 className="font-display text-4xl font-bold leading-none text-heading">
               {title || "Título do conteúdo"}
             </h3>
-            <p className="mt-3 text-brand-ink">
+            <p className="mt-3 text-body">
               {description || "A descrição aparece aqui, como na landing page."}
             </p>
           </div>

@@ -16,7 +16,7 @@ import {
 // Tom de atenção usa o violeta da marca (o manual não tem amarelo); ver --warning em globals.css.
 const estiloPorTom: Record<"aviso" | "info", string> = {
   aviso: "border-warning/40 bg-warning/10 text-warning",
-  info: "border-brand-line bg-brand-tint text-brand-ink",
+  info: "border-line bg-muted text-body",
 };
 
 type Alerta = {
@@ -104,7 +104,7 @@ export function AlertasTopo({
                 {alerta.texto}
               </span>
               <Link
-                className="shrink-0 font-semibold text-brand-blue underline-offset-4 hover:underline"
+                className="shrink-0 font-semibold text-primary underline-offset-4 hover:underline"
                 href={alerta.href}
               >
                 {alerta.rotuloLink}

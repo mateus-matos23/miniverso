@@ -1,5 +1,18 @@
 import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
+
+// Tamanhos de texto definidos no @theme de globals.css. Sem isso o tailwind-merge
+// trata `text-label`/`text-display-*` como cor e descarta o tamanho quando há
+// uma cor `text-*` na mesma lista.
+const twMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      "font-size": [
+        { text: ["label", "display-xl", "display-lg", "display-md"] },
+      ],
+    },
+  },
+});
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

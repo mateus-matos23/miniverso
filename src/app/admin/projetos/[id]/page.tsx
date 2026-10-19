@@ -50,7 +50,7 @@ export default async function EditarProjetoPage({
         description="Altere os dados ou troque a mídia. Se o projeto estiver publicado, a landing mostra as mudanças."
         eyebrow={
           <Link
-            className="mb-4 inline-flex h-10 items-center gap-2 text-sm font-semibold text-brand-blue"
+            className="mb-4 inline-flex h-10 items-center gap-2 text-sm font-semibold text-primary"
             href="/admin/projetos"
           >
             <ArrowLeftIcon

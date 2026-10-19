@@ -91,9 +91,7 @@ export function DesempenhoVersoes({
             </th>
             {METRICAS_CORE.map((metrica) => (
               <th className="px-4 py-3 font-medium" key={metrica} scope="col">
-                <span className="block font-semibold text-brand-ink">
-                  {metrica}
-                </span>
+                <span className="block font-semibold text-body">{metrica}</span>
                 <span className="block font-normal">
                   {rotulosMetrica[metrica].nome.toLowerCase()} (celular)
                 </span>
@@ -111,7 +109,7 @@ export function DesempenhoVersoes({
                 key={versao.id}
               >
                 <th className="px-4 py-3 align-top font-normal" scope="row">
-                  <span className="font-medium text-brand-black">
+                  <span className="font-medium text-foreground">
                     {versao.publicadoEm
                       ? formatarData(versao.publicadoEm)
                       : "Data desconhecida"}
@@ -134,7 +132,7 @@ export function DesempenhoVersoes({
                           </span>
                         ) : (
                           <>
-                            <span className="font-display text-xl font-bold text-brand-violet tabular-nums">
+                            <span className="font-display text-xl font-bold text-heading tabular-nums">
                               {formatarValorMetrica(metrica, medida.p75)}
                             </span>
                             <span className="block text-xs text-muted-foreground">

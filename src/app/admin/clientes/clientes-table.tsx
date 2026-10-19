@@ -133,7 +133,7 @@ export default function ClientesTable({
                 >
                   <Logo cliente={cliente} />
                   <div className="flex min-w-0 flex-1 flex-col gap-2">
-                    <p className="break-words font-semibold text-brand-violet">
+                    <p className="break-words font-semibold text-heading">
                       {cliente.nome}
                     </p>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
@@ -201,7 +201,7 @@ export default function ClientesTable({
                       <TableCell>
                         <Logo cliente={cliente} />
                       </TableCell>
-                      <TableCell className="font-semibold text-brand-violet">
+                      <TableCell className="font-semibold text-heading">
                         {cliente.nome}
                       </TableCell>
                       <TableCell>

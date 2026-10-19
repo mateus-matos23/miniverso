@@ -117,7 +117,7 @@ export function SeletorMidia({
     >
       <legend
         id={rotuloId}
-        className="mb-1 p-0 text-sm font-semibold text-brand-black"
+        className="mb-1 p-0 text-sm font-semibold text-foreground"
       >
         {rotulo}
       </legend>
@@ -150,7 +150,7 @@ export function SeletorMidia({
             <p className="text-sm text-muted-foreground">
               {rotuloTipoMidia[valor.tipo]}
               {valor.alt ? (
-                <span className="block truncate text-brand-black">
+                <span className="block truncate text-foreground">
                   {valor.alt}
                 </span>
               ) : (
@@ -224,7 +224,7 @@ export function SeletorMidia({
                             <GridListItem
                               key={midia.id}
                               aria-label={rotulo}
-                              className="w-full cursor-pointer overflow-hidden rounded-md border-2 border-transparent text-left outline-none hover:border-border data-focus-visible:ring-2 data-focus-visible:ring-ring data-selected:border-brand-blue"
+                              className="w-full cursor-pointer overflow-hidden rounded-md border-2 border-transparent text-left outline-none hover:border-border data-focus-visible:ring-2 data-focus-visible:ring-ring data-selected:border-primary"
                               id={midia.id}
                               textValue={rotulo}
                             >

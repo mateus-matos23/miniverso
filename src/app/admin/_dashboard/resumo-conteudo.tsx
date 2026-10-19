@@ -56,18 +56,18 @@ export function ResumoConteudo({
         const Icone = cartao.icone;
         return (
           <Card className="flex flex-col p-5" key={cartao.id}>
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-brand-black">
-              <Icone aria-hidden="true" className="size-4 text-brand-blue" />
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <Icone aria-hidden="true" className="size-4 text-primary" />
               {cartao.titulo}
             </h3>
-            <p className="mt-4 font-display text-4xl font-bold leading-none text-brand-violet">
+            <p className="mt-4 font-display text-4xl font-bold leading-none text-heading">
               {cartao.principal}
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
               {cartao.detalhe}
             </p>
             <Link
-              className="mt-4 inline-flex w-fit items-center rounded-md px-2 py-1 text-sm font-semibold text-brand-blue hover:bg-accent"
+              className="mt-4 inline-flex w-fit items-center rounded-md px-2 py-1 text-sm font-semibold text-primary hover:bg-accent"
               href={cartao.href}
             >
               {cartao.rotulo}

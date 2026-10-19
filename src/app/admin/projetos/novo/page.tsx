@@ -23,7 +23,7 @@ export default async function NovoProjetoPage() {
         description="Monte o projeto e confira, ao lado, como ele aparece na landing antes de publicar."
         eyebrow={
           <Link
-            className="mb-4 inline-flex h-10 items-center gap-2 text-sm font-semibold text-brand-blue"
+            className="mb-4 inline-flex h-10 items-center gap-2 text-sm font-semibold text-primary"
             href="/admin/projetos"
           >
             <ArrowLeftIcon

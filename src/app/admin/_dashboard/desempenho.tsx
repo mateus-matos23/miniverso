@@ -81,7 +81,7 @@ function LinhaDispositivo({
       <span
         className={cn(
           "font-display text-3xl font-bold leading-none tabular-nums",
-          insuficiente ? "text-muted-foreground" : "text-brand-violet",
+          insuficiente ? "text-muted-foreground" : "text-heading",
         )}
       >
         {formatarValorMetrica(metrica, linha.p75)}
@@ -133,7 +133,7 @@ export function DesempenhoWebVitals({
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {METRICAS.map((metrica) => (
           <Card className="flex flex-col p-5" key={metrica}>
-            <h3 className="text-sm font-semibold text-brand-black">
+            <h3 className="text-sm font-semibold text-foreground">
               {metrica}
               <span className="block text-xs font-normal text-muted-foreground">
                 {rotulosMetrica[metrica].nome}

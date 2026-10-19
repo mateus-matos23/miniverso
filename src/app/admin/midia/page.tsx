@@ -24,7 +24,7 @@ export default async function MidiaPage() {
       >
         <h2
           id="enviar-midia-titulo"
-          className="mb-4 text-lg font-semibold text-brand-black"
+          className="mb-4 text-lg font-semibold text-foreground"
         >
           Enviar arquivo
         </h2>
@@ -34,7 +34,7 @@ export default async function MidiaPage() {
       <section aria-labelledby="biblioteca-titulo" className="mt-12">
         <h2
           id="biblioteca-titulo"
-          className="mb-6 text-lg font-semibold text-brand-black"
+          className="mb-6 text-lg font-semibold text-foreground"
         >
           Biblioteca
         </h2>

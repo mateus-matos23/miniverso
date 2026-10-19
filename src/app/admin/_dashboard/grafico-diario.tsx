@@ -266,11 +266,11 @@ export function GraficoDiario({ metricas }: { metricas: Resultado<Metricas> }) {
 
   return (
     <figure className="rounded-lg border border-border bg-card p-5">
-      <figcaption className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-brand-ink">
+      <figcaption className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-body">
         <span className="flex items-center gap-2">
           <span
             aria-hidden="true"
-            className="h-0.5 w-5 rounded-full bg-brand-blue"
+            className="h-0.5 w-5 rounded-full bg-primary"
           />
           Visitantes por dia
         </span>
@@ -287,31 +287,31 @@ export function GraficoDiario({ metricas }: { metricas: Resultado<Metricas> }) {
 
       {/* Abaixo de sm o SVG some e esta tabela vira a leitura visível dos dados. */}
       <table className="w-full border-collapse text-sm tabular-nums sm:sr-only">
-        <caption className="mb-2 text-left text-sm text-brand-ink">
+        <caption className="mb-2 text-left text-sm text-body">
           Visitantes, visualizações e leads por dia
         </caption>
         <thead>
           <tr className="border-b border-border">
             <th
-              className="px-2 py-2 text-left text-xs font-medium text-brand-ink"
+              className="px-2 py-2 text-left text-xs font-medium text-body"
               scope="col"
             >
               Dia
             </th>
             <th
-              className="px-2 py-2 text-right text-xs font-medium text-brand-ink"
+              className="px-2 py-2 text-right text-xs font-medium text-body"
               scope="col"
             >
               Visitantes
             </th>
             <th
-              className="px-2 py-2 text-right text-xs font-medium text-brand-ink"
+              className="px-2 py-2 text-right text-xs font-medium text-body"
               scope="col"
             >
               Visualizações
             </th>
             <th
-              className="px-2 py-2 text-right text-xs font-medium text-brand-ink"
+              className="px-2 py-2 text-right text-xs font-medium text-body"
               scope="col"
             >
               Leads
@@ -325,7 +325,7 @@ export function GraficoDiario({ metricas }: { metricas: Resultado<Metricas> }) {
               key={dia.dia}
             >
               <th
-                className="px-2 py-2 text-left font-normal text-brand-ink"
+                className="px-2 py-2 text-left font-normal text-body"
                 scope="row"
               >
                 {formatarDiaMes(dia.dia)}

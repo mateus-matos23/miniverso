@@ -2,6 +2,7 @@
 
 import { m } from "motion/react";
 import { useSignalTransition } from "@/components/motion/transitions";
+import { cn } from "@/lib/utils";
 
 const trails = [
   {
@@ -100,7 +101,7 @@ export function DetectorEvent() {
           <g key={trail.label}>
             <m.path
               animate={{ pathLength: 1 }}
-              className={`${trail.stroke} [stroke-linecap:round]`}
+              className={cn(trail.stroke, "[stroke-linecap:round]")}
               d={trail.d}
               initial={{ pathLength: 0 }}
               strokeWidth="2"
@@ -111,7 +112,7 @@ export function DetectorEvent() {
             />
             <m.circle
               animate={{ opacity: 1, scale: 1 }}
-              className={`${trail.stroke} fill-brand-black`}
+              className={cn(trail.stroke, "fill-brand-black")}
               cx={trail.node[0]}
               cy={trail.node[1]}
               initial={{ opacity: 0, scale: 0 }}
@@ -140,7 +141,10 @@ export function DetectorEvent() {
       {trails.map((trail, index) => (
         <m.span
           animate={{ opacity: 1, y: 0 }}
-          className={`absolute text-label font-semibold uppercase ${trail.labelClass}`}
+          className={cn(
+            "absolute text-label font-semibold uppercase",
+            trail.labelClass,
+          )}
           initial={{ opacity: 0, y: 6 }}
           key={trail.label}
           transition={signal({ delay: signalArrives(index), duration: 0.5 })}

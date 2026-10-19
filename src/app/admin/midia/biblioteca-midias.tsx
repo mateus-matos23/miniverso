@@ -305,7 +305,7 @@ function CartaoMidia({
         <dl className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <div className="flex gap-1">
             <dt className="sr-only">Tipo</dt>
-            <dd className="font-semibold text-brand-black">
+            <dd className="font-semibold text-foreground">
               {rotuloTipoMidia[midia.tipo]}
             </dd>
           </div>
@@ -332,10 +332,7 @@ function CartaoMidia({
         ) : null}
 
         <form className="flex flex-col gap-2" onSubmit={salvarAlt}>
-          <FieldLabel
-            htmlFor={altId}
-            className="font-semibold text-brand-black"
-          >
+          <FieldLabel htmlFor={altId} className="font-semibold text-foreground">
             Texto alternativo
           </FieldLabel>
           <div className="flex gap-2">

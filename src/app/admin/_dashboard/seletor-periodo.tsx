@@ -19,7 +19,7 @@ export function SeletorPeriodo({ atual }: { atual: Periodo }) {
               "inline-flex h-11 items-center rounded-sm px-3 text-sm font-medium transition-colors",
               ativo
                 ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-accent hover:text-brand-violet",
+                : "text-muted-foreground hover:bg-accent hover:text-heading",
             )}
             href={`/admin?periodo=${periodo}`}
             key={periodo}

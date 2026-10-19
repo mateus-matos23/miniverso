@@ -30,9 +30,9 @@ export default async function AdminLayout({
   };
 
   return (
-    <div className="flex min-h-svh bg-admin-canvas text-brand-black">
+    <div className="flex min-h-svh bg-admin-canvas text-foreground">
       <a
-        className="sr-only z-50 bg-brand-cyan px-4 py-3 font-semibold text-brand-black focus:not-sr-only focus:fixed focus:left-4 focus:top-3"
+        className="sr-only z-50 bg-brand-cyan px-4 py-3 font-semibold text-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-3"
         href="#conteudo"
       >
         Pular para o conteúdo

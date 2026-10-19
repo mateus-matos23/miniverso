@@ -274,10 +274,7 @@ export function EditorLanding({
 
       <div className="grid gap-6 grid-editor">
         <section aria-labelledby="titulo-lista" className="flex flex-col gap-3">
-          <h2
-            id="titulo-lista"
-            className="text-sm font-semibold text-brand-violet"
-          >
+          <h2 id="titulo-lista" className="text-sm font-semibold text-heading">
             {modo === "configuracoes" ? "Configurações" : "Seções"}
           </h2>
           {modo === "configuracoes" ? (
@@ -306,7 +303,7 @@ export function EditorLanding({
             <>
               <h2
                 id={`${idSecao}-cabecalho`}
-                className="text-lg font-semibold text-brand-violet"
+                className="text-lg font-semibold text-heading"
               >
                 {gruposConfig[selecao.grupo].nome}
               </h2>
@@ -323,7 +320,7 @@ export function EditorLanding({
             <>
               <h2
                 id={`${idSecao}-cabecalho`}
-                className="text-lg font-semibold text-brand-violet"
+                className="text-lg font-semibold text-heading"
               >
                 {tiposSecao[secaoAtual.tipo].nome}
               </h2>

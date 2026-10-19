@@ -20,7 +20,7 @@ function ListaBarras({
 
   return (
     <Card className="p-5">
-      <h3 className="text-sm font-semibold text-brand-black">{titulo}</h3>
+      <h3 className="text-sm font-semibold text-foreground">{titulo}</h3>
       <p className="mt-1 text-xs text-muted-foreground">{descricao}</p>
       {itens.length === 0 ? (
         <p className="mt-6 text-sm text-muted-foreground">
@@ -31,19 +31,19 @@ function ListaBarras({
           {itens.map((item) => (
             <li key={item.rotulo}>
               <div className="flex items-baseline justify-between gap-3 text-sm">
-                <span className="min-w-0 truncate text-brand-ink">
+                <span className="min-w-0 truncate text-body">
                   {item.rotulo}
                 </span>
-                <span className="shrink-0 font-semibold text-brand-black tabular-nums">
+                <span className="shrink-0 font-semibold text-foreground tabular-nums">
                   {formatarInteiro(item.valor)}
                 </span>
               </div>
               <div
                 aria-hidden="true"
-                className="mt-1.5 h-2 w-full rounded-r-sm bg-brand-tint"
+                className="mt-1.5 h-2 w-full rounded-r-sm bg-muted"
               >
                 <div
-                  className="h-2 rounded-r-sm bg-brand-blue"
+                  className="h-2 rounded-r-sm bg-primary"
                   style={{ width: `${(item.valor / maximo) * 100}%` }}
                 />
               </div>

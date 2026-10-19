@@ -33,8 +33,8 @@ export function ListaLeads({
             <Link
               aria-current={ativo ? "true" : undefined}
               className={cn(
-                "flex items-start gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:border-brand-blue/60",
-                ativo && "border-brand-blue ring-1 ring-brand-blue/40",
+                "flex items-start gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/60",
+                ativo && "border-primary ring-1 ring-primary/40",
               )}
               href={hrefLeads({ ...filtros, selecionado: lead.id })}
             >
@@ -42,14 +42,14 @@ export function ListaLeads({
                 aria-hidden="true"
                 className={cn(
                   "mt-2 size-2 shrink-0 rounded-full",
-                  novo ? "bg-brand-blue" : "bg-transparent",
+                  novo ? "bg-primary" : "bg-transparent",
                 )}
               />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
                 <span className="flex items-center justify-between gap-3">
                   <span
                     className={cn(
-                      "truncate text-brand-violet",
+                      "truncate text-heading",
                       novo ? "font-bold" : "font-semibold",
                     )}
                   >

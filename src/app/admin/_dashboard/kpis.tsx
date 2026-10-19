@@ -31,7 +31,7 @@ export function KpisPeriodo({ metricas }: { metricas: Resultado<Metricas> }) {
           <dt className="text-sm font-medium text-muted-foreground">
             {item.rotulo}
           </dt>
-          <dd className="mt-2 font-display text-5xl font-bold leading-none text-brand-violet tabular-nums">
+          <dd className="mt-2 font-display text-5xl font-bold leading-none text-heading tabular-nums">
             {item.valor}
           </dd>
           {item.ajuda ? (

@@ -36,7 +36,7 @@ export function PageHeader({
     <div className="flex flex-col gap-6 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
         {eyebrow}
-        <h1 className="font-display text-display-md font-bold text-brand-violet">
+        <h1 className="font-display text-display-md font-bold text-heading">
           {title}
         </h1>
         {description ? (

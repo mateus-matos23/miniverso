@@ -88,7 +88,7 @@ export function HistoricoLista({ versoes }: { versoes: VersaoHistorico[] }) {
             key={versao.id}
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-sm font-semibold text-brand-violet">
+              <span className="text-sm font-semibold text-heading">
                 {formatarDataHora(versao.publicadoEm)}
               </span>
               <SituacaoVersao publicada={versao.publicada} />
