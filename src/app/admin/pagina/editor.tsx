@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import type { Key } from "react-aria-components";
 import { toast } from "sonner";
 
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import {
   type ConfigLanding,
   configSchema,

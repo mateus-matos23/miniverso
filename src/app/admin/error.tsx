@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useEffect } from "react";
 
 import { Alert } from "@/components/ui/alert";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 import { AdminPage, PageHeader } from "./page-header";
 

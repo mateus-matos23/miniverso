@@ -26,7 +26,8 @@ import {
   reordenarConteudos,
 } from "@/app/admin/projetos/actions";
 import { Alert } from "@/components/ui/alert";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import {
   DropdownMenu,
   DropdownMenuGroup,
