@@ -1,4 +1,6 @@
+import { LinhaSecao } from "@/components/motion/linha-secao";
 import { Reveal } from "@/components/motion/reveal";
+import { RevealTitulo } from "@/components/motion/revelar-titulo";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import type { PropsSecao } from "@/lib/landing/navegacao";
 import { cn } from "@/lib/utils";
@@ -16,6 +18,7 @@ export function ProcessSection({ secao }: PropsSecao<"processo">) {
       data-surface={escura ? "dark" : undefined}
       id="processo"
     >
+      <LinhaSecao />
       <div className="mx-auto max-w-page px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
         <SectionIndex
           className="surface-dark:text-brand-white surface-dark:[&>span:first-child]:text-brand-white"
@@ -25,12 +28,12 @@ export function ProcessSection({ secao }: PropsSecao<"processo">) {
         </SectionIndex>
         <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
           <Reveal>
-            <h2
+            <RevealTitulo
               className="max-w-[14ch] font-display text-display-lg font-bold text-brand-violet surface-dark:text-brand-white"
               id="processo-title"
             >
               {dados.titulo}
-            </h2>
+            </RevealTitulo>
           </Reveal>
           <Reveal
             className="max-w-[36rem] self-end text-lg text-brand-ink surface-dark:text-brand-mist"
@@ -54,7 +57,16 @@ export function ProcessSection({ secao }: PropsSecao<"processo">) {
               <span
                 aria-hidden="true"
                 className="absolute -top-1.5 left-0 size-3 rounded-full bg-brand-cyan"
-              />
+              >
+                <span
+                  className="absolute inset-0 animate-ping rounded-full bg-brand-cyan/60 [animation-delay:var(--ping-delay)] motion-reduce:hidden"
+                  style={
+                    {
+                      "--ping-delay": `${indice * 0.8}s`,
+                    } as React.CSSProperties
+                  }
+                />
+              </span>
               <span className="block font-display text-display-md font-bold text-brand-blue surface-dark:text-brand-cyan">
                 {String(indice + 1).padStart(2, "0")}
               </span>

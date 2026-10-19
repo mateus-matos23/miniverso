@@ -1,5 +1,7 @@
 import { PlusIcon } from "lucide-react";
+import { LinhaSecao } from "@/components/motion/linha-secao";
 import { Reveal } from "@/components/motion/reveal";
+import { RevealTitulo } from "@/components/motion/revelar-titulo";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import type { PropsSecao } from "@/lib/landing/navegacao";
 import { cn } from "@/lib/utils";
@@ -17,20 +19,17 @@ export function PillarsSection({ secao }: PropsSecao<"pilares">) {
       data-surface={escura ? "dark" : undefined}
       id="pilares"
     >
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-px bg-brand-cyan/50"
-      />
+      <LinhaSecao />
       <div className="mx-auto grid max-w-page gap-12 px-5 py-24 sm:px-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20 lg:px-12 lg:py-32">
         <div>
           <SectionIndex number={secao.numero}>{dados.rotulo}</SectionIndex>
           <Reveal>
-            <h2
+            <RevealTitulo
               className="mt-10 max-w-[12ch] font-display text-display-lg font-bold text-brand-violet surface-dark:text-brand-white"
               id="pilares-title"
             >
               {dados.titulo}
-            </h2>
+            </RevealTitulo>
             <p className="mt-8 max-w-[34rem] text-lg text-brand-ink surface-dark:text-brand-mist">
               {dados.intro}
             </p>
@@ -47,8 +46,18 @@ export function PillarsSection({ secao }: PropsSecao<"pilares">) {
               // biome-ignore lint/suspicious/noArrayIndexKey: lista pode repetir o título do pilar; o índice desempata
               key={`${pilar.titulo}-${indice}`}
             >
-              <details className="details-smooth group">
-                <summary className="flex min-h-20 cursor-pointer list-none items-center gap-5 py-5 [&::-webkit-details-marker]:hidden">
+              <details className="details-smooth group relative">
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-y-0 left-0 w-0.5 origin-top scale-y-0 bg-brand-cyan transition-transform duration-500 group-open:scale-y-100"
+                />
+                <summary className="flex min-h-20 cursor-pointer list-none items-center gap-5 py-5 pl-5 [&::-webkit-details-marker]:hidden">
+                  <span
+                    aria-hidden="true"
+                    className="w-6 shrink-0 text-label font-semibold tabular-nums text-brand-ink/60 transition-colors group-open:text-brand-blue surface-dark:text-brand-mist/60 surface-dark:group-open:text-brand-cyan"
+                  >
+                    {String(indice + 1).padStart(2, "0")}
+                  </span>
                   <span className="flex-1 font-display text-display-md font-bold text-brand-violet transition-colors group-hover:text-brand-blue surface-dark:text-brand-white surface-dark:group-hover:text-brand-cyan">
                     {pilar.titulo}
                   </span>
@@ -58,7 +67,7 @@ export function PillarsSection({ secao }: PropsSecao<"pilares">) {
                     strokeWidth={1.5}
                   />
                 </summary>
-                <p className="max-w-[46ch] pb-7 text-lg text-brand-ink surface-dark:text-brand-mist">
+                <p className="max-w-[46ch] pb-7 pl-5 text-lg text-brand-ink surface-dark:text-brand-mist">
                   {pilar.descricao}
                 </p>
               </details>

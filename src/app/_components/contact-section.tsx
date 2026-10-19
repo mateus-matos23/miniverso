@@ -5,7 +5,9 @@ import {
   MapPinIcon,
   PhoneIcon,
 } from "lucide-react";
+import { LinhaSecao } from "@/components/motion/linha-secao";
 import { Reveal } from "@/components/motion/reveal";
+import { RevealTitulo } from "@/components/motion/revelar-titulo";
 import type { PropsSecao } from "@/lib/landing/navegacao";
 import { telefoneHref } from "@/lib/landing/parse";
 import type { ConfigLanding } from "@/lib/landing/schema";
@@ -67,6 +69,7 @@ export function ContactSection({
       data-surface={escura ? "dark" : undefined}
       id="contato"
     >
+      <LinhaSecao />
       {/* O brilho branco do aurora cai sobre o início do título e o índice: escurece só o topo. */}
       {aparencia.superficie === "aurora" ? (
         <div
@@ -83,12 +86,12 @@ export function ContactSection({
             {dados.rotulo}
           </SectionIndex>
           <Reveal>
-            <h2
+            <RevealTitulo
               className="mt-10 max-w-[12ch] font-display text-display-xl font-bold text-brand-violet surface-dark:text-brand-white"
               id="contato-title"
             >
               {dados.titulo}
-            </h2>
+            </RevealTitulo>
             <p className="mt-8 max-w-[34rem] text-lg text-brand-ink surface-dark:text-brand-white/85">
               {dados.intro}
             </p>

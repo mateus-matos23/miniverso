@@ -1,3 +1,5 @@
+import { ArrowUpIcon } from "lucide-react";
+import { LinhaSecao } from "@/components/motion/linha-secao";
 import type { LinkNav } from "@/lib/landing/navegacao";
 import type { ConfigLanding } from "@/lib/landing/schema";
 import { site } from "@/lib/site";
@@ -39,7 +41,11 @@ type SiteFooterProps = {
 
 export function SiteFooter({ links, config }: SiteFooterProps) {
   return (
-    <footer className="bg-brand-black text-brand-mist" data-surface="dark">
+    <footer
+      className="relative bg-brand-black text-brand-mist"
+      data-surface="dark"
+    >
+      <LinhaSecao />
       <ServicesMarquee services={config.rodape.servicos} />
       <div className="mx-auto flex max-w-page flex-col gap-8 px-5 py-12 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-12">
         <BrandMark href="#conteudo" />
@@ -57,6 +63,16 @@ export function SiteFooter({ links, config }: SiteFooterProps) {
             ))}
           </ul>
         </nav>
+        <a
+          className="group/topo inline-flex h-10 items-center gap-2 text-sm font-semibold text-brand-cyan transition-colors hover:text-brand-white"
+          href="#conteudo"
+        >
+          Voltar ao topo
+          <ArrowUpIcon
+            aria-hidden="true"
+            className="size-4 transition-transform duration-300 group-hover/topo:-translate-y-1"
+          />
+        </a>
         <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
           <span>
             © {new Date().getFullYear()} {site.name}

@@ -1,8 +1,10 @@
 "use client";
 
-import { CheckCircle2Icon } from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
+import { m } from "motion/react";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { type EstadoContato, enviarContato } from "@/app/actions/contato";
+import { useSignalTransition } from "@/components/motion/transitions";
 import { INTERESSES, ROTULOS_INTERESSE } from "@/lib/leads";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +13,7 @@ const TAMANHO_MAXIMO_MENSAGEM = 2000;
 const estadoInicial: EstadoContato = {};
 
 const estiloCampo =
-  "w-full rounded-md border border-input bg-brand-white px-4 py-3 text-base text-brand-violet placeholder:text-brand-ink/60 transition-colors focus-visible:border-brand-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan aria-[invalid=true]:border-destructive";
+  "peer w-full rounded-md border border-input bg-brand-white px-4 py-3 text-base text-brand-violet placeholder:text-brand-ink/60 transition-colors focus-visible:border-brand-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan aria-[invalid=true]:border-destructive";
 
 const opcoesInteresse = INTERESSES.map((valor) => ({
   valor,
@@ -30,6 +32,7 @@ function Campo({
   rotulo,
   erro,
   opcional = false,
+  flutuante = false,
   children,
   contador,
 }: {
@@ -37,23 +40,29 @@ function Campo({
   rotulo: string;
   erro?: string;
   opcional?: boolean;
+  /** Rótulo sempre no alto (campos sem estado "vazio", como o select). */
+  flutuante?: boolean;
   children: React.ReactNode;
   contador?: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <label
-        className="flex items-baseline gap-2 text-sm font-semibold text-brand-ink surface-dark:text-brand-mist"
-        htmlFor={id}
-      >
-        {rotulo}
-        {opcional ? (
-          <span className="normal-case font-normal tracking-normal text-brand-ink/70 surface-dark:text-brand-mist/80">
-            (opcional)
-          </span>
-        ) : null}
-      </label>
-      {children}
+      <div className="relative">
+        {children}
+        <label
+          className={cn(
+            "pointer-events-none absolute left-3 flex origin-left items-baseline gap-2 rounded-sm bg-brand-white px-1 text-sm font-semibold text-brand-ink transition-all duration-200",
+            "top-3.5 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-brand-blue peer-not-placeholder-shown:-top-2.5 peer-not-placeholder-shown:text-xs",
+            flutuante && "-top-2.5 text-xs",
+          )}
+          htmlFor={id}
+        >
+          {rotulo}
+          {opcional ? (
+            <span className="font-normal text-brand-ink/70">(opcional)</span>
+          ) : null}
+        </label>
+      </div>
       <div className="flex items-start justify-between gap-4">
         {erro ? (
           <p
@@ -67,6 +76,48 @@ function Campo({
         )}
         {contador}
       </div>
+    </div>
+  );
+}
+
+/** Confirmação de envio: o círculo e o check se desenham em sequência. */
+function Sucesso() {
+  const signal = useSignalTransition();
+
+  return (
+    <div
+      className="flex items-start gap-4 rounded-md border border-brand-cyan bg-brand-white p-6 text-brand-violet"
+      role="status"
+    >
+      <svg
+        aria-hidden="true"
+        className="mt-0.5 size-8 shrink-0 text-brand-blue"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <m.circle
+          animate={{ pathLength: 1 }}
+          cx="12"
+          cy="12"
+          initial={{ pathLength: 0 }}
+          r="10"
+          transition={signal({ duration: 0.7 })}
+        />
+        <m.path
+          animate={{ pathLength: 1 }}
+          d="m8 12.5 3 3 5-6"
+          initial={{ pathLength: 0 }}
+          transition={signal({ delay: 0.5, duration: 0.4 })}
+        />
+      </svg>
+      <p className="text-lg font-medium">
+        Recebemos sua mensagem. A equipe da Miniverso vai responder pelo e-mail
+        informado.
+      </p>
     </div>
   );
 }
@@ -116,21 +167,7 @@ export function ContatoForm() {
   }, [state]);
 
   if (state.ok) {
-    return (
-      <div
-        className="flex items-start gap-4 rounded-md border border-brand-cyan bg-brand-white p-6 text-brand-violet"
-        role="status"
-      >
-        <CheckCircle2Icon
-          aria-hidden="true"
-          className="mt-0.5 size-6 shrink-0 text-brand-blue"
-        />
-        <p className="text-lg font-medium">
-          Recebemos sua mensagem. A equipe da Miniverso vai responder pelo
-          e-mail informado.
-        </p>
-      </div>
-    );
+    return <Sucesso />;
   }
 
   const erros = state.erros ?? {};
@@ -159,6 +196,7 @@ export function ContatoForm() {
             aria-invalid={Boolean(erros.nome)}
             autoComplete="name"
             className={estiloCampo}
+            placeholder=" "
             defaultValue={valores.nome}
             id="contato-nome"
             name="nome"
@@ -173,6 +211,7 @@ export function ContatoForm() {
             aria-invalid={Boolean(erros.email)}
             autoComplete="email"
             className={estiloCampo}
+            placeholder=" "
             defaultValue={valores.email}
             id="contato-email"
             name="email"
@@ -187,6 +226,7 @@ export function ContatoForm() {
             aria-invalid={Boolean(erros.escola)}
             autoComplete="organization"
             className={estiloCampo}
+            placeholder=" "
             defaultValue={valores.escola}
             id="contato-escola"
             name="escola"
@@ -200,6 +240,7 @@ export function ContatoForm() {
             aria-invalid={Boolean(erros.cargo)}
             autoComplete="organization-title"
             className={estiloCampo}
+            placeholder=" "
             defaultValue={valores.cargo}
             id="contato-cargo"
             name="cargo"
@@ -208,7 +249,12 @@ export function ContatoForm() {
         </Campo>
       </div>
 
-      <Campo erro={erros.interesse} id="contato-interesse" rotulo="Interesse">
+      <Campo
+        erro={erros.interesse}
+        flutuante
+        id="contato-interesse"
+        rotulo="Interesse"
+      >
         <select
           aria-describedby={
             erros.interesse ? "contato-interesse-erro" : undefined
@@ -257,6 +303,7 @@ export function ContatoForm() {
             .join(" ")}
           aria-invalid={Boolean(erros.mensagem)}
           className={cn(estiloCampo, "min-h-36 resize-y")}
+          placeholder=" "
           defaultValue={valores.mensagem}
           id="contato-mensagem"
           maxLength={TAMANHO_MAXIMO_MENSAGEM}
@@ -304,12 +351,16 @@ export function ContatoForm() {
       <div>
         <button
           aria-busy={pendente || undefined}
-          className="inline-flex h-12 items-center justify-center rounded-md bg-brand-cyan px-6 font-semibold text-brand-black transition-colors hover:bg-brand-violet hover:text-brand-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan disabled:cursor-progress disabled:opacity-70 surface-dark:hover:bg-brand-white surface-dark:hover:text-brand-black"
+          className="fill-sweep group/button inline-flex h-12 items-center justify-center gap-2 rounded-md bg-brand-cyan px-6 font-semibold text-brand-black hover:text-brand-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan disabled:cursor-progress disabled:opacity-70 surface-dark:[--sweep:var(--color-brand-white)] surface-dark:hover:text-brand-black"
           data-cta="contato-enviar"
           disabled={pendente}
           type="submit"
         >
           {pendente ? "Enviando…" : "Enviar mensagem"}
+          <ArrowRightIcon
+            aria-hidden="true"
+            className="size-4 transition-transform duration-300 group-hover/button:translate-x-1"
+          />
         </button>
       </div>
     </form>

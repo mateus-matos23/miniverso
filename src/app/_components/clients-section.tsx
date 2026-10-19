@@ -1,5 +1,8 @@
 import { Suspense } from "react";
+import { LinhaSecao } from "@/components/motion/linha-secao";
 import { Reveal } from "@/components/motion/reveal";
+import { RevealTitulo } from "@/components/motion/revelar-titulo";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PropsSecao } from "@/lib/landing/navegacao";
 import { getPublishedClientes } from "@/lib/public-content";
@@ -23,16 +26,18 @@ function LogoItems({ clientes }: { clientes: Cliente[] }) {
       className="group/item flex shrink-0 items-center px-8 transition-opacity duration-300 group-hover/strip:not-hover:opacity-60 sm:px-11"
       key={cliente.id}
     >
-      {/* <img> puro: altura fixa e largura natural deixam o espaçamento
-          uniforme, e as URLs assinadas já não passam pelo otimizador. */}
-      {/* biome-ignore lint/performance/noImgElement: ver comentário acima */}
-      <img
-        alt={cliente.nome}
-        className="block h-10 w-auto max-w-40 object-contain opacity-80 grayscale transition duration-300 select-none group-hover/item:opacity-100 group-hover/item:grayscale-0 sm:h-14 sm:max-w-50"
-        decoding="async"
-        draggable={false}
-        src={cliente.logoUrl}
-      />
+      <Avatar className="size-14 bg-brand-white opacity-80 grayscale transition duration-300 group-hover/item:opacity-100 group-hover/item:grayscale-0 sm:size-20">
+        <AvatarImage
+          alt={cliente.nome}
+          className="select-none"
+          decoding="async"
+          draggable={false}
+          src={cliente.logoUrl}
+        />
+        <AvatarFallback>
+          {cliente.nome.slice(0, 2).toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
     </li>
   ));
 }
@@ -155,20 +160,21 @@ export function ClientsSection({ secao }: PropsSecao<"clientes">) {
   return (
     <section
       aria-labelledby="clientes-title"
-      className={classe}
+      className={cn("relative", classe)}
       data-surface={escura ? "dark" : undefined}
       id="clientes"
     >
+      <LinhaSecao />
       <div className="py-24 lg:py-32">
         <div className="mx-auto max-w-page px-5 sm:px-8 lg:px-12">
           <SectionIndex number={secao.numero}>{dados.rotulo}</SectionIndex>
           <Reveal>
-            <h2
+            <RevealTitulo
               className="mt-10 max-w-[12ch] font-display text-display-lg font-bold text-brand-violet surface-dark:text-brand-white"
               id="clientes-title"
             >
               {dados.titulo}
-            </h2>
+            </RevealTitulo>
           </Reveal>
         </div>
         <div className="mt-16 lg:mt-20">

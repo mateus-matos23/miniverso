@@ -1,7 +1,10 @@
 import { ScanLineIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ViewTransition } from "react";
+import { LinhaSecao } from "@/components/motion/linha-secao";
 import { Reveal } from "@/components/motion/reveal";
+import { RevealTitulo } from "@/components/motion/revelar-titulo";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { buttonVariants } from "@/components/ui/button-variants";
 import {
@@ -25,30 +28,36 @@ import { superficies } from "./superficie";
 
 function ProjectCard({ projeto }: { projeto: PublicConteudo }) {
   return (
-    <article className="flex h-full flex-col border-b border-r border-brand-line bg-brand-white">
-      <div
-        aria-hidden="true"
-        className="relative aspect-video overflow-hidden bg-brand-tint"
+    <article className="group flex h-full flex-col border-b border-r border-brand-line bg-brand-white transition-shadow duration-300 hover:relative hover:z-10 hover:shadow-[0_18px_40px_-18px_rgb(30_22_69/0.35)]">
+      <ViewTransition
+        name={`projeto-${projeto.slug}`}
+        share="morph"
+        default="none"
       >
-        {projeto.midiaUrl && projeto.tipoMidia === "video" ? (
-          <video
-            className="size-full object-cover"
-            muted
-            playsInline
-            preload="metadata"
-            src={projeto.midiaUrl}
-          />
-        ) : null}
-        {projeto.midiaUrl && projeto.tipoMidia === "imagem" ? (
-          <Image
-            alt=""
-            className="object-cover"
-            fill
-            sizes="(min-width: 1280px) 26rem, (min-width: 640px) 45vw, 100vw"
-            src={projeto.midiaUrl}
-          />
-        ) : null}
-      </div>
+        <div
+          aria-hidden="true"
+          className="relative aspect-video overflow-hidden bg-brand-tint"
+        >
+          {projeto.midiaUrl && projeto.tipoMidia === "video" ? (
+            <video
+              className="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              muted
+              playsInline
+              preload="metadata"
+              src={projeto.midiaUrl}
+            />
+          ) : null}
+          {projeto.midiaUrl && projeto.tipoMidia === "imagem" ? (
+            <Image
+              alt=""
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              fill
+              sizes="(min-width: 1280px) 26rem, (min-width: 640px) 45vw, 100vw"
+              src={projeto.midiaUrl}
+            />
+          ) : null}
+        </div>
+      </ViewTransition>
       <div className="flex flex-1 flex-col gap-3 p-6">
         {projeto.categoria ? (
           <p className="text-label font-semibold uppercase text-brand-ink">
@@ -119,10 +128,11 @@ export async function ProjectsSection({ secao }: PropsSecao<"projetos">) {
   return (
     <section
       aria-labelledby="projetos-title"
-      className={classe}
+      className={cn("relative", classe)}
       data-surface={escura ? "dark" : undefined}
       id="projetos"
     >
+      <LinhaSecao />
       <div className="mx-auto max-w-page px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
         <SectionIndex number={secao.numero}>{dados.rotulo}</SectionIndex>
         <div
@@ -133,12 +143,12 @@ export async function ProjectsSection({ secao }: PropsSecao<"projetos">) {
           }
         >
           <Reveal>
-            <h2
+            <RevealTitulo
               className="max-w-[13ch] font-display text-display-lg font-bold text-brand-violet surface-dark:text-brand-white"
               id="projetos-title"
             >
               {dados.titulo}
-            </h2>
+            </RevealTitulo>
           </Reveal>
           {result.status === "error" ? (
             <p className="mt-10 border-l-2 border-brand-line py-2 pl-5 text-lg text-brand-ink surface-dark:text-brand-mist">

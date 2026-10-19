@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ViewTransition } from "react";
 
 import { SiteFooter } from "@/app/_components/site-footer";
 import { SiteHeader } from "@/app/_components/site-header";
@@ -102,26 +103,32 @@ export default async function ProjetoPage({ params }: Props) {
             <>
               {projeto.midiaUrl ? (
                 <div className="mx-auto mt-12 max-w-page px-5 sm:px-8 lg:px-12">
-                  <div className="relative aspect-video overflow-hidden rounded-lg border border-brand-line bg-brand-tint">
-                    {projeto.tipoMidia === "video" ? (
-                      // biome-ignore lint/a11y/useMediaCaption: o cadastro não guarda legendas; o vídeo é apresentado pela equipe
-                      <video
-                        className="size-full object-contain"
-                        controls
-                        preload="metadata"
-                        src={projeto.midiaUrl}
-                      />
-                    ) : (
-                      <Image
-                        alt=""
-                        className="object-cover"
-                        fill
-                        preload
-                        sizes="(min-width: 1280px) 72rem, 100vw"
-                        src={projeto.midiaUrl}
-                      />
-                    )}
-                  </div>
+                  <ViewTransition
+                    name={`projeto-${projeto.slug}`}
+                    share="morph"
+                    default="none"
+                  >
+                    <div className="relative aspect-video overflow-hidden rounded-lg border border-brand-line bg-brand-tint">
+                      {projeto.tipoMidia === "video" ? (
+                        // biome-ignore lint/a11y/useMediaCaption: o cadastro não guarda legendas; o vídeo é apresentado pela equipe
+                        <video
+                          className="size-full object-contain"
+                          controls
+                          preload="metadata"
+                          src={projeto.midiaUrl}
+                        />
+                      ) : (
+                        <Image
+                          alt=""
+                          className="object-cover"
+                          fill
+                          preload
+                          sizes="(min-width: 1280px) 72rem, 100vw"
+                          src={projeto.midiaUrl}
+                        />
+                      )}
+                    </div>
+                  </ViewTransition>
                 </div>
               ) : null}
 

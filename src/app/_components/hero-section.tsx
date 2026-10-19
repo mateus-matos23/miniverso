@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { Parallax } from "@/components/motion/parallax";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { buttonVariants } from "@/components/ui/button-variants";
 import type { PropsSecao } from "@/lib/landing/navegacao";
@@ -58,11 +59,15 @@ export function HeroSection({ secao }: PropsSecao<"hero">) {
       className={cn("relative isolate overflow-hidden", classe)}
       data-surface={escura ? "dark" : undefined}
     >
-      {/* delineado do isotipo atravessando a primeira dobra */}
-      <div
-        aria-hidden="true"
-        className="mask-delineado absolute -right-[18%] -z-10 aspect-1600/930 w-[min(110rem,160%)] bg-brand-blue/55 top-auto -bottom-[4%] lg:top-[6%] lg:bottom-auto"
-      />
+      <Parallax
+        className="pointer-events-none absolute inset-0 -z-10"
+        fator={-0.12}
+      >
+        <div
+          aria-hidden="true"
+          className="mask-delineado absolute animate-float -right-[18%] -z-10 aspect-1600/930 w-[min(110rem,160%)] bg-brand-blue/55 top-auto -bottom-[4%] lg:top-[6%] lg:bottom-auto"
+        />
+      </Parallax>
       <div className="mx-auto grid max-w-page items-center gap-10 px-5 pb-16 pt-14 sm:px-8 lg:min-h-[calc(100svh-var(--header-height))] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 lg:px-12 lg:py-20">
         <Stagger className="max-w-[46rem]" interval={0.1} trigger="mount">
           <StaggerItem>
@@ -85,7 +90,7 @@ export function HeroSection({ secao }: PropsSecao<"hero">) {
               cta={dados.ctaPrimario}
               className={cn(
                 buttonVariants({ variant: "signal", size: "lg" }),
-                "px-6 hover:bg-brand-violet hover:text-brand-white surface-dark:hover:bg-brand-white surface-dark:hover:text-brand-black",
+                "fill-sweep px-6 hover:text-brand-white surface-dark:[--sweep:var(--color-brand-white)] surface-dark:hover:text-brand-black",
               )}
               dataCta="hero-primario"
             />
@@ -99,7 +104,13 @@ export function HeroSection({ secao }: PropsSecao<"hero">) {
             />
           </StaggerItem>
         </Stagger>
-        {midia ? <MoldaMidia midia={midia} /> : <DetectorEvent />}
+        {midia ? (
+          <MoldaMidia midia={midia} />
+        ) : (
+          <Parallax fator={0.06}>
+            <DetectorEvent />
+          </Parallax>
+        )}
       </div>
     </section>
   );

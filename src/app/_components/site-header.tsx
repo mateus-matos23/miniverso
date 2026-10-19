@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { AvisoTopo } from "./aviso-topo";
 import { BrandMark } from "./brand-mark";
 import { MobileNav } from "./mobile-nav";
+import { NavLinks } from "./nav-links";
 
 type SiteHeaderProps = {
   links: LinkNav[];
@@ -17,7 +18,7 @@ export function SiteHeader({ links, ctaRotulo, aviso }: SiteHeaderProps) {
     <>
       {aviso ? <AvisoTopo aviso={aviso} /> : null}
       <header
-        className="sticky top-0 z-40 border-b border-white/10 bg-brand-black text-brand-white"
+        className="header-sombra sticky top-0 z-40 border-b border-white/10 bg-brand-black text-brand-white"
         data-surface="dark"
       >
         <a
@@ -29,18 +30,7 @@ export function SiteHeader({ links, ctaRotulo, aviso }: SiteHeaderProps) {
         <div className="mx-auto flex h-(--header-height) max-w-page items-center gap-6 px-5 sm:px-8 lg:px-12">
           <BrandMark preload />
           <nav aria-label="Principal" className="ml-auto hidden lg:block">
-            <ul className="flex items-center gap-1">
-              {links.map((link) => (
-                <li key={link.href}>
-                  <a
-                    className="inline-flex h-10 items-center px-3 text-[0.95rem] font-medium text-brand-mist transition-colors hover:text-brand-white"
-                    href={link.href}
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <NavLinks links={links} />
           </nav>
           <a
             className={cn(
