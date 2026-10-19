@@ -44,7 +44,7 @@ export default function AdminError({
           aria-hidden="true"
           className="size-8 text-destructive"
         />
-        <p className="max-w-[40rem] text-body">
+        <p className="max-w-160 text-body">
           Tente de novo. Se o problema continuar, volte à Visão geral e tente
           mais tarde.
         </p>

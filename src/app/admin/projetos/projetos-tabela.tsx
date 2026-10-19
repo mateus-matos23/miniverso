@@ -258,7 +258,7 @@ function TituloProjeto({ projeto }: { projeto: ProjetoListItem }) {
   return (
     <div className="min-w-0">
       <Link
-        className="break-words font-semibold text-heading hover:underline"
+        className="wrap-break-word font-semibold text-heading hover:underline"
         href={`/admin/projetos/${projeto.id}`}
       >
         {projeto.titulo}
