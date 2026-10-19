@@ -2,10 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant surface-dark (&:where(
-    [data-surface="dark"],
-    [data-surface="dark"] *
-  ));
+@custom-variant surface-dark (
+  &:where([data-surface="dark"], [data-surface="dark"] *)
+);
 
 @theme {
   --font-display:

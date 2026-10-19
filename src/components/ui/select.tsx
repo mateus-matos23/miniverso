@@ -266,6 +266,7 @@ function SelectEmpty({ className, ...props }: React.ComponentProps<"div">) {
 export {
   Select,
   SelectContent,
+  SelectEmpty,
   SelectGroup,
   SelectInput,
   SelectItem,
@@ -275,5 +276,4 @@ export {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-  SelectEmpty,
 };

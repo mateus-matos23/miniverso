@@ -168,14 +168,14 @@ function DialogDescription({
 }
 
 export {
-  type DialogPrimitiveProps,
-  type DialogTriggerPrimitiveProps,
   Dialog,
   DialogClose,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogOverlay,
+  type DialogPrimitiveProps,
   DialogTitle,
   DialogTrigger,
+  type DialogTriggerPrimitiveProps,
 };
