@@ -1,28 +1,27 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cva } from "class-variance-authority"
+import { cva } from "class-variance-authority";
+import { CheckIcon, ChevronRightIcon } from "lucide-react";
+import type * as React from "react";
 import {
   composeRenderProps,
   Header as HeaderPrimitive,
   MenuItem as MenuItemPrimitive,
+  type MenuItemProps as MenuItemPrimitiveProps,
   Menu as MenuPrimitive,
   MenuSection as MenuSectionPrimitive,
+  type MenuSectionProps as MenuSectionPrimitiveProps,
   MenuTrigger as MenuTriggerPrimitive,
   Popover as PopoverPrimitive,
   Separator as SeparatorPrimitive,
   SubmenuTrigger as SubmenuTriggerPrimitive,
-  type MenuItemProps as MenuItemPrimitiveProps,
-  type MenuSectionProps as MenuSectionPrimitiveProps,
-} from "react-aria-components"
-
-import { cn } from "@/lib/utils"
-import { CheckIcon, ChevronRightIcon } from "lucide-react"
+} from "react-aria-components";
+import { cn } from "@/lib/utils";
 
 function DropdownMenuTrigger({
   ...props
 }: React.ComponentProps<typeof MenuTriggerPrimitive>) {
-  return <MenuTriggerPrimitive data-slot="dropdown-menu-trigger" {...props} />
+  return <MenuTriggerPrimitive data-slot="dropdown-menu-trigger" {...props} />;
 }
 
 function DropdownMenu({
@@ -41,9 +40,9 @@ function DropdownMenu({
     React.ComponentProps<typeof PopoverPrimitive>,
     "placement" | "offset" | "crossOffset"
   > & {
-    "data-slot"?: string
-    className?: string
-    children?: React.ReactNode
+    "data-slot"?: string;
+    className?: string;
+    children?: React.ReactNode;
   }) {
   return (
     <PopoverPrimitive
@@ -51,7 +50,10 @@ function DropdownMenu({
       placement={placement}
       offset={offset}
       crossOffset={crossOffset}
-      className={cn("z-50 w-(--trigger-width) min-w-32 origin-(--trigger-anchor-point) overflow-x-hidden overflow-y-auto rounded-2xl bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/5 duration-100 outline-none data-entering:animate-in data-entering:fade-in-0 data-entering:zoom-in-95 data-exiting:animate-out data-exiting:overflow-hidden data-exiting:fade-out-0 data-exiting:zoom-out-95 data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2 **:data-[slot$=-item]:data-focused:bg-foreground/10 dark:ring-foreground/10", className )}
+      className={cn(
+        "z-50 w-(--trigger-width) min-w-32 origin-(--trigger-anchor-point) overflow-x-hidden overflow-y-auto rounded-md bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/5 duration-100 outline-none data-entering:animate-in data-entering:fade-in-0 data-entering:zoom-in-95 data-exiting:animate-out data-exiting:overflow-hidden data-exiting:fade-out-0 data-exiting:zoom-out-95 data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2 **:data-[slot$=-item]:data-focused:bg-foreground/10 dark:ring-foreground/10",
+        className,
+      )}
     >
       <MenuPrimitive
         className="max-h-[inherit] overflow-x-hidden overflow-y-auto outline-hidden"
@@ -60,15 +62,15 @@ function DropdownMenu({
         {children}
       </MenuPrimitive>
     </PopoverPrimitive>
-  )
+  );
 }
 
 function DropdownMenuGroup({
   ...props
 }: Omit<MenuSectionPrimitiveProps<object>, "children"> & {
-  children?: React.ReactNode
+  children?: React.ReactNode;
 }) {
-  return <MenuSectionPrimitive data-slot="dropdown-menu-group" {...props} />
+  return <MenuSectionPrimitive data-slot="dropdown-menu-group" {...props} />;
 }
 
 function DropdownMenuLabel({
@@ -76,7 +78,7 @@ function DropdownMenuLabel({
   inset,
   ...props
 }: React.ComponentProps<typeof HeaderPrimitive> & {
-  inset?: boolean
+  inset?: boolean;
 }) {
   return (
     <HeaderPrimitive
@@ -84,11 +86,11 @@ function DropdownMenuLabel({
       data-inset={inset}
       className={cn(
         "px-2 py-1 text-xs text-muted-foreground data-inset:pl-7",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 const dropdownMenuItemVariants = cva(
@@ -103,8 +105,8 @@ const dropdownMenuItemVariants = cva(
           "min-h-7 gap-2 rounded-xl py-1.5 pr-8 pl-2 text-sm focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4",
       },
     },
-  }
-)
+  },
+);
 
 function DropdownMenuItem({
   className,
@@ -113,8 +115,8 @@ function DropdownMenuItem({
   children,
   ...props
 }: MenuItemPrimitiveProps<object> & {
-  inset?: boolean
-  variant?: "default" | "destructive"
+  inset?: boolean;
+  variant?: "default" | "destructive";
 }) {
   return (
     <MenuItemPrimitive
@@ -123,7 +125,7 @@ function DropdownMenuItem({
       data-variant={variant}
       textValue={typeof children === "string" ? children : props.textValue}
       className={composeRenderProps(className, (className, { selectionMode }) =>
-        cn(dropdownMenuItemVariants({ selectionMode }), className)
+        cn(dropdownMenuItemVariants({ selectionMode }), className),
       )}
       {...props}
     >
@@ -140,24 +142,21 @@ function DropdownMenuItem({
                     : "dropdown-menu-checkbox-item-indicator"
                 }
               >
-                {isSelected ? (
-                  <CheckIcon
-                  />
-                ) : null}
+                {isSelected ? <CheckIcon /> : null}
               </span>
             ) : null}
             {children}
           </>
-        )
+        ),
       )}
     </MenuItemPrimitive>
-  )
+  );
 }
 
 function DropdownMenuSub({
   ...props
 }: React.ComponentProps<typeof SubmenuTriggerPrimitive>) {
-  return <SubmenuTriggerPrimitive data-slot="dropdown-menu-sub" {...props} />
+  return <SubmenuTriggerPrimitive data-slot="dropdown-menu-sub" {...props} />;
 }
 
 function DropdownMenuSubTrigger({
@@ -166,7 +165,7 @@ function DropdownMenuSubTrigger({
   children,
   ...props
 }: MenuItemPrimitiveProps<object> & {
-  inset?: boolean
+  inset?: boolean;
 }) {
   return (
     <MenuItemPrimitive
@@ -175,7 +174,7 @@ function DropdownMenuSubTrigger({
       textValue={typeof children === "string" ? children : props.textValue}
       className={cn(
         "flex min-h-7 cursor-default items-center gap-2 rounded-xl px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className
+        className,
       )}
       {...props}
     >
@@ -186,7 +185,7 @@ function DropdownMenuSubTrigger({
         </>
       ))}
     </MenuItemPrimitive>
-  )
+  );
 }
 
 function DropdownMenuSubContent({
@@ -199,13 +198,16 @@ function DropdownMenuSubContent({
   return (
     <DropdownMenu
       data-slot="dropdown-menu-sub-content"
-      className={cn("w-auto min-w-[96px] rounded-2xl bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/5 duration-100 dark:ring-foreground/10", className )}
+      className={cn(
+        "w-auto min-w-[96px] rounded-md bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/5 duration-100 dark:ring-foreground/10",
+        className,
+      )}
       placement={placement}
       crossOffset={crossOffset}
       offset={offset}
       {...props}
     />
-  )
+  );
 }
 
 function DropdownMenuSeparator({
@@ -218,7 +220,7 @@ function DropdownMenuSeparator({
       className={cn("-mx-1 my-1 h-px bg-border/50", className)}
       {...props}
     />
-  )
+  );
 }
 
 function DropdownMenuShortcut({
@@ -230,11 +232,11 @@ function DropdownMenuShortcut({
       data-slot="dropdown-menu-shortcut"
       className={cn(
         "ml-auto text-xs tracking-widest text-muted-foreground group-focus/dropdown-menu-item:text-accent-foreground",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -248,4 +250,4 @@ export {
   DropdownMenuSub,
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
-}
+};

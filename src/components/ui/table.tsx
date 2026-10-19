@@ -1,24 +1,24 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import type * as React from "react";
 import {
   Cell as CellPrimitive,
-  Column as ColumnPrimitive,
-  Row as RowPrimitive,
-  TableBody as TableBodyPrimitive,
-  TableFooter as TableFooterPrimitive,
-  TableHeader as TableHeaderPrimitive,
-  Table as TablePrimitive,
   type CellProps,
+  Column as ColumnPrimitive,
   type ColumnProps,
+  Row as RowPrimitive,
   type RowProps,
+  TableBody as TableBodyPrimitive,
   type TableBodyProps,
+  TableFooter as TableFooterPrimitive,
   type TableFooterProps,
+  TableHeader as TableHeaderPrimitive,
   type TableHeaderProps,
+  Table as TablePrimitive,
   type TableProps,
-} from "react-aria-components"
+} from "react-aria-components";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function Table({ className, ...props }: TableProps) {
   return (
@@ -32,7 +32,7 @@ function Table({ className, ...props }: TableProps) {
         {...props}
       />
     </div>
-  )
+  );
 }
 
 function TableHeader<T>({ className, ...props }: TableHeaderProps<T>) {
@@ -42,7 +42,7 @@ function TableHeader<T>({ className, ...props }: TableHeaderProps<T>) {
       className={cn("[&_tr]:border-b", className)}
       {...props}
     />
-  )
+  );
 }
 
 function TableBody<T>({ className, ...props }: TableBodyProps<T>) {
@@ -51,11 +51,11 @@ function TableBody<T>({ className, ...props }: TableBodyProps<T>) {
       data-slot="table-body"
       className={cn(
         "data-empty:h-24 data-empty:text-center [&_tr:last-child]:border-0",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableFooter<T>({ className, ...props }: TableFooterProps<T>) {
@@ -64,11 +64,11 @@ function TableFooter<T>({ className, ...props }: TableFooterProps<T>) {
       data-slot="table-footer"
       className={cn(
         "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableRow<T>({ className, ...props }: RowProps<T>) {
@@ -77,11 +77,11 @@ function TableRow<T>({ className, ...props }: RowProps<T>) {
       data-slot="table-row"
       className={cn(
         "border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted data-selected:bg-muted",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableHead({ className, ...props }: ColumnProps) {
@@ -90,11 +90,11 @@ function TableHead({ className, ...props }: ColumnProps) {
       data-slot="table-head"
       className={cn(
         "h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([data-slot=checkbox])]:pr-0 [&:has([role=checkbox])]:pr-0",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableCell({ className, ...props }: CellProps) {
@@ -103,11 +103,11 @@ function TableCell({ className, ...props }: CellProps) {
       data-slot="table-cell"
       className={cn(
         "p-2 align-middle whitespace-nowrap [&:has([data-slot=checkbox])]:pr-0 [&:has([role=checkbox])]:pr-0",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function TableCaption({
@@ -119,11 +119,11 @@ function TableCaption({
       data-slot="table-caption"
       className={cn(
         "mt-4 text-center text-sm text-muted-foreground",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -135,4 +135,4 @@ export {
   TableRow,
   TableCell,
   TableCaption,
-}
+};

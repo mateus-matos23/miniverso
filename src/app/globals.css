@@ -2,26 +2,52 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@custom-variant surface-dark (&:where(
+    [data-surface="dark"],
+    [data-surface="dark"] *
+  ));
+
 @theme {
-  --font-display: var(--font-brand-display), "Arial Narrow", sans-serif;
-  --font-body: var(--font-brand-body), Arial, sans-serif;
+  --font-display:
+    var(--font-brand-display), "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: var(--font-brand-body), "Space Grotesk", Arial, sans-serif;
+
+  /* Paleta oficial do manual de marca */
   --color-brand-violet: #1e1645;
   --color-brand-blue: #1e4488;
   --color-brand-cyan: #00b7e3;
   --color-brand-black: #0c0407;
+
+  /* Neutros de apoio */
   --color-brand-white: #fbfcff;
-  --color-brand-muted: #afbdd8;
-  --animate-detector-pulse: detector-pulse 2.8s ease-out infinite;
+  --color-brand-mist: #afbdd8;
+  --color-brand-ink: #28395c;
+  --color-brand-line: #c9d2e3;
+  --color-brand-tint: #eef2f9;
+
+  /* Escala display: Thunder é condensada, então os tamanhos são generosos */
+  --text-display-xl: clamp(3.75rem, 11vw, 9.5rem);
+  --text-display-xl--line-height: 0.86;
+  --text-display-lg: clamp(3rem, 7.5vw, 6.5rem);
+  --text-display-lg--line-height: 0.9;
+  --text-display-md: clamp(2.25rem, 4.5vw, 3.75rem);
+  --text-display-md--line-height: 0.95;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.12em;
+
+  --animate-detector-pulse: detector-pulse 3.6s cubic-bezier(0.2, 0.6, 0.3, 1)
+    infinite;
 
   @keyframes detector-pulse {
-    0%,
-    100% {
-      opacity: 0.8;
-      r: 24px;
+    0% {
+      opacity: 0.9;
+      transform: scale(0.35);
     }
-    70% {
+    80%,
+    100% {
       opacity: 0;
-      r: 58px;
+      transform: scale(1);
     }
   }
 }
@@ -37,17 +63,30 @@
   --primary-foreground: #fbfcff;
   --secondary: #eef2f9;
   --secondary-foreground: #1e1645;
-  --muted: #f1f3f8;
-  --muted-foreground: #6f7890;
-  --accent: #eef2f9;
+  --muted: #eef2f9;
+  --muted-foreground: #4f5a72;
+  --accent: #e3eaf6;
   --accent-foreground: #1e1645;
-  --destructive: #bd3d45;
+  --destructive: #b3261e;
   --destructive-foreground: #ffffff;
-  --border: #e1e5ef;
-  --input: #d6dce8;
+  --success: #17694a;
+  --border: #dbe1ec;
+  --input: #c3cddf;
+  --ring: #1e4488;
+  --radius: 0.25rem;
+  --radius-4xl: 0.5rem;
+  --header-height: 4.5rem;
+}
+
+/* Superfícies escuras (preto, violeta, azul, gradiente): ciano vira sinal e foco */
+[data-surface="dark"] {
+  --background: #0c0407;
+  --foreground: #fbfcff;
+  --muted-foreground: #afbdd8;
+  --border: rgb(175 189 216 / 0.22);
+  --input: rgb(175 189 216 / 0.4);
   --ring: #00b7e3;
-  --radius: 0.7rem;
-  --radius-4xl: 1.5rem;
+  color: var(--foreground);
 }
 
 @theme inline {
@@ -67,24 +106,78 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
+  --radius-xl: calc(var(--radius) * 2);
+}
+
+/* Gradiente da marca — usar em no máximo dois momentos por página */
+@utility bg-brand-aurora {
+  background-color: var(--color-brand-black);
+  background-image:
+    radial-gradient(
+      60% 70% at 0% 0%,
+      rgb(255 255 255 / 0.85) 0%,
+      rgb(0 183 227 / 0.75) 18%,
+      transparent 55%
+    ),
+    radial-gradient(90% 120% at 10% 30%, #0f3fa8 0%, transparent 60%),
+    linear-gradient(115deg, #1e4488 0%, #1e1645 48%, #0c0407 85%);
+}
+
+/* Contorno do isotipo (delineado do manual) recolorível via background-color */
+@utility mask-delineado {
+  mask-image: url("/brand/delineado-white.png");
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+@utility text-pretty-balance {
+  text-wrap: balance;
 }
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
     background: var(--color-brand-white);
     color: var(--color-brand-black);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-feature-settings: "kern";
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 
   a {
     color: inherit;
     text-decoration: none;
+  }
+
+  [id] {
+    scroll-margin-top: calc(var(--header-height) + 1rem);
   }
 
   ::selection {
@@ -93,7 +186,20 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-brand-cyan);
-    outline-offset: 4px;
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      /* biome-ignore lint/complexity/noImportantStyles: precisa vencer utilitários de animação */
+      animation-duration: 0.01ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: precisa vencer utilitários de animação */
+      animation-iteration-count: 1 !important;
+      /* biome-ignore lint/complexity/noImportantStyles: precisa vencer utilitários de transição */
+      transition-duration: 0.01ms !important;
+    }
   }
 }
