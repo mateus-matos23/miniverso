@@ -58,8 +58,8 @@ Não usar gradiente em texto, nem destacar uma palavra isolada do título com ou
 
 - Container `max-w-[90rem]` com `px-5 / sm:px-8 / lg:px-12`; seções com `py-24 / lg:py-32`.
 - Header sticky (`--header-height: 4.5rem`), âncoras com `scroll-margin-top` automático.
-- Sequência da landing: Hero (preto) → Sobre (branco) → Pilares (violeta) → Projetos (branco) → Clientes (tint) → Contato (gradiente) → Rodapé (preto).
-- Índices `/ 01 … / 06` porque as seções seguem o percurso do visitante do brief.
+- Sequência da landing: Hero (preto) → Sobre (branco) → Pilares (violeta) → Projetos (branco) → Processo (violeta) → Clientes (tint) → Contato (gradiente) → Rodapé (preto).
+- Índices `/ 01 … / 07` porque as seções seguem o percurso do visitante do brief.
 - Mobile empilha tudo, reduz o detector e troca os anéis de missão/visão/valores por linhas.
 
 ## Components and interaction
@@ -83,7 +83,16 @@ Não usar gradiente em texto, nem destacar uma palavra isolada do título com ou
 
 ## Motion and states
 
-Uma única animação autoral: o pulso do detector, lento e removido em `prefers-reduced-motion` (o scroll suave também). Hover muda cor; nada depende de hover. Todo fluxo novo define loading (`Skeleton`), erro, vazio e desabilitado antes de ser publicado.
+O movimento conta a metáfora do collider: sinais são detectados e aparecem. Biblioteca: Motion (`motion/react`, via `LazyMotion` + `m`), com wrappers em `src/components/motion/` (`Reveal`, `Stagger`/`StaggerItem`, `IndexLine`) e easing `signalEase` igual ao do pulso.
+
+- **Assinatura:** sequência de entrada do detector (anéis → três trilhas desenhadas uma a uma → nós → rótulos) e o pulso contínuo.
+- **Reveals:** fade + subida de 16 px, 0,6 s, uma única vez (`once`) ao entrar na tela; listas em stagger. O traço do `SectionIndex` cresce da esquerda.
+- **Loops:** apenas o pulso do detector, a faixa de serviços do rodapé e as faixas de logos de clientes (CSS). As de clientes seguem a referência da Melted: uma faixa até 7 logos, duas em sentidos opostos a partir de 8, fade nas bordas, pausa no hover e os demais logos esmaecem; com movimento reduzido viram lista estática.
+- **Pilares:** abertura do `<details>` em CSS (`details-smooth`), sem JS.
+- Somente `opacity`/`transform`/`pathLength`; nada de parallax, cursor custom, scroll por JS ou animação letra a letra. Admin e login não animam.
+- `prefers-reduced-motion`: `useSignalTransition` zera as durações e o CSS desliga pulso, faixa e scroll suave.
+
+Hover muda cor; nada depende de hover. Todo fluxo novo define loading (`Skeleton`), erro, vazio e desabilitado antes de ser publicado.
 
 ## SEO
 

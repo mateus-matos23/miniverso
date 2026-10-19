@@ -38,6 +38,21 @@
   --animate-detector-pulse: detector-pulse 3.6s cubic-bezier(0.2, 0.6, 0.3, 1)
     infinite;
 
+  --animate-marquee: marquee 45s linear infinite;
+  --animate-marquee-reverse: marquee-reverse 45s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes marquee-reverse {
+    from {
+      transform: translateX(-50%);
+    }
+  }
+
   @keyframes detector-pulse {
     0% {
       opacity: 0.9;
@@ -137,6 +152,23 @@
   mask-position: center;
 }
 
+/* Abertura suave de <details>; navegadores sem ::details-content abrem direto */
+@utility details-smooth {
+  interpolate-size: allow-keywords;
+
+  &::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition:
+      block-size 0.35s cubic-bezier(0.2, 0.6, 0.3, 1),
+      content-visibility 0.35s allow-discrete;
+  }
+
+  &[open]::details-content {
+    block-size: auto;
+  }
+}
+
 @utility text-pretty-balance {
   text-wrap: balance;
 }
@@ -192,7 +224,8 @@
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
-    *::after {
+    *::after,
+    ::details-content {
       /* biome-ignore lint/complexity/noImportantStyles: precisa vencer utilitários de animação */
       animation-duration: 0.01ms !important;
       /* biome-ignore lint/complexity/noImportantStyles: precisa vencer utilitários de animação */
