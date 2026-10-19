@@ -1,31 +1,34 @@
 import Image from "next/image";
-import logo from "../../../public/miniverso_.png";
+import { cn } from "@/lib/utils";
+import logoColor from "../../../public/brand/logo-horizontal-color.webp";
+import logoWhite from "../../../public/brand/logo-horizontal-white.webp";
 
-export function BrandMark({ compact = false }: { compact?: boolean }) {
+type BrandMarkProps = {
+  tone?: "white" | "color";
+  href?: string;
+  className?: string;
+  priority?: boolean;
+};
+
+/** Logo horizontal oficial. A área de respiro segue a regra do "o" do manual. */
+export function BrandMark({
+  tone = "white",
+  href = "/",
+  className,
+  priority = false,
+}: BrandMarkProps) {
   return (
     <a
-      className="inline-flex min-w-0 items-center gap-[0.7rem] tracking-[-0.04em]"
-      href="#top"
+      className={cn("inline-flex shrink-0 items-center p-1", className)}
+      href={href}
     >
       <Image
-        alt="Logo da Miniverso"
-        className="block h-auto w-auto shrink-0 object-contain"
-        height={compact ? 34 : 42}
-        src={logo}
-        width={compact ? 90 : 62}
+        alt="Miniverso"
+        className="h-7 w-auto sm:h-8"
+        priority={priority}
+        sizes="200px"
+        src={tone === "white" ? logoWhite : logoColor}
       />
-      <span
-        className={`min-w-0 font-display uppercase leading-[0.8] tracking-[0.02em] ${
-          compact
-            ? "text-[1.25rem]"
-            : "text-[1.55rem] max-[620px]:text-[1.35rem]"
-        }`}
-      >
-        miniverso
-        <small className="mt-[0.35rem] block font-body text-[0.52rem] font-bold uppercase leading-[1.4] tracking-[0.13em] text-brand-cyan">
-          educação imersiva
-        </small>
-      </span>
     </a>
   );
 }

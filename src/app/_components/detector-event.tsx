@@ -1,99 +1,112 @@
+const trails = [
+  {
+    d: "M300 300C352 238 420 160 540 116",
+    node: [540, 116],
+    stroke: "stroke-brand-cyan",
+    label: "Realidade virtual",
+    labelClass: "right-[2%] top-[13%] text-brand-cyan",
+  },
+  {
+    d: "M300 300C236 344 168 410 76 470",
+    node: [76, 470],
+    stroke: "stroke-brand-white",
+    label: "Gamificação",
+    labelClass: "bottom-[14%] left-[2%] text-brand-white",
+  },
+  {
+    d: "M300 300C380 330 456 392 520 492",
+    node: [520, 492],
+    stroke: "stroke-brand-mist",
+    label: "Socioemocional",
+    labelClass: "bottom-[10%] right-[4%] text-brand-mist",
+  },
+] as const;
+
+/**
+ * Visualização editorial da proposta (não é dado real): anéis do detector,
+ * trilhas dos três sinais e, no centro, o visor do isotipo da Miniverso.
+ */
 export function DetectorEvent() {
   return (
-    <div className="relative min-h-[34rem] px-0 pb-10 pt-1 before:pointer-events-none before:absolute before:inset-y-0 before:left-[12%] before:right-[12%] before:border-x before:border-[rgba(175,189,216,0.25)] before:border-y-0 before:content-[''] after:pointer-events-none after:absolute after:inset-x-0 after:bottom-[12%] after:top-[12%] after:border-y after:border-[rgba(175,189,216,0.25)] after:border-x-0 after:content-[''] max-[620px]:min-h-[23rem]">
-      <div className="absolute left-[4%] top-[5%] grid max-w-[42%] gap-[0.35rem] text-[0.58rem] uppercase leading-normal tracking-widest text-brand-muted max-[620px]:text-[0.48rem]">
-        <span>evento / 001</span>
-        <strong className="text-[0.7rem] font-bold text-brand-white max-[620px]:text-[0.57rem]">
-          aprendizagem em movimento
-        </strong>
-      </div>
+    <div
+      aria-hidden="true"
+      className="relative mx-auto aspect-square w-full max-w-[38rem]"
+    >
+      <div className="absolute inset-[9%] rounded-full bg-brand-aurora opacity-90" />
       <svg
         aria-hidden="true"
-        className="mx-auto block size-[min(52vw,620px)] max-w-full overflow-visible max-[900px]:size-[min(82vw,620px)]"
+        className="absolute inset-0 size-full overflow-visible"
         fill="none"
-        viewBox="0 0 620 620"
+        viewBox="0 0 600 600"
         xmlns="http://www.w3.org/2000/svg"
       >
         <circle
-           className="stroke-[#203866] stroke-[1px] [stroke-dasharray:2_12]"
-          cx="310"
-          cy="310"
-          r="276"
+          className="stroke-brand-mist/30 [stroke-dasharray:2_10]"
+          cx="300"
+          cy="300"
+          r="292"
         />
         <circle
-          className="stroke-[#31548a] stroke-[5px] [stroke-dasharray:36_8_4_8]"
-          cx="310"
-          cy="310"
-          r="224"
+          className="stroke-brand-cyan/60"
+          cx="300"
+          cy="300"
+          r="246"
+          strokeWidth="1.5"
         />
         <circle
-          className="stroke-[#203866] stroke-[1px] [stroke-dasharray:2_12]"
-          cx="310"
-          cy="310"
-          r="174"
+          className="stroke-brand-white/25 [stroke-dasharray:28_6_3_6]"
+          cx="300"
+          cy="300"
+          r="190"
+          strokeWidth="4"
         />
         <circle
-          className="stroke-[#5279ae] stroke-[1px] [stroke-dasharray:2_8]"
-          cx="310"
-          cy="310"
-          r="104"
+          className="stroke-brand-white/30 [stroke-dasharray:2_8]"
+          cx="300"
+          cy="300"
+          r="126"
         />
         <path
-          className="stroke-brand-cyan stroke-[2px] [stroke-linecap:round]"
-          d="M310 310C364 246 444 143 582 94"
+          className="stroke-brand-mist/25 [stroke-dasharray:1_9]"
+          d="M8 300H592M300 8V592"
         />
-        <path
-          className="stroke-brand-cyan stroke-[2px] [stroke-linecap:round]"
-          d="M310 310C400 328 487 370 583 483"
-        />
-        <path
-          className="stroke-[#f4c84a] stroke-[2px] [stroke-linecap:round]"
-          d="M310 310C259 241 171 162 62 132"
-        />
-        <path
-          className="stroke-[#f4c84a] stroke-[2px] [stroke-linecap:round]"
-          d="M310 310C253 363 166 448 83 528"
-        />
-        <path
-          className="stroke-[#83a7ff] stroke-[2px] [stroke-linecap:round]"
-          d="M310 310C311 235 321 130 337 31"
-        />
-        <path
-          className="stroke-[#83a7ff] stroke-[2px] [stroke-linecap:round]"
-          d="M310 310C236 317 133 328 27 355"
-        />
+        {trails.map((trail) => (
+          <g key={trail.label}>
+            <path
+              className={`${trail.stroke} [stroke-linecap:round]`}
+              d={trail.d}
+              strokeWidth="2"
+            />
+            <circle
+              className={`${trail.stroke} fill-brand-black`}
+              cx={trail.node[0]}
+              cy={trail.node[1]}
+              r="7"
+              strokeWidth="2"
+            />
+          </g>
+        ))}
         <circle
-          className="fill-brand-cyan stroke-brand-white stroke-[3px]"
-          cx="310"
-          cy="310"
-          r="13"
+          className="origin-center animate-detector-pulse stroke-brand-cyan [transform-box:fill-box] motion-reduce:hidden"
+          cx="300"
+          cy="300"
+          r="150"
+          strokeWidth="1.5"
         />
-        <circle
-          className="animate-detector-pulse stroke-brand-cyan stroke-1 motion-reduce:animate-none"
-          cx="310"
-          cy="310"
-          r="24"
-        />
+        {/* visor do isotipo */}
         <path
-          className="stroke-[1px] stroke-[rgba(175,189,216,0.4)] [stroke-dasharray:1_10]"
-          d="M34 310H586M310 34V586"
+          className="fill-brand-white"
+          d="M244 262c0-9 6-15 15-15l86-1c9 0 15 5 17 14l12 62c2 10-3 16-13 17l-90 8c-9 1-15-4-17-13l-10-60v-12z"
         />
       </svg>
-      <div className="absolute bottom-4 right-[4%] grid max-w-[42%] gap-[0.35rem] text-right text-[0.58rem] uppercase leading-normal tracking-widest text-brand-muted max-[620px]:text-[0.48rem]">
-        <span>trilhas ativas</span>
-        <strong className="text-[0.7rem] font-bold text-brand-white max-[620px]:text-[0.57rem]">
-          VR · GAME · PESSOAS
-        </strong>
-      </div>
-      <span className="absolute right-[7%] top-[25%] text-[0.58rem] uppercase tracking-widest text-brand-cyan max-[620px]:text-[0.48rem]">
-        01 / explorar
-      </span>
-      <span className="absolute left-[5%] top-[49%] text-[0.58rem] uppercase tracking-widest text-[#f4c84a] max-[620px]:text-[0.48rem]">
-        02 / experimentar
-      </span>
-      <span className="absolute bottom-[23%] left-[14%] text-[0.58rem] uppercase tracking-widest text-[#83a7ff] max-[620px]:text-[0.48rem]">
-        03 / transformar
-      </span>
+      {trails.map((trail) => (
+        <span
+          className={`absolute text-label font-semibold uppercase ${trail.labelClass}`}
+          key={trail.label}
+        >
+          {trail.label}
+        </span>
+      ))}
     </div>
   );
 }
