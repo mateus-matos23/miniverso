@@ -33,7 +33,7 @@ A landing page é uma vitrine pública e responsiva. Seu conteúdo será gerenci
 - O tipo inicial de conteúdo terá título, descrição e imagem ou vídeo.
 - A autenticação utilizará JWT, com middleware protegendo as rotas administrativas a cada requisição.
 - O JWT expirará em 15 minutos, terá renovação válida por 7 dias e incluirá as claims `name` e `email`.
-- Uploads terão limite de 10 MB para imagens e 100 MB para vídeos.
+- Uploads terão limite de 10 MB para imagens e 50 MB para vídeos (limite do plano gratuito do Supabase).
 - Os formatos iniciais aceitos serão JPEG/JPG, PNG e WebP para imagens; MP4 e WebM para vídeos.
 - A experiência deve funcionar em desktop e dispositivos móveis.
 

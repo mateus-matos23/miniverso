@@ -43,7 +43,7 @@ O modelo deve permitir ordenar os itens e controlar se estão em rascunho ou pub
 - Autenticação baseada em JWT.
 - Rotas administrativas protegidas por middleware em cada requisição.
 - Dados e mídias armazenados inicialmente no PostgreSQL local, executado via Docker e acessado com Prisma.
-- Limite de 10 MB para imagens e 100 MB para vídeos.
+- Limite de 10 MB para imagens e 50 MB para vídeos (limite do plano gratuito do Supabase).
 - A exclusão de conteúdo será física, sem arquivamento como substituto.
 
 ## Estados e comportamento
