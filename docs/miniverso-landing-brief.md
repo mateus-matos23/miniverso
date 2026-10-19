@@ -29,9 +29,9 @@ Um pulso discreto no detector cria a assinatura de movimento. Os pilares usam li
 ## Escopo e limites
 
 - Superfície pública responsiva, inicialmente na rota `/`.
-- Módulos propostos: apresentação, atuação/pilares, projetos, clientes e contato.
+- Módulos propostos: apresentação, atuação/pilares, projetos, clientes e contato. Opcionais, editáveis e ocultos até o admin ativar: números (título + valor) e depoimentos (nome, cargo e fala).
 - Conteúdo deve vir da área administrativa; não criar cópia comercial definitiva antes dos dados existirem.
-- O detector é uma estrutura narrativa, não uma visualização de dados reais.
+- O detector (hoje um headset de realidade virtual em traço) é uma estrutura narrativa, não uma visualização de dados reais.
 - A identidade segue o manual do cliente e não copia a composição do site de referência.
 
 ## Estados e faixas de conteúdo

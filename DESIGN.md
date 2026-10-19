@@ -36,7 +36,7 @@ O manual `docs/manual_de_marca.pdf` define a paleta, as famílias tipográficas,
 
 ### Brand gradient
 
-Utilitário `bg-brand-aurora`: brilho branco/ciano no canto superior esquerdo, depois azul, violeta e preto, como nas aberturas de capítulo do manual. **No máximo dois momentos por página** (na landing: disco atrás do detector e faixa de contato; no login: painel lateral). Nunca em texto, botões ou cards.
+Utilitário `bg-brand-aurora`: brilho branco/ciano no canto superior esquerdo, depois azul, violeta e preto, como nas aberturas de capítulo do manual. **No máximo dois momentos por página** (na landing: faixa de contato; no login: painel lateral). Nunca em texto, botões ou cards.
 
 ### Named rules
 
@@ -58,15 +58,20 @@ Não usar gradiente em texto, nem destacar uma palavra isolada do título com ou
 
 - Container `max-w-[90rem]` com `px-5 / sm:px-8 / lg:px-12`; seções com `py-24 / lg:py-32`.
 - Header sticky (`--header-height: 4.5rem`), âncoras com `scroll-margin-top` automático.
-- Sequência da landing: Hero (preto) → Sobre (branco) → Pilares (violeta) → Projetos (branco) → Processo (violeta) → Clientes (tint) → Contato (gradiente) → Rodapé (preto).
-- Índices `/ 01 … / 07` porque as seções seguem o percurso do visitante do brief.
-- Mobile empilha tudo, reduz o detector e troca os anéis de missão/visão/valores por linhas.
+- Sequência da landing: Hero (preto) → Sobre (branco) → Pilares (violeta) → Números (tint, opcional) → Projetos (branco) → Processo (violeta) → Depoimentos (branco, opcional) → Clientes (tint) → Contato (gradiente) → Rodapé (preto). Números e Depoimentos vêm ocultos por padrão e são editados e ativados no admin; a ordem e a superfície também são editáveis lá.
+- Índices `/ 01 …` (só das seções visíveis) porque as seções seguem o percurso do visitante do brief.
+- Mobile empilha tudo (verificado em 390 px, sem overflow horizontal), reduz o detector e troca os anéis de missão/visão/valores por linhas.
 
 ## Components and interaction
 
 - **BrandMark:** logo horizontal oficial (`white` em fundo escuro, `color` em fundo claro). Nunca distorcer, inclinar, rotacionar, refletir ou mudar opacidade (manual, página 17).
 - **Delineado:** o contorno do isotipo (`mask-delineado`, recolorido por `background-color`) é a assinatura gráfica. Aparece grande no hero e no painel do login, sempre atrás do conteúdo.
-- **DetectorEvent:** SVG editorial (anéis, eixos, três trilhas e o visor do isotipo). É ilustração da proposta, `aria-hidden`, não dado real.
+- **DetectorEvent:** SVG editorial de um headset de realidade virtual em traço, com anéis nas lentes e três trilhas (Realidade virtual, Gamificação, Socioemocional) saindo dele, sobre um brilho ciano difuso (não é mais o disco `bg-brand-aurora`). É ilustração da proposta, `aria-hidden`, não dado real.
+- **PrincipiosAneis:** missão, visão e valores como três anéis sobrepostos no desktop (contorno em degradê que se desenha, anel pontilhado girando, ponto em órbita, halo no hover); lista simples no mobile.
+- **Cabeçalho:** `NavLinks` destaca a seção visível (`aria-current="location"`); sombra e filete ciano surgem com a rolagem via `animation-timeline: scroll()` (utilitário `header-sombra`, sem JS).
+- **Formulário de contato:** rótulos flutuantes (`peer` + `placeholder=" "`; o select usa `flutuante`), botão com preenchimento (`fill-sweep`) e check de sucesso desenhado.
+- **Números (`CountersSection`):** de 1 a 4 pares título + número inteiro, em tipografia display grande; `Contador` sobe de 0 ao valor uma vez ao entrar na tela (valor final sem JS ou com movimento reduzido; leitor de tela lê só o valor final). Não invente números: só publique dados reais.
+- **Depoimentos (`TestimonialsSection`):** de 1 a 6 cartões com fala, nome e cargo, em `figure`/`blockquote`, com iniciais do nome no avatar. Sem foto de propósito.
 - **Pilares:** `details/summary` nativos; o ícone `+` gira para `×` como reforço visual.
 - **EmptyState:** componente `Empty` do shadcn, com texto honesto e próximo passo.
 - **Buttons:** `Button` shadcn (react-aria) com raio 4 px, alturas 40/48 px. Na landing, CTA primário ciano sobre escuro e azul sobre claro; secundário em contorno.
@@ -74,8 +79,10 @@ Não usar gradiente em texto, nem destacar uma palavra isolada do título com ou
 
 ## Admin
 
-- Shell: sidebar preta fixa no desktop, topbar com menu em `Dialog` no mobile, `aria-current="page"` no item ativo, skip link e um único `<main id="conteudo">`.
-- Área de trabalho clara (`#F5F7FB`), títulos em Thunder, acento azul; ciano só no indicador do item ativo.
+- Shell: `Sidebar` do shadcn na variante `inset`, colapsável para ícones (Ctrl/⌘+B, estado no cookie `sidebar_state`), preta (`--sidebar*` em `globals.css`), com grupos Geral / Conteúdo / Contatos, conta no rodapé e `data-surface="dark"`. No mobile abre como `Sheet`. `aria-current="page"` no item ativo, skip link e um único `<main id="conteudo">` (`SidebarInset`).
+- Topbar do inset: `SidebarTrigger` + breadcrumb ("Painel / Seção / Página").
+- Área de trabalho clara (`#F5F7FB`), cantos um pouco maiores que os da landing (`[data-admin]` define `--radius: 0.375rem`). Títulos de página em Thunder contido (`text-4xl`/`text-5xl`), sem divisória; seções em Random Grotesk semibold. Acento azul; ciano só no indicador do item ativo e no contador de leads da sidebar.
+- Superfície padrão: `Painel` (`src/app/admin/_componentes/painel.tsx`), cartão com cabeçalho opcional. Para `<li>`/`<article>`, use a constante `superficie`. Estados vazios usam `Empty` com borda tracejada.
 - Listas: tabela no desktop, lista empilhada no mobile, sem rolagem horizontal. Status com `StatusBadge` (Rascunho/Publicado).
 - Exclusão física sempre por `Dialog` `role="alertdialog"`, foco inicial em “Cancelar”.
 - Sucesso: mensagem textual (`?feedback=` após o redirect) com estado de visibilidade na landing.
@@ -83,13 +90,18 @@ Não usar gradiente em texto, nem destacar uma palavra isolada do título com ou
 
 ## Motion and states
 
-O movimento conta a metáfora do collider: sinais são detectados e aparecem. Biblioteca: Motion (`motion/react`, via `LazyMotion` + `m`), com wrappers em `src/components/motion/` (`Reveal`, `Stagger`/`StaggerItem`, `IndexLine`) e easing `signalEase` igual ao do pulso.
+O movimento conta a metáfora do collider: sinais são detectados e aparecem. Biblioteca: Motion (`motion/react`, via `LazyMotion` + `m`), com wrappers em `src/components/motion/` (`Reveal`, `RevealTitulo`, `Stagger`/`StaggerItem`, `IndexLine`, `LinhaSecao`, `Parallax`, `ScrollProgress`) e easing `signalEase` igual ao do pulso.
 
 - **Assinatura:** sequência de entrada do detector (anéis → três trilhas desenhadas uma a uma → nós → rótulos) e o pulso contínuo.
 - **Reveals:** fade + subida de 16 px, 0,6 s, uma única vez (`once`) ao entrar na tela; listas em stagger. O traço do `SectionIndex` cresce da esquerda.
-- **Loops:** apenas o pulso do detector, a faixa de serviços do rodapé e as faixas de logos de clientes (CSS). As de clientes seguem a referência da Melted: uma faixa até 7 logos, duas em sentidos opostos a partir de 8, fade nas bordas, pausa no hover e os demais logos esmaecem; com movimento reduzido viram lista estática.
-- **Pilares:** abertura do `<details>` em CSS (`details-smooth`), sem JS.
-- Somente `opacity`/`transform`/`pathLength`; nada de parallax, cursor custom, scroll por JS ou animação letra a letra. Admin e login não animam.
+- **Loops:** o pulso e a rotação dos anéis (detector e `PrincipiosAneis`), a flutuação do headset e do delineado, o ponto pulsante do processo, a faixa de serviços do rodapé e as faixas de logos de clientes (CSS). As de clientes seguem a referência da Melted: uma faixa até 7 logos, duas em sentidos opostos a partir de 8, fade nas bordas, pausa no hover e os demais logos esmaecem; com movimento reduzido viram lista estática.
+- **Títulos:** `RevealTitulo` sobe os `h2` palavra por palavra de dentro de uma máscara. O `h1` do hero fica fora (é o LCP).
+- **Fio de seção:** `LinhaSecao` desenha um filete ciano no topo de cada seção (e do rodapé) ao entrar na tela.
+- **Progresso e profundidade:** `ScrollProgress` (barra no topo) e `Parallax` leve no hero (delineado sobe, headset desce; o delineado também entra com fade).
+- **Microinterações:** seta que desliza nos `CtaLink`, preenchimento `fill-sweep` nos CTAs do hero e do formulário, zoom e sombra nos cards de projeto, ponto pulsante nas etapas do processo.
+- **View Transition:** a mídia do card de projeto faz morph até a página do projeto (`ViewTransition` do React, `name="projeto-<slug>"`, `share="morph"`; CSS em `::view-transition-group(.morph)`). Sem suporte do navegador, navega normalmente.
+- **Pilares:** abertura do `<details>` em CSS (`details-smooth`), número ao lado do título e barra ciano lateral no item aberto.
+- Somente `opacity`/`transform`/`pathLength` (e `clip` por máscara nos títulos); nada de cursor custom, scroll-jacking, tilt 3D, partículas ou animação letra a letra. O parallax é restrito ao hero. Admin e login não animam.
 - `prefers-reduced-motion`: `useSignalTransition` zera as durações e o CSS desliga pulso, faixa e scroll suave.
 
 Hover muda cor; nada depende de hover. Todo fluxo novo define loading (`Skeleton`), erro, vazio e desabilitado antes de ser publicado.
