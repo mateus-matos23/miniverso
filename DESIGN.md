@@ -15,7 +15,7 @@ O sistema deve parecer moderno, tecnológico e divertido, como pede o manual de 
 
 ## Brand source of truth
 
-O manual `docs/manual_de_marca_miniverso.pdf` define a paleta e as famílias tipográficas. O site público do cliente (`https://miniversotech.base44.app/#home`) confirma o uso expressivo dessas mesmas fontes. `docs/miniverso.png` é o ativo de marca disponível no repositório.
+O manual `docs/manual_de_marca.pdf` define a paleta e as famílias tipográficas. O site público do cliente (`https://miniversotech.base44.app/#home`) confirma o uso expressivo dessas mesmas fontes. O site `https://melted.studio/` é inspiração para o cliente.
 
 ## Colors
 
@@ -79,8 +79,3 @@ Há uma única animação autoral: o pulso do detector. Ela é lenta, discreta e
 - Copiar a composição ou a identidade do site de referência do cliente.
 - Usar partículas, WebGL, gradientes ou efeitos como substitutos para conteúdo real.
 - Converter cada informação em um card arredondado ou esconder conteúdo atrás de hover.
-
-## Reference artifact
-
-- Direção escolhida: `.impeccable/mocks/decision/assigned.png`.
-- Prompt embutido no artefato: `.impeccable/mocks/decision/assigned.prompt.txt`.
