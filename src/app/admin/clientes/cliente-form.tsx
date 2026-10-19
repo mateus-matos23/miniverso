@@ -31,42 +31,42 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { sincronizarArquivoFormulario } from "@/lib/arquivo-formulario";
 
-const initialState: CadastroClienteState = {};
+const estadoInicial: CadastroClienteState = {};
 const TIPOS_LOGO = ["image/jpeg", "image/png", "image/webp"];
 
-function LogoField({
-  fieldId,
+function CampoLogo({
+  campoId,
   mensagem,
-  required,
+  obrigatorio,
 }: {
-  fieldId: string;
+  campoId: string;
   mensagem?: string;
-  required: boolean;
+  obrigatorio: boolean;
 }) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [logoName, setLogoName] = useState<string>();
-  const hasError = Boolean(mensagem);
+  const refInput = useRef<HTMLInputElement>(null);
+  const [nomeLogo, setNomeLogo] = useState<string>();
+  const temErro = Boolean(mensagem);
 
   function escolherLogo(files: FileList | null) {
-    sincronizarArquivoFormulario(inputRef.current, files);
-    setLogoName(files?.[0]?.name);
+    sincronizarArquivoFormulario(refInput.current, files);
+    setNomeLogo(files?.[0]?.name);
   }
 
   return (
     <>
       <Attachment
         className="w-full"
-        state={hasError ? "error" : logoName ? "done" : "idle"}
-        aria-invalid={hasError || undefined}
-        aria-describedby={hasError ? `${fieldId}-logo-error` : undefined}
+        state={temErro ? "error" : nomeLogo ? "done" : "idle"}
+        aria-invalid={temErro || undefined}
+        aria-describedby={temErro ? `${campoId}-logo-erro` : undefined}
       >
         <AttachmentMedia>
           <ImagePlus aria-hidden="true" />
         </AttachmentMedia>
         <AttachmentContent>
           <AttachmentTitle>
-            {logoName ??
-              (required ? "Selecione a logo" : "Selecione uma nova logo")}
+            {nomeLogo ??
+              (obrigatorio ? "Selecione a logo" : "Selecione uma nova logo")}
           </AttachmentTitle>
           <AttachmentDescription>
             PNG, JPG ou WebP, até 5 MB. Prefira fundo transparente.
@@ -74,7 +74,7 @@ function LogoField({
         </AttachmentContent>
         <FileTrigger acceptedFileTypes={TIPOS_LOGO} onSelect={escolherLogo}>
           <Button
-            aria-label={logoName ? "Trocar logo" : "Selecionar logo"}
+            aria-label={nomeLogo ? "Trocar logo" : "Selecionar logo"}
             variant="ghost"
             className="absolute inset-0 z-10 h-full w-full rounded-none p-0 outline-none hover:bg-transparent"
           />
@@ -82,7 +82,7 @@ function LogoField({
       </Attachment>
       {/* Recebe o arquivo do FileTrigger para o FormData; a validação real é no servidor. */}
       <input
-        ref={inputRef}
+        ref={refInput}
         hidden
         name="logo"
         type="file"
@@ -92,62 +92,65 @@ function LogoField({
   );
 }
 
-export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
-  const action = cliente ? atualizarCliente : criarCliente;
-  const [state, formAction, pending] = useActionState(action, initialState);
-  const fieldId = cliente ? `cliente-${cliente.id}` : "cliente";
+export default function FormularioCliente({ cliente }: { cliente?: Cliente }) {
+  const acao = cliente ? atualizarCliente : criarCliente;
+  const [estado, acaoFormulario, pendente] = useActionState(
+    acao,
+    estadoInicial,
+  );
+  const campoId = cliente ? `cliente-${cliente.id}` : "cliente";
 
   return (
-    <form className="flex flex-col gap-6" action={formAction}>
+    <form className="flex flex-col gap-6" action={acaoFormulario}>
       {cliente ? <Input type="hidden" name="id" value={cliente.id} /> : null}
-      <Field data-invalid={Boolean(state.erros?.nome) || undefined}>
-        <FieldLabel htmlFor={`${fieldId}-nome`}>Nome do cliente</FieldLabel>
+      <Field data-invalid={Boolean(estado.erros?.nome) || undefined}>
+        <FieldLabel htmlFor={`${campoId}-nome`}>Nome do cliente</FieldLabel>
         <Input
-          id={`${fieldId}-nome`}
+          id={`${campoId}-nome`}
           name="nome"
           type="text"
           autoComplete="organization"
           placeholder="Ex.: Escola Horizonte"
-          defaultValue={state.values?.nome ?? cliente?.nome}
-          aria-invalid={Boolean(state.erros?.nome)}
+          defaultValue={estado.values?.nome ?? cliente?.nome}
+          aria-invalid={Boolean(estado.erros?.nome)}
           aria-describedby={
-            state.erros?.nome ? `${fieldId}-nome-error` : undefined
+            estado.erros?.nome ? `${campoId}-nome-erro` : undefined
           }
           required
         />
-        <FieldError id={`${fieldId}-nome-error`}>
-          {state.erros?.nome}
+        <FieldError id={`${campoId}-nome-erro`}>
+          {estado.erros?.nome}
         </FieldError>
       </Field>
 
-      <Field data-invalid={Boolean(state.erros?.logo) || undefined}>
+      <Field data-invalid={Boolean(estado.erros?.logo) || undefined}>
         <FieldLabel>Logo</FieldLabel>
-        <LogoField
-          fieldId={fieldId}
-          mensagem={state.erros?.logo}
-          required={!cliente}
+        <CampoLogo
+          campoId={campoId}
+          mensagem={estado.erros?.logo}
+          obrigatorio={!cliente}
         />
-        <FieldError id={`${fieldId}-logo-error`}>
-          {state.erros?.logo}
+        <FieldError id={`${campoId}-logo-erro`}>
+          {estado.erros?.logo}
         </FieldError>
       </Field>
 
-      <Field data-invalid={Boolean(state.erros?.status) || undefined}>
-        <FieldLabel id={`${fieldId}-status-rotulo`}>Status</FieldLabel>
+      <Field data-invalid={Boolean(estado.erros?.status) || undefined}>
+        <FieldLabel id={`${campoId}-status-rotulo`}>Status</FieldLabel>
         <Select
-          aria-labelledby={`${fieldId}-status-rotulo`}
+          aria-labelledby={`${campoId}-status-rotulo`}
           name="status"
           className="w-full"
           defaultSelectedKey={
-            state.values?.status || cliente?.status || "draft"
+            estado.values?.status || cliente?.status || "draft"
           }
         >
           <SelectTrigger
-            id={`${fieldId}-status`}
+            id={`${campoId}-status`}
             type="button"
-            aria-invalid={Boolean(state.erros?.status)}
+            aria-invalid={Boolean(estado.erros?.status)}
             aria-describedby={
-              state.erros?.status ? `${fieldId}-status-error` : undefined
+              estado.erros?.status ? `${campoId}-status-erro` : undefined
             }
           >
             <SelectValue />
@@ -157,21 +160,21 @@ export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
             <SelectItem id="published">Publicado</SelectItem>
           </SelectContent>
         </Select>
-        <FieldError id={`${fieldId}-status-error`}>
-          {state.erros?.status}
+        <FieldError id={`${campoId}-status-erro`}>
+          {estado.erros?.status}
         </FieldError>
       </Field>
 
-      {state.erro ? <Alert variant="destructive">{state.erro}</Alert> : null}
+      {estado.erro ? <Alert variant="destructive">{estado.erro}</Alert> : null}
 
       <div className="flex justify-end border-t border-border pt-5">
-        <Button type="submit" isDisabled={pending}>
-          {pending ? <Spinner data-icon="inline-start" /> : null}
+        <Button type="submit" isDisabled={pendente}>
+          {pendente ? <Spinner data-icon="inline-start" /> : null}
           {cliente
-            ? pending
+            ? pendente
               ? "Salvando…"
               : "Salvar alterações"
-            : pending
+            : pendente
               ? "Cadastrando…"
               : "Cadastrar cliente"}
         </Button>

@@ -67,10 +67,12 @@ export type CadastroClienteState = {
 
 export type AcaoClienteState = { erro?: string };
 
-function formatarErros(error: z.ZodError): CadastroClienteState["erros"] {
+function formatarErros(
+  erroValidacao: z.ZodError,
+): CadastroClienteState["erros"] {
   const erros: CadastroClienteState["erros"] = {};
 
-  for (const issue of error.issues) {
+  for (const issue of erroValidacao.issues) {
     const campo = issue.path[0];
 
     if (campo === "nome" || campo === "logo" || campo === "status") {
@@ -94,51 +96,51 @@ function logoDoFormulario(formData: FormData) {
 }
 
 export async function criarCliente(
-  _previousState: CadastroClienteState,
+  _estadoAnterior: CadastroClienteState,
   formData: FormData,
 ): Promise<CadastroClienteState> {
   const { supabase } = await requireAdmin();
-  const result = clienteSchema.safeParse({
+  const resultado = clienteSchema.safeParse({
     nome: formData.get("nome"),
     logo: logoDoFormulario(formData),
     status: formData.get("status"),
   });
 
-  if (!result.success) {
+  if (!resultado.success) {
     return {
-      erros: formatarErros(result.error),
+      erros: formatarErros(resultado.error),
       values: valoresDigitados(formData),
     };
   }
 
-  const extensao = extensaoDoLogo(result.data.logo.type);
+  const extensao = extensaoDoLogo(resultado.data.logo.type);
 
   if (!extensao) {
     return { erro: "Formato de logo não suportado." };
   }
 
   const caminhoLogo = `clientes/${crypto.randomUUID()}.${extensao}`;
-  const { error: uploadError } = await supabase.storage
+  const { error: erroUpload } = await supabase.storage
     .from(BUCKET_PRIVADO)
-    .upload(caminhoLogo, result.data.logo, {
-      contentType: result.data.logo.type,
+    .upload(caminhoLogo, resultado.data.logo, {
+      contentType: resultado.data.logo.type,
       upsert: false,
     });
 
-  if (uploadError) {
+  if (erroUpload) {
     return { erro: "Não foi possível enviar o logo. Tente novamente." };
   }
 
-  const { error: insertError } = await supabase.from("clientes").insert({
-    nome: result.data.nome,
+  const { error: erroInsercao } = await supabase.from("clientes").insert({
+    nome: resultado.data.nome,
     caminho_logo: caminhoLogo,
-    status: result.data.status,
+    status: resultado.data.status,
   });
 
-  if (insertError) {
+  if (erroInsercao) {
     await supabase.storage.from(BUCKET_PRIVADO).remove([caminhoLogo]);
 
-    if (insertError.code === "23505") {
+    if (erroInsercao.code === "23505") {
       return { erro: "Já existe um cliente com esse nome." };
     }
 
@@ -150,7 +152,7 @@ export async function criarCliente(
 }
 
 export async function atualizarCliente(
-  _previousState: CadastroClienteState,
+  _estadoAnterior: CadastroClienteState,
   formData: FormData,
 ): Promise<CadastroClienteState> {
   const { supabase } = await requireAdmin();
@@ -158,29 +160,29 @@ export async function atualizarCliente(
 
   if (!idValido.success) return { erro: "Cliente inválido." };
 
-  const result = atualizarClienteSchema.safeParse({
+  const resultado = atualizarClienteSchema.safeParse({
     nome: formData.get("nome"),
     logo: logoDoFormulario(formData),
     status: formData.get("status"),
   });
 
-  if (!result.success) {
+  if (!resultado.success) {
     return {
-      erros: formatarErros(result.error),
+      erros: formatarErros(resultado.error),
       values: valoresDigitados(formData),
     };
   }
 
-  const { data: cliente, error: clienteError } = await supabase
+  const { data: cliente, error: erroCliente } = await supabase
     .from("clientes")
     .select("id,caminho_logo")
     .eq("id", idValido.data)
     .maybeSingle();
 
-  if (clienteError) {
+  if (erroCliente) {
     console.error(
       "[clientes] falha ao buscar cliente para atualizar",
-      clienteError,
+      erroCliente,
     );
     return {
       erro: "Não foi possível atualizar o cliente. Tente novamente.",
@@ -193,43 +195,43 @@ export async function atualizarCliente(
   let caminhoLogo = cliente.caminho_logo;
   let novoCaminhoLogo: string | undefined;
 
-  if (result.data.logo) {
-    const extensao = extensaoDoLogo(result.data.logo.type);
+  if (resultado.data.logo) {
+    const extensao = extensaoDoLogo(resultado.data.logo.type);
 
     if (!extensao) {
       return { erro: "Formato de logo não suportado." };
     }
 
     novoCaminhoLogo = `clientes/${crypto.randomUUID()}.${extensao}`;
-    const { error: uploadError } = await supabase.storage
+    const { error: erroUpload } = await supabase.storage
       .from(BUCKET_PRIVADO)
-      .upload(novoCaminhoLogo, result.data.logo, {
-        contentType: result.data.logo.type,
+      .upload(novoCaminhoLogo, resultado.data.logo, {
+        contentType: resultado.data.logo.type,
         upsert: false,
       });
 
-    if (uploadError) {
+    if (erroUpload) {
       return { erro: "Não foi possível enviar o logo. Tente novamente." };
     }
 
     caminhoLogo = novoCaminhoLogo;
   }
 
-  const { error: updateError } = await supabase
+  const { error: erroAtualizacao } = await supabase
     .from("clientes")
     .update({
-      nome: result.data.nome,
+      nome: resultado.data.nome,
       caminho_logo: caminhoLogo,
-      status: result.data.status,
+      status: resultado.data.status,
     })
     .eq("id", cliente.id);
 
-  if (updateError) {
+  if (erroAtualizacao) {
     if (novoCaminhoLogo) {
       await supabase.storage.from(BUCKET_PRIVADO).remove([novoCaminhoLogo]);
     }
 
-    if (updateError.code === "23505") {
+    if (erroAtualizacao.code === "23505") {
       return { erro: "Já existe um cliente com esse nome." };
     }
 
@@ -245,46 +247,46 @@ export async function atualizarCliente(
 }
 
 export async function excluirCliente(
-  _previousState: CadastroClienteState,
+  _estadoAnterior: CadastroClienteState,
   formData: FormData,
 ): Promise<CadastroClienteState> {
   const { supabase } = await requireAdmin();
-  const id = idSchema.safeParse(formData.get("id"));
+  const idValido = idSchema.safeParse(formData.get("id"));
 
-  if (!id.success) {
+  if (!idValido.success) {
     return { erro: "Cliente inválido." };
   }
 
-  const { data: cliente, error: clienteError } = await supabase
+  const { data: cliente, error: erroCliente } = await supabase
     .from("clientes")
     .select("id,caminho_logo")
-    .eq("id", id.data)
+    .eq("id", idValido.data)
     .maybeSingle();
 
-  if (clienteError) {
+  if (erroCliente) {
     console.error(
       "[clientes] falha ao buscar cliente para excluir",
-      clienteError,
+      erroCliente,
     );
     return { erro: "Não foi possível excluir o cliente. Tente novamente." };
   }
 
   if (!cliente) return { erro: "Cliente não encontrado." };
 
-  const { error: deleteError } = await supabase
+  const { error: erroExclusao } = await supabase
     .from("clientes")
     .delete()
     .eq("id", cliente.id);
 
-  if (deleteError) {
+  if (erroExclusao) {
     // 23503: há projetos (conteudos) vinculados, com on delete restrict.
-    if (deleteError.code === "23503") {
+    if (erroExclusao.code === "23503") {
       return {
         erro: "Este cliente tem projetos vinculados. Exclua ou mova os projetos antes de excluir o cliente.",
       };
     }
 
-    console.error("[clientes] falha ao excluir cliente", deleteError);
+    console.error("[clientes] falha ao excluir cliente", erroExclusao);
     return { erro: "Não foi possível excluir o cliente. Tente novamente." };
   }
 
@@ -302,17 +304,17 @@ export async function reordenarClientes(
 
   if (!idsValidos.success) return { erro: "Ordem inválida." };
 
-  const { error } = await supabase.rpc("reordenar_clientes", {
+  const { error: erroReordenacao } = await supabase.rpc("reordenar_clientes", {
     p_ids: idsValidos.data,
   });
 
   // Revalida também em caso de erro: se a lista estiver defasada, a tela volta a mostrar a ordem do banco.
   revalidarClientes();
 
-  if (error) {
+  if (erroReordenacao) {
     return {
       erro:
-        error.message === "lista de ordem invalida"
+        erroReordenacao.message === "lista de ordem invalida"
           ? "A lista de clientes mudou. Atualize a página e tente novamente."
           : "Não foi possível reordenar os clientes. Tente novamente.",
     };

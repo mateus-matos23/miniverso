@@ -6,7 +6,7 @@ import { z } from "zod";
 
 import { requireAdmin } from "@/lib/auth";
 import { AdminPage, PageHeader } from "../../page-header";
-import ContentEditor from "../content-editor";
+import EditorProjeto from "../editor-projeto";
 
 export const metadata: Metadata = { title: "Editar projeto" };
 
@@ -63,7 +63,7 @@ export default async function EditarProjetoPage({
         }
         title="Editar projeto"
       />
-      <ContentEditor
+      <EditorProjeto
         clientes={clientesResult.data ?? []}
         conteudo={{
           id: conteudo.id,

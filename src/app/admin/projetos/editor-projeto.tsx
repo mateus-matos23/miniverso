@@ -40,27 +40,31 @@ import { Textarea } from "@/components/ui/textarea";
 import { sincronizarArquivoFormulario } from "@/lib/arquivo-formulario";
 import { slugify } from "@/lib/slug";
 
-const initialState: CadastroConteudoState = {};
-const TITLE_MAX = 90;
-const DESCRIPTION_MAX = 400;
-const IMAGE_MAX = 10 * 1024 * 1024;
+const estadoInicial: CadastroConteudoState = {};
+const TITULO_MAX = 90;
+const DESCRICAO_MAX = 400;
+const IMAGEM_MAX = 10 * 1024 * 1024;
 const VIDEO_MAX = 50 * 1024 * 1024;
-const imageTypes = ["image/jpeg", "image/png", "image/webp"];
-const videoTypes = ["video/mp4", "video/webm"];
+const tiposImagem = ["image/jpeg", "image/png", "image/webp"];
+const tiposVideo = ["video/mp4", "video/webm"];
 
-type Media = { url: string; kind: "image" | "video"; name: string };
+type Midia = { url: string; tipo: "imagem" | "video"; nome: string };
 
 /** Monta o aria-describedby ignorando ids ausentes, para não apontar para elementos que não existem. */
 function descreverPor(...ids: (string | false | null | undefined)[]) {
   return ids.filter(Boolean).join(" ") || undefined;
 }
 
-function validateMedia(file: File): string | null {
-  if (imageTypes.includes(file.type)) {
-    return file.size > IMAGE_MAX ? "A imagem deve ter no máximo 10 MB." : null;
+function validarMidia(arquivo: File): string | null {
+  if (tiposImagem.includes(arquivo.type)) {
+    return arquivo.size > IMAGEM_MAX
+      ? "A imagem deve ter no máximo 10 MB."
+      : null;
   }
-  if (videoTypes.includes(file.type)) {
-    return file.size > VIDEO_MAX ? "O vídeo deve ter no máximo 50 MB." : null;
+  if (tiposVideo.includes(arquivo.type)) {
+    return arquivo.size > VIDEO_MAX
+      ? "O vídeo deve ter no máximo 50 MB."
+      : null;
   }
   return "Formato não aceito. Envie JPG, PNG, WebP, MP4 ou WebM.";
 }
@@ -82,7 +86,7 @@ export type ConteudoEditavel = {
   midiaUrl: string | null;
 };
 
-export default function ContentEditor({
+export default function EditorProjeto({
   clientes,
   conteudo,
 }: {
@@ -90,75 +94,75 @@ export default function ContentEditor({
   conteudo?: ConteudoEditavel;
 }) {
   const id = useId();
-  const [state, formAction, pending] = useActionState(
+  const [estado, acaoFormulario, pendente] = useActionState(
     conteudo ? atualizarConteudo : criarConteudo,
-    initialState,
+    estadoInicial,
   );
-  const [title, setTitle] = useState(conteudo?.titulo ?? "");
+  const [titulo, setTitulo] = useState(conteudo?.titulo ?? "");
   const [slug, setSlug] = useState(conteudo?.slug ?? "");
   const [slugEditado, setSlugEditado] = useState(Boolean(conteudo));
   const [categoria, setCategoria] = useState(conteudo?.categoria ?? "");
-  const [description, setDescription] = useState(conteudo?.descricao ?? "");
-  const [media, setMedia] = useState<Media | null>(null);
-  const [mediaError, setMediaError] = useState<string | null>(null);
+  const [descricao, setDescricao] = useState(conteudo?.descricao ?? "");
+  const [midia, setMidia] = useState<Midia | null>(null);
+  const [erroMidia, setErroMidia] = useState<string | null>(null);
   // Input escondido que leva o arquivo escolhido pelo FileTrigger para o FormData.
   const midiaInputRef = useRef<HTMLInputElement>(null);
   // Mídia já salva: aparece até o usuário escolher um arquivo novo.
-  const midiaAtual: Media | null = conteudo?.midiaUrl
+  const midiaAtual: Midia | null = conteudo?.midiaUrl
     ? {
         url: conteudo.midiaUrl,
-        kind: conteudo.tipoMidia === "video" ? "video" : "image",
-        name: "Mídia atual",
+        tipo: conteudo.tipoMidia === "video" ? "video" : "imagem",
+        nome: "Mídia atual",
       }
     : null;
-  const midiaExibida = media ?? midiaAtual;
+  const midiaExibida = midia ?? midiaAtual;
 
-  function handleTitleChange(event: ChangeEvent<HTMLInputElement>) {
-    const value = event.currentTarget.value;
-    setTitle(value);
+  function aoMudarTitulo(event: ChangeEvent<HTMLInputElement>) {
+    const valor = event.currentTarget.value;
+    setTitulo(valor);
     // O slug acompanha o título até o usuário editar o campo manualmente.
-    if (!slugEditado) setSlug(slugify(value));
+    if (!slugEditado) setSlug(slugify(valor));
   }
 
   useEffect(() => {
     return () => {
-      if (media) URL.revokeObjectURL(media.url);
+      if (midia) URL.revokeObjectURL(midia.url);
     };
-  }, [media]);
+  }, [midia]);
 
-  function handleMediaChange(files: FileList | null) {
-    const file = files?.[0];
-    setMediaError(null);
+  function aoMudarMidia(files: FileList | null) {
+    const arquivo = files?.[0];
+    setErroMidia(null);
 
-    if (!file) {
+    if (!arquivo) {
       sincronizarArquivoFormulario(midiaInputRef.current, null);
-      setMedia(null);
+      setMidia(null);
       return;
     }
 
-    const error = validateMedia(file);
-    if (error) {
+    const erro = validarMidia(arquivo);
+    if (erro) {
       sincronizarArquivoFormulario(midiaInputRef.current, null);
-      setMedia(null);
-      setMediaError(error);
+      setMidia(null);
+      setErroMidia(erro);
       return;
     }
 
     sincronizarArquivoFormulario(midiaInputRef.current, files);
-    setMedia({
-      url: URL.createObjectURL(file),
-      kind: file.type.startsWith("video/") ? "video" : "image",
-      name: file.name,
+    setMidia({
+      url: URL.createObjectURL(arquivo),
+      tipo: arquivo.type.startsWith("video/") ? "video" : "imagem",
+      nome: arquivo.name,
     });
   }
 
-  const erros = state.erros ?? {};
+  const erros = estado.erros ?? {};
 
   return (
     <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.85fr)]">
       <form
-        action={formAction}
-        aria-labelledby={`${id}-form-title`}
+        action={acaoFormulario}
+        aria-labelledby={`${id}-formulario-titulo`}
         className="rounded-lg border border-border bg-card p-6"
       >
         {conteudo ? (
@@ -166,39 +170,39 @@ export default function ContentEditor({
         ) : null}
         <h2
           className="text-lg font-semibold text-heading"
-          id={`${id}-form-title`}
+          id={`${id}-formulario-titulo`}
         >
           Dados do projeto
         </h2>
         <FieldGroup className="mt-6 gap-6">
           <Field data-invalid={Boolean(erros.titulo) || undefined}>
-            <FieldLabel htmlFor={`${id}-title`}>Título</FieldLabel>
+            <FieldLabel htmlFor={`${id}-titulo`}>Título</FieldLabel>
             <Input
               aria-describedby={descreverPor(
-                `${id}-title-count`,
-                erros.titulo && `${id}-title-error`,
+                `${id}-titulo-contador`,
+                erros.titulo && `${id}-titulo-erro`,
               )}
               aria-invalid={Boolean(erros.titulo) || undefined}
-              id={`${id}-title`}
-              maxLength={TITLE_MAX}
+              id={`${id}-titulo`}
+              maxLength={TITULO_MAX}
               name="titulo"
-              onChange={handleTitleChange}
+              onChange={aoMudarTitulo}
               placeholder="Ex.: Aprender também é explorar"
               required
-              value={title}
+              value={titulo}
             />
-            <FieldDescription id={`${id}-title-count`}>
-              {title.length}/{TITLE_MAX} caracteres
+            <FieldDescription id={`${id}-titulo-contador`}>
+              {titulo.length}/{TITULO_MAX} caracteres
             </FieldDescription>
-            <FieldError id={`${id}-title-error`}>{erros.titulo}</FieldError>
+            <FieldError id={`${id}-titulo-erro`}>{erros.titulo}</FieldError>
           </Field>
 
           <Field data-invalid={Boolean(erros.slug) || undefined}>
             <FieldLabel htmlFor={`${id}-slug`}>Endereço (slug)</FieldLabel>
             <Input
               aria-describedby={descreverPor(
-                `${id}-slug-help`,
-                erros.slug && `${id}-slug-error`,
+                `${id}-slug-ajuda`,
+                erros.slug && `${id}-slug-erro`,
               )}
               aria-invalid={Boolean(erros.slug) || undefined}
               id={`${id}-slug`}
@@ -212,10 +216,10 @@ export default function ContentEditor({
               required
               value={slug}
             />
-            <FieldDescription id={`${id}-slug-help`}>
+            <FieldDescription id={`${id}-slug-ajuda`}>
               Página do projeto: /projetos/{slug || "slug"}
             </FieldDescription>
-            <FieldError id={`${id}-slug-error`}>{erros.slug}</FieldError>
+            <FieldError id={`${id}-slug-erro`}>{erros.slug}</FieldError>
           </Field>
 
           <div className="grid gap-6 sm:grid-cols-2">
@@ -225,14 +229,14 @@ export default function ContentEditor({
                 aria-labelledby={`${id}-cliente-rotulo`}
                 className="w-full"
                 defaultSelectedKey={
-                  state.values?.clienteId || conteudo?.clienteId || undefined
+                  estado.values?.clienteId || conteudo?.clienteId || undefined
                 }
                 name="clienteId"
                 placeholder="Selecione"
               >
                 <SelectTrigger
                   aria-describedby={descreverPor(
-                    erros.clienteId && `${id}-cliente-error`,
+                    erros.clienteId && `${id}-cliente-erro`,
                   )}
                   aria-invalid={Boolean(erros.clienteId) || undefined}
                   id={`${id}-cliente`}
@@ -248,7 +252,7 @@ export default function ContentEditor({
                   ))}
                 </SelectContent>
               </Select>
-              <FieldError id={`${id}-cliente-error`}>
+              <FieldError id={`${id}-cliente-erro`}>
                 {erros.clienteId}
               </FieldError>
             </Field>
@@ -259,11 +263,11 @@ export default function ContentEditor({
               </FieldLabel>
               <Input
                 aria-describedby={descreverPor(
-                  erros.categoria && `${id}-categoria-error`,
+                  erros.categoria && `${id}-categoria-erro`,
                 )}
                 aria-invalid={Boolean(erros.categoria) || undefined}
                 defaultValue={
-                  state.values?.categoria ?? conteudo?.categoria ?? undefined
+                  estado.values?.categoria ?? conteudo?.categoria ?? undefined
                 }
                 id={`${id}-categoria`}
                 maxLength={60}
@@ -272,49 +276,49 @@ export default function ContentEditor({
                 placeholder="Ex.: Realidade virtual"
                 type="text"
               />
-              <FieldError id={`${id}-categoria-error`}>
+              <FieldError id={`${id}-categoria-erro`}>
                 {erros.categoria}
               </FieldError>
             </Field>
           </div>
 
           <Field data-invalid={Boolean(erros.descricao) || undefined}>
-            <FieldLabel htmlFor={`${id}-description`}>Descrição</FieldLabel>
+            <FieldLabel htmlFor={`${id}-descricao`}>Descrição</FieldLabel>
             <Textarea
               aria-describedby={descreverPor(
-                `${id}-description-count`,
-                erros.descricao && `${id}-description-error`,
+                `${id}-descricao-contador`,
+                erros.descricao && `${id}-descricao-erro`,
               )}
               aria-invalid={Boolean(erros.descricao) || undefined}
               className="min-h-36"
-              id={`${id}-description`}
-              maxLength={DESCRIPTION_MAX}
+              id={`${id}-descricao`}
+              maxLength={DESCRICAO_MAX}
               name="descricao"
-              onChange={(event) => setDescription(event.currentTarget.value)}
+              onChange={(event) => setDescricao(event.currentTarget.value)}
               placeholder="Conte o que acontece nesta experiência."
               required
-              value={description}
+              value={descricao}
             />
-            <FieldDescription id={`${id}-description-count`}>
-              {description.length}/{DESCRIPTION_MAX} caracteres
+            <FieldDescription id={`${id}-descricao-contador`}>
+              {descricao.length}/{DESCRICAO_MAX} caracteres
             </FieldDescription>
-            <FieldError id={`${id}-description-error`}>
+            <FieldError id={`${id}-descricao-erro`}>
               {erros.descricao}
             </FieldError>
           </Field>
 
-          <Field data-invalid={mediaError || erros.midia ? true : undefined}>
-            <FieldLabel id={`${id}-media-rotulo`}>Imagem ou vídeo</FieldLabel>
+          <Field data-invalid={erroMidia || erros.midia ? true : undefined}>
+            <FieldLabel id={`${id}-midia-rotulo`}>Imagem ou vídeo</FieldLabel>
             <FileTrigger
-              acceptedFileTypes={[...imageTypes, ...videoTypes]}
-              onSelect={handleMediaChange}
+              acceptedFileTypes={[...tiposImagem, ...tiposVideo]}
+              onSelect={aoMudarMidia}
             >
               <Button
                 aria-describedby={descreverPor(
-                  `${id}-media-texto`,
-                  (mediaError || erros.midia) && `${id}-media-error`,
+                  `${id}-midia-texto`,
+                  (erroMidia || erros.midia) && `${id}-midia-erro`,
                 )}
-                aria-labelledby={`${id}-media-rotulo`}
+                aria-labelledby={`${id}-midia-rotulo`}
                 className="h-auto w-full justify-start gap-4 rounded-md border-dashed border-input bg-muted/40 p-4 text-left font-normal whitespace-normal hover:border-primary"
                 variant="outline"
               >
@@ -323,18 +327,18 @@ export default function ContentEditor({
                   className="size-5 text-primary"
                 />
                 <span
-                  id={`${id}-media-texto`}
+                  id={`${id}-midia-texto`}
                   className="min-w-0 flex-1 text-sm"
                 >
                   <span className="block truncate font-semibold text-heading">
-                    {media
-                      ? media.name
+                    {midia
+                      ? midia.nome
                       : conteudo
                         ? "Trocar mídia (opcional)"
                         : "Selecionar arquivo"}
                   </span>
                   <span className="text-muted-foreground">
-                    {conteudo && !media
+                    {conteudo && !midia
                       ? "Sem novo arquivo, a mídia atual é mantida. "
                       : null}
                     Imagens JPG, PNG ou WebP até 10 MB. Vídeos MP4 ou WebM até
@@ -346,13 +350,13 @@ export default function ContentEditor({
             {/* Recebe o arquivo do FileTrigger para o FormData; a validação real é no servidor. */}
             <input
               ref={midiaInputRef}
-              accept={[...imageTypes, ...videoTypes].join(",")}
+              accept={[...tiposImagem, ...tiposVideo].join(",")}
               hidden
               name="midia"
               type="file"
             />
-            <FieldError id={`${id}-media-error`}>
-              {mediaError ?? erros.midia}
+            <FieldError id={`${id}-midia-erro`}>
+              {erroMidia ?? erros.midia}
             </FieldError>
           </Field>
 
@@ -363,13 +367,13 @@ export default function ContentEditor({
                 aria-labelledby={`${id}-status-rotulo`}
                 className="w-full"
                 defaultSelectedKey={
-                  state.values?.status || conteudo?.status || "draft"
+                  estado.values?.status || conteudo?.status || "draft"
                 }
                 name="status"
               >
                 <SelectTrigger
                   aria-describedby={descreverPor(
-                    erros.status && `${id}-status-error`,
+                    erros.status && `${id}-status-erro`,
                   )}
                   aria-invalid={Boolean(erros.status) || undefined}
                   id={`${id}-status`}
@@ -382,17 +386,17 @@ export default function ContentEditor({
                   <SelectItem id="published">Publicado</SelectItem>
                 </SelectContent>
               </Select>
-              <FieldError id={`${id}-status-error`}>{erros.status}</FieldError>
+              <FieldError id={`${id}-status-erro`}>{erros.status}</FieldError>
             </Field>
 
             <Field data-invalid={Boolean(erros.ordem) || undefined}>
               <FieldLabel htmlFor={`${id}-ordem`}>Ordem de exibição</FieldLabel>
               <Input
                 aria-describedby={descreverPor(
-                  erros.ordem && `${id}-ordem-error`,
+                  erros.ordem && `${id}-ordem-erro`,
                 )}
                 aria-invalid={Boolean(erros.ordem) || undefined}
-                defaultValue={state.values?.ordem ?? conteudo?.ordem ?? 0}
+                defaultValue={estado.values?.ordem ?? conteudo?.ordem ?? 0}
                 id={`${id}-ordem`}
                 min="0"
                 name="ordem"
@@ -400,23 +404,23 @@ export default function ContentEditor({
                 step="1"
                 type="number"
               />
-              <FieldError id={`${id}-ordem-error`}>{erros.ordem}</FieldError>
+              <FieldError id={`${id}-ordem-erro`}>{erros.ordem}</FieldError>
             </Field>
           </div>
         </FieldGroup>
 
         <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6">
-          {state.erro ? (
-            <Alert variant="destructive">{state.erro}</Alert>
+          {estado.erro ? (
+            <Alert variant="destructive">{estado.erro}</Alert>
           ) : null}
           <div className="flex justify-end">
-            <Button isDisabled={pending} type="submit">
-              {pending ? <Spinner data-icon="inline-start" /> : null}
+            <Button isDisabled={pendente} type="submit">
+              {pendente ? <Spinner data-icon="inline-start" /> : null}
               {conteudo
-                ? pending
+                ? pendente
                   ? "Salvando…"
                   : "Salvar alterações"
-                : pending
+                : pendente
                   ? "Cadastrando…"
                   : "Cadastrar projeto"}
             </Button>
@@ -425,13 +429,13 @@ export default function ContentEditor({
       </form>
 
       <section
-        aria-labelledby={`${id}-preview-title`}
+        aria-labelledby={`${id}-previa-titulo`}
         className="flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start"
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2
             className="text-lg font-semibold text-heading"
-            id={`${id}-preview-title`}
+            id={`${id}-previa-titulo`}
           >
             Pré-visualização
           </h2>
@@ -441,7 +445,7 @@ export default function ContentEditor({
         </div>
         <article className="overflow-hidden rounded-lg border border-border bg-brand-white">
           <div className="grid aspect-video place-items-center overflow-hidden bg-brand-aurora text-sm text-brand-mist">
-            {midiaExibida?.kind === "image" ? (
+            {midiaExibida?.tipo === "imagem" ? (
               <Image
                 alt=""
                 className="size-full object-cover"
@@ -452,7 +456,7 @@ export default function ContentEditor({
                 width={900}
               />
             ) : null}
-            {midiaExibida?.kind === "video" ? (
+            {midiaExibida?.tipo === "video" ? (
               // biome-ignore lint/a11y/useMediaCaption: prévia do arquivo do projeto
               <video
                 className="size-full object-cover"
@@ -469,10 +473,10 @@ export default function ContentEditor({
               </p>
             ) : null}
             <h3 className="font-display text-4xl font-bold leading-none text-heading">
-              {title || "Título do conteúdo"}
+              {titulo || "Título do conteúdo"}
             </h3>
             <p className="mt-3 text-body">
-              {description || "A descrição aparece aqui, como na landing page."}
+              {descricao || "A descrição aparece aqui, como na landing page."}
             </p>
           </div>
         </article>

@@ -4,7 +4,7 @@ import { urlsAssinadas } from "@/lib/storage";
 
 import { FeedbackToast } from "../_componentes/feedback-toast";
 import { AdminPage } from "../page-header";
-import ClientesTable from "./clientes-table";
+import TabelaClientes from "./tabela-clientes";
 
 export const metadata: Metadata = { title: "Clientes" };
 
@@ -47,7 +47,7 @@ export default async function ClientesPage({
   return (
     <AdminPage>
       <FeedbackToast mensagem={mensagem} />
-      <ClientesTable clientes={clientes} />
+      <TabelaClientes clientes={clientes} />
     </AdminPage>
   );
 }

@@ -53,27 +53,27 @@ import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dial
 import { useListaReordenavel } from "../_componentes/use-lista-reordenavel";
 import { PageHeader } from "../page-header";
 import { StatusBadge } from "../status-badge";
-import ClienteForm from "./cliente-form";
+import FormularioCliente from "./cliente-form";
 
-export type ClienteListItem = Cliente & { logoUrl: string | null };
+export type ClienteListado = Cliente & { logoUrl: string | null };
 
-const initialState: CadastroClienteState = {};
+const estadoInicial: CadastroClienteState = {};
 
-export default function ClientesTable({
+export default function TabelaClientes({
   clientes,
 }: {
-  clientes: ClienteListItem[];
+  clientes: ClienteListado[];
 }) {
-  const [createOpen, setCreateOpen] = useState(false);
+  const [cadastroAberto, setCadastroAberto] = useState(false);
   const { ordemExibida, posicoes, dragAndDropHooks, erro } =
-    useListaReordenavel<ClienteListItem>({
+    useListaReordenavel<ClienteListado>({
       itens: clientes,
       rotulo: (cliente) => cliente.nome,
       reordenar: reordenarClientes,
     });
 
-  const createButton = (
-    <Button onPress={() => setCreateOpen(true)}>
+  const botaoCadastro = (
+    <Button onPress={() => setCadastroAberto(true)}>
       <PlusIcon data-icon="inline-start" />
       Cadastrar cliente
     </Button>
@@ -82,7 +82,7 @@ export default function ClientesTable({
   return (
     <>
       <PageHeader
-        actions={clientes.length > 0 ? createButton : undefined}
+        actions={clientes.length > 0 ? botaoCadastro : undefined}
         description="Marcas exibidas na seção “Clientes” da landing. Só itens publicados ficam visíveis, na ordem definida aqui. No computador, arraste pela alça para reordenar."
         title="Clientes"
       />
@@ -93,7 +93,7 @@ export default function ClientesTable({
         </Alert>
       ) : null}
 
-      <Dialog isOpen={createOpen} onOpenChange={setCreateOpen}>
+      <Dialog isOpen={cadastroAberto} onOpenChange={setCadastroAberto}>
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             Cadastrar cliente
@@ -102,7 +102,7 @@ export default function ClientesTable({
             Adicione a marca que aparece na landing page.
           </DialogDescription>
         </DialogHeader>
-        <ClienteForm />
+        <FormularioCliente />
       </Dialog>
 
       <div className="mt-8">
@@ -118,7 +118,7 @@ export default function ClientesTable({
                 landing quando estiver como “Publicado”.
               </EmptyDescription>
             </EmptyHeader>
-            <EmptyContent>{createButton}</EmptyContent>
+            <EmptyContent>{botaoCadastro}</EmptyContent>
           </Empty>
         ) : (
           <>
@@ -131,7 +131,7 @@ export default function ClientesTable({
                   className="flex items-center gap-4 rounded-lg border border-border bg-card p-4"
                   key={cliente.id}
                 >
-                  <Logo cliente={cliente} />
+                  <LogoCliente cliente={cliente} />
                   <div className="flex min-w-0 flex-1 flex-col gap-2">
                     <p className="break-words font-semibold text-heading">
                       {cliente.nome}
@@ -143,7 +143,7 @@ export default function ClientesTable({
                       </span>
                     </div>
                   </div>
-                  <ClienteActions cliente={cliente} />
+                  <ClienteAcoes cliente={cliente} />
                 </li>
               ))}
             </ul>
@@ -199,7 +199,7 @@ export default function ClientesTable({
                         </Button>
                       </TableCell>
                       <TableCell>
-                        <Logo cliente={cliente} />
+                        <LogoCliente cliente={cliente} />
                       </TableCell>
                       <TableCell className="font-semibold text-heading">
                         {cliente.nome}
@@ -211,7 +211,7 @@ export default function ClientesTable({
                         {posicoes.get(cliente.id)}
                       </TableCell>
                       <TableCell className="text-right">
-                        <ClienteActions cliente={cliente} />
+                        <ClienteAcoes cliente={cliente} />
                       </TableCell>
                     </TableRow>
                   )}
@@ -225,7 +225,7 @@ export default function ClientesTable({
   );
 }
 
-function Logo({ cliente }: { cliente: ClienteListItem }) {
+function LogoCliente({ cliente }: { cliente: ClienteListado }) {
   return (
     <span className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-md border border-border bg-white p-1.5">
       {cliente.logoUrl ? (
@@ -246,11 +246,11 @@ function Logo({ cliente }: { cliente: ClienteListItem }) {
   );
 }
 
-function ClienteActions({ cliente }: { cliente: ClienteListItem }) {
-  const [dialog, setDialog] = useState<"edit" | "delete" | null>(null);
-  const [deleteState, deleteAction, deleting] = useActionState(
+function ClienteAcoes({ cliente }: { cliente: ClienteListado }) {
+  const [dialogo, setDialogo] = useState<"edit" | "delete" | null>(null);
+  const [estadoExclusao, acaoExclusao, excluindo] = useActionState(
     excluirCliente,
-    initialState,
+    estadoInicial,
   );
 
   return (
@@ -265,12 +265,12 @@ function ClienteActions({ cliente }: { cliente: ClienteListItem }) {
         </Button>
         <DropdownMenu>
           <DropdownMenuGroup>
-            <DropdownMenuItem onAction={() => setDialog("edit")}>
+            <DropdownMenuItem onAction={() => setDialogo("edit")}>
               <PencilIcon data-icon="inline-start" />
               Editar
             </DropdownMenuItem>
             <DropdownMenuItem
-              onAction={() => setDialog("delete")}
+              onAction={() => setDialogo("delete")}
               variant="destructive"
             >
               <Trash2Icon data-icon="inline-start" />
@@ -281,8 +281,8 @@ function ClienteActions({ cliente }: { cliente: ClienteListItem }) {
       </DropdownMenuTrigger>
 
       <Dialog
-        isOpen={dialog === "edit"}
-        onOpenChange={(isOpen) => setDialog(isOpen ? "edit" : null)}
+        isOpen={dialogo === "edit"}
+        onOpenChange={(aberto) => setDialogo(aberto ? "edit" : null)}
       >
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
@@ -292,16 +292,16 @@ function ClienteActions({ cliente }: { cliente: ClienteListItem }) {
             Atualize os dados e, se quiser, substitua o logo atual.
           </DialogDescription>
         </DialogHeader>
-        <ClienteForm cliente={cliente} />
+        <FormularioCliente cliente={cliente} />
       </Dialog>
 
       <ConfirmarExclusaoDialog
-        acao={deleteAction}
-        aberto={dialog === "delete"}
+        acao={acaoExclusao}
+        aberto={dialogo === "delete"}
         descricao="O cliente e o logo enviado serão apagados e sairão da landing. Essa ação não pode ser desfeita."
-        erro={deleteState.erro}
-        onAbertoChange={(aberto) => setDialog(aberto ? "delete" : null)}
-        pendente={deleting}
+        erro={estadoExclusao.erro}
+        onAbertoChange={(aberto) => setDialogo(aberto ? "delete" : null)}
+        pendente={excluindo}
         titulo={`Excluir “${cliente.nome}” permanentemente?`}
       >
         <input name="id" type="hidden" value={cliente.id} />

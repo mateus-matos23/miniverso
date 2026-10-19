@@ -274,7 +274,7 @@ function Miniatura({ projeto }: { projeto: ProjetoListItem }) {
     <span className="grid aspect-video w-24 shrink-0 place-items-center overflow-hidden rounded-md border border-border bg-brand-aurora">
       {projeto.midiaUrl && projeto.tipoMidia === "imagem" ? (
         <Image
-          alt={`Miniatura de ${projeto.titulo}`}
+          alt=""
           className="size-full object-cover"
           height={54}
           src={projeto.midiaUrl}
@@ -309,7 +309,7 @@ function ProjetoAcoes({
   onAcao: (acao: () => Promise<AcaoConteudoState>) => void;
 }) {
   const [excluirAberto, setExcluirAberto] = useState(false);
-  const [deleteState, deleteAction, deleting] = useActionState(
+  const [estadoExclusao, acaoExclusao, excluindo] = useActionState(
     excluirConteudo,
     initialState,
   );
@@ -380,12 +380,12 @@ function ProjetoAcoes({
       </DropdownMenuTrigger>
 
       <ConfirmarExclusaoDialog
-        acao={deleteAction}
+        acao={acaoExclusao}
         aberto={excluirAberto}
         descricao="O projeto e a mídia enviada serão apagados e sairão da landing. Essa ação não pode ser desfeita."
-        erro={deleteState.erro}
+        erro={estadoExclusao.erro}
         onAbertoChange={setExcluirAberto}
-        pendente={deleting}
+        pendente={excluindo}
         titulo={`Excluir “${projeto.titulo}” permanentemente?`}
       >
         <input name="id" type="hidden" value={projeto.id} />

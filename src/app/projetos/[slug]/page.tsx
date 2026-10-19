@@ -113,7 +113,7 @@ export default async function ProjetoPage({ params }: Props) {
                       />
                     ) : (
                       <Image
-                        alt={projeto.titulo}
+                        alt=""
                         className="object-cover"
                         fill
                         preload

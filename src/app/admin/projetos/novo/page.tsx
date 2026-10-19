@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { requireAdmin } from "@/lib/auth";
 import { AdminPage, PageHeader } from "../../page-header";
-import ContentEditor from "../content-editor";
+import EditorProjeto from "../editor-projeto";
 
 export const metadata: Metadata = { title: "Cadastrar projeto" };
 
@@ -36,7 +36,7 @@ export default async function NovoProjetoPage() {
         }
         title="Cadastrar projeto"
       />
-      <ContentEditor clientes={data ?? []} />
+      <EditorProjeto clientes={data ?? []} />
     </AdminPage>
   );
 }

@@ -26,7 +26,10 @@ import { superficies } from "./superficie";
 function ProjectCard({ projeto }: { projeto: PublicConteudo }) {
   return (
     <article className="flex h-full flex-col border-b border-r border-brand-line bg-brand-white">
-      <div className="relative aspect-video overflow-hidden bg-brand-tint">
+      <div
+        aria-hidden="true"
+        className="relative aspect-video overflow-hidden bg-brand-tint"
+      >
         {projeto.midiaUrl && projeto.tipoMidia === "video" ? (
           <video
             className="size-full object-cover"
