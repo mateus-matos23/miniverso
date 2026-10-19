@@ -1,5 +1,6 @@
 import { CircleCheckIcon, CircleXIcon, TriangleAlertIcon } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Resultado } from "./dados";
 import { formatarInteiro } from "./formatar";
@@ -18,11 +19,11 @@ import {
   rotulosMetrica,
 } from "./web-vitals";
 
-const estiloClassificacao: Record<Classificacao, string> = {
-  bom: "bg-success/10 text-success",
-  precisa: "bg-amber-100 text-amber-950",
-  ruim: "bg-destructive/10 text-destructive",
-};
+const varianteClassificacao = {
+  bom: "success",
+  precisa: "warning",
+  ruim: "destructive",
+} as const satisfies Record<Classificacao, string>;
 
 const iconeClassificacao: Record<Classificacao, typeof CircleCheckIcon> = {
   bom: CircleCheckIcon,
@@ -37,15 +38,13 @@ function SeloClassificacao({
 }) {
   const Icone = iconeClassificacao[classificacao];
   return (
-    <span
-      className={cn(
-        "inline-flex w-fit items-center gap-1 rounded-sm px-2 py-0.5 text-xs font-semibold",
-        estiloClassificacao[classificacao],
-      )}
+    <Badge
+      className="font-semibold"
+      variant={varianteClassificacao[classificacao]}
     >
-      <Icone aria-hidden="true" className="size-3.5" />
+      <Icone aria-hidden="true" />
       {rotulosClassificacao[classificacao]}
-    </span>
+    </Badge>
   );
 }
 

@@ -13,6 +13,12 @@ import {
   rotulosMetrica,
 } from "./web-vitals";
 
+// Tom de atenção usa o violeta da marca (o manual não tem amarelo); ver --warning em globals.css.
+const estiloPorTom: Record<"aviso" | "info", string> = {
+  aviso: "border-warning/40 bg-warning/10 text-warning",
+  info: "border-brand-line bg-brand-tint text-brand-ink",
+};
+
 type Alerta = {
   id: string;
   texto: string;
@@ -89,9 +95,7 @@ export function AlertasTopo({
             <li
               className={cn(
                 "flex flex-col gap-2 rounded-md border px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between",
-                alerta.tom === "aviso"
-                  ? "border-amber-300 bg-amber-50 text-amber-950"
-                  : "border-brand-line bg-brand-tint text-brand-ink",
+                estiloPorTom[alerta.tom],
               )}
               key={alerta.id}
             >

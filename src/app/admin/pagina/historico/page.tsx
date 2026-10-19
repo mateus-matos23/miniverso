@@ -49,9 +49,7 @@ export default async function HistoricoPaginaPage() {
           <Empty className="border border-border bg-card">
             <EmptyHeader>
               <EmptyMedia variant="icon" />
-              <EmptyTitle className="text-lg font-semibold text-brand-violet">
-                Nenhuma versão publicada
-              </EmptyTitle>
+              <EmptyTitle>Nenhuma versão publicada</EmptyTitle>
               <EmptyDescription>
                 Quando você publicar a página inicial, as versões aparecem aqui.
               </EmptyDescription>

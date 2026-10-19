@@ -8,6 +8,14 @@ import { restaurarVersao } from "@/app/admin/pagina/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { formatarDataHora } from "@/lib/formatar";
 
 export type VersaoHistorico = {
@@ -17,7 +25,25 @@ export type VersaoHistorico = {
   publicada: boolean;
 };
 
-function LinhaVersao({ versao }: { versao: VersaoHistorico }) {
+function SituacaoVersao({ publicada }: { publicada: boolean }) {
+  return publicada ? (
+    <Badge variant="default">Publicada</Badge>
+  ) : (
+    <Badge variant="outline">Arquivada</Badge>
+  );
+}
+
+function NotaVersao({ nota }: { nota: string | null }) {
+  return nota ?? <span className="text-muted-foreground">Sem nota</span>;
+}
+
+function RestaurarVersaoBotao({
+  versao,
+  className,
+}: {
+  versao: VersaoHistorico;
+  className?: string;
+}) {
   const router = useRouter();
   const [pendente, iniciarTransicao] = useTransition();
 
@@ -36,64 +62,87 @@ function LinhaVersao({ versao }: { versao: VersaoHistorico }) {
   }
 
   return (
-    <tr className="border-t border-border">
-      <td className="px-4 py-3 align-top text-sm whitespace-nowrap">
-        {formatarDataHora(versao.publicadoEm)}
-      </td>
-      <td className="px-4 py-3 align-top text-sm">
-        {versao.nota ?? <span className="text-muted-foreground">Sem nota</span>}
-      </td>
-      <td className="px-4 py-3 align-top">
-        {versao.publicada ? (
-          <Badge variant="default">Publicada</Badge>
-        ) : (
-          <Badge variant="outline">Arquivada</Badge>
-        )}
-      </td>
-      <td className="px-4 py-3 text-right align-top">
-        <Button
-          variant="outline"
-          size="sm"
-          isDisabled={pendente}
-          onPress={restaurar}
-        >
-          {pendente ? <Spinner data-icon="inline-start" /> : null}
-          {pendente ? "Restaurando…" : "Restaurar no rascunho"}
-        </Button>
-      </td>
-    </tr>
+    <Button
+      className={className}
+      variant="outline"
+      size="sm"
+      isDisabled={pendente}
+      onPress={restaurar}
+    >
+      {pendente ? <Spinner data-icon="inline-start" /> : null}
+      {pendente ? "Restaurando…" : "Restaurar no rascunho"}
+    </Button>
   );
 }
 
 export function HistoricoLista({ versoes }: { versoes: VersaoHistorico[] }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-border bg-card">
-      <table className="w-full min-w-[40rem] border-collapse text-left">
-        <caption className="sr-only">
-          Versões publicadas da página inicial
-        </caption>
-        <thead className="bg-muted/50 text-sm text-muted-foreground">
-          <tr>
-            <th scope="col" className="px-4 py-3 font-medium">
+    <>
+      <ul
+        aria-label="Versões publicadas da página inicial"
+        className="flex flex-col gap-3 lg:hidden"
+      >
+        {versoes.map((versao) => (
+          <li
+            className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4"
+            key={versao.id}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="text-sm font-semibold text-brand-violet">
+                {formatarDataHora(versao.publicadoEm)}
+              </span>
+              <SituacaoVersao publicada={versao.publicada} />
+            </div>
+            <p className="break-words text-sm">
+              <NotaVersao nota={versao.nota} />
+            </p>
+            <RestaurarVersaoBotao className="w-full" versao={versao} />
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden overflow-hidden rounded-lg border border-border bg-card lg:block">
+        <Table
+          aria-label="Versões publicadas da página inicial"
+          className="text-left"
+        >
+          <TableHeader className="border-b border-border bg-muted/50 text-sm text-muted-foreground">
+            <TableHead className="px-4 py-3 font-medium" id="publicada">
               Publicada em
-            </th>
-            <th scope="col" className="px-4 py-3 font-medium">
+            </TableHead>
+            <TableHead className="px-4 py-3 font-medium" id="nota">
               Nota
-            </th>
-            <th scope="col" className="px-4 py-3 font-medium">
+            </TableHead>
+            <TableHead className="px-4 py-3 font-medium" id="situacao">
               Situação
-            </th>
-            <th scope="col" className="px-4 py-3 text-right font-medium">
+            </TableHead>
+            <TableHead className="px-4 py-3 text-right font-medium" id="acoes">
               <span className="sr-only">Ações</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {versoes.map((versao) => (
-            <LinhaVersao key={versao.id} versao={versao} />
-          ))}
-        </tbody>
-      </table>
-    </div>
+            </TableHead>
+          </TableHeader>
+          <TableBody items={versoes}>
+            {(versao) => (
+              <TableRow
+                id={versao.id}
+                textValue={formatarDataHora(versao.publicadoEm)}
+              >
+                <TableCell className="px-4 py-3 align-top text-sm">
+                  {formatarDataHora(versao.publicadoEm)}
+                </TableCell>
+                <TableCell className="px-4 py-3 align-top text-sm whitespace-normal">
+                  <NotaVersao nota={versao.nota} />
+                </TableCell>
+                <TableCell className="px-4 py-3 align-top">
+                  <SituacaoVersao publicada={versao.publicada} />
+                </TableCell>
+                <TableCell className="px-4 py-3 text-right align-top">
+                  <RestaurarVersaoBotao versao={versao} />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }

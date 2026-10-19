@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 import { toast } from "sonner";
-
 import { registrarMidia } from "@/app/admin/midia/actions";
 import {
   classificarArquivo,
@@ -22,9 +21,8 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import type { MidiaRef } from "@/lib/landing/schema";
+import { BUCKET_SITE } from "@/lib/storage";
 import { createClient } from "@/utils/supabase/client";
-
-const bucket = "site";
 
 type Etapa = "idle" | "lendo" | "enviando" | "registrando";
 
@@ -164,7 +162,7 @@ export function EnviarMidia({
     setEtapa("enviando");
     const supabase = createClient();
     const { error: uploadError } = await supabase.storage
-      .from(bucket)
+      .from(BUCKET_SITE)
       .upload(caminho, arquivo, {
         contentType: arquivo.type,
         cacheControl: "31536000",
@@ -190,7 +188,7 @@ export function EnviarMidia({
 
     if (!resultado.ok) {
       // Sem registro, o arquivo não aparece na biblioteca: removemos para não deixar lixo.
-      await supabase.storage.from(bucket).remove([caminho]);
+      await supabase.storage.from(BUCKET_SITE).remove([caminho]);
       setEtapa("idle");
       toast.error(resultado.erro);
       return;
@@ -259,7 +257,7 @@ export function EnviarMidia({
 
       {avisoPeso ? (
         <p
-          className="flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+          className="flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning"
           role="status"
         >
           <TriangleAlertIcon

@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/lib/auth";
+import { BUCKET_PRIVADO } from "@/lib/storage";
 
-const bucket = "miniverso";
 const IMAGE_MAX = 10 * 1024 * 1024;
 const VIDEO_MAX = 50 * 1024 * 1024;
 const imageTypes = ["image/jpeg", "image/png", "image/webp"];
@@ -221,7 +221,7 @@ export async function criarConteudo(
 
   const caminhoMidia = `conteudos/${crypto.randomUUID()}.${extensao}`;
   const { error: uploadError } = await supabase.storage
-    .from(bucket)
+    .from(BUCKET_PRIVADO)
     .upload(caminhoMidia, midia, {
       contentType: midia.type,
       upsert: false,
@@ -244,7 +244,7 @@ export async function criarConteudo(
   });
 
   if (insertError) {
-    await supabase.storage.from(bucket).remove([caminhoMidia]);
+    await supabase.storage.from(BUCKET_PRIVADO).remove([caminhoMidia]);
 
     if (insertError.code === "23505") {
       return {
@@ -345,7 +345,7 @@ export async function atualizarConteudo(
     tipoMidia = imageTypes.includes(midia.type) ? "imagem" : "video";
 
     const { error: uploadError } = await supabase.storage
-      .from(bucket)
+      .from(BUCKET_PRIVADO)
       .upload(novoCaminhoMidia, midia, {
         contentType: midia.type,
         upsert: false,
@@ -375,7 +375,7 @@ export async function atualizarConteudo(
 
   if (updateError) {
     if (novoCaminhoMidia) {
-      await supabase.storage.from(bucket).remove([novoCaminhoMidia]);
+      await supabase.storage.from(BUCKET_PRIVADO).remove([novoCaminhoMidia]);
     }
 
     if (updateError.code === "23505") {
@@ -390,7 +390,7 @@ export async function atualizarConteudo(
 
   // A mídia antiga só sai do storage depois que a linha já aponta para a nova.
   if (novoCaminhoMidia) {
-    await supabase.storage.from(bucket).remove([atual.caminho_midia]);
+    await supabase.storage.from(BUCKET_PRIVADO).remove([atual.caminho_midia]);
   }
 
   revalidarConteudo(atual.slug, dados.slug);
@@ -503,7 +503,7 @@ export async function excluirConteudo(
     return { erro: "Não foi possível excluir o projeto. Tente novamente." };
   }
 
-  await supabase.storage.from(bucket).remove([conteudo.caminho_midia]);
+  await supabase.storage.from(BUCKET_PRIVADO).remove([conteudo.caminho_midia]);
   revalidarConteudo(conteudo.slug);
   redirect("/admin/projetos?feedback=excluido");
 }

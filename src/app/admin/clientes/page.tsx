@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/auth";
+import { urlsAssinadas } from "@/lib/storage";
 
 import { AdminPage } from "../page-header";
 import ClientesTable, { type Feedback } from "./clientes-table";
 
 export const metadata: Metadata = { title: "Clientes" };
 
-const bucket = "miniverso";
 const feedbacks = new Set<Feedback>(["criado", "atualizado", "excluido"]);
 
 export default async function ClientesPage({
@@ -23,18 +23,15 @@ export default async function ClientesPage({
   if (error) throw error;
 
   const rows = data ?? [];
-  const { data: urls, error: urlError } = rows.length
-    ? await supabase.storage.from(bucket).createSignedUrls(
-        rows.map((cliente) => cliente.caminho_logo),
-        3600,
-      )
-    : { data: [], error: null };
-
-  if (urlError) throw urlError;
+  const urls = await urlsAssinadas(
+    supabase,
+    rows.map((cliente) => cliente.caminho_logo),
+    3600,
+  );
 
   const clientes = rows.map((cliente, index) => ({
     ...cliente,
-    logoUrl: urls?.[index]?.signedUrl ?? null,
+    logoUrl: urls[index],
   }));
 
   return (

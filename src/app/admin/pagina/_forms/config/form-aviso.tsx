@@ -30,7 +30,7 @@ export function FormConfigAviso({
       >
         <span
           aria-hidden="true"
-          className="flex h-6 w-11 shrink-0 items-center rounded-full bg-input p-0.5 transition-colors group-data-selected:bg-brand-cyan group-data-focus-visible:ring-3 group-data-focus-visible:ring-ring/50"
+          className="flex h-6 w-11 shrink-0 items-center rounded-full bg-input p-0.5 transition-colors group-data-selected:bg-brand-blue group-data-focus-visible:ring-3 group-data-focus-visible:ring-ring/50"
         >
           <span className="size-5 rounded-full bg-background shadow-sm transition-transform group-data-selected:translate-x-5" />
         </span>

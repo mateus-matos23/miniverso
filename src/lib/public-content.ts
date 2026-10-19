@@ -1,8 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { env } from "@/config/env";
+import { urlsAssinadas } from "@/lib/storage";
 import type { Database } from "@/utils/supabase/database";
-
-const bucket = "miniverso";
 
 /**
  * Validade das URLs assinadas de logos e mídias (7 dias).
@@ -55,17 +54,14 @@ export async function getPublishedClientes(): Promise<
     if (error) throw error;
     if (!data?.length) return { status: "ok", items: [] };
 
-    const { data: urls, error: urlError } = await supabase.storage
-      .from(bucket)
-      .createSignedUrls(
-        data.map((cliente) => cliente.caminho_logo),
-        URL_ASSINADA_VALIDADE_SEGUNDOS,
-      );
-
-    if (urlError) throw urlError;
+    const urls = await urlsAssinadas(
+      supabase,
+      data.map((cliente) => cliente.caminho_logo),
+      URL_ASSINADA_VALIDADE_SEGUNDOS,
+    );
 
     const items = data.flatMap((cliente, index) => {
-      const url = urls?.[index]?.signedUrl;
+      const url = urls[index];
       return url ? [{ id: cliente.id, nome: cliente.nome, logoUrl: url }] : [];
     });
 
@@ -113,14 +109,11 @@ async function comMidiaAssinada(
 ): Promise<PublicConteudo[]> {
   if (!rows.length) return [];
 
-  const { data: urls, error: urlError } = await supabase.storage
-    .from(bucket)
-    .createSignedUrls(
-      rows.map((conteudo) => conteudo.caminho_midia),
-      60 * 60 * 2,
-    );
-
-  if (urlError) throw urlError;
+  const urls = await urlsAssinadas(
+    supabase,
+    rows.map((conteudo) => conteudo.caminho_midia),
+    URL_ASSINADA_VALIDADE_SEGUNDOS,
+  );
 
   return rows.map((conteudo, index) => ({
     id: conteudo.id,
@@ -130,7 +123,7 @@ async function comMidiaAssinada(
     categoria: conteudo.categoria,
     clienteNome: conteudo.clientes?.nome ?? "",
     tipoMidia: conteudo.tipo_midia === "video" ? "video" : "imagem",
-    midiaUrl: urls?.[index]?.signedUrl ?? null,
+    midiaUrl: urls[index],
   }));
 }
 

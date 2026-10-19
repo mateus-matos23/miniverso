@@ -1,3 +1,5 @@
+import { INTERESSES, ROTULOS_INTERESSE } from "@/lib/leads";
+
 export const STATUS_LEAD = [
   "novo",
   "em_contato",
@@ -14,11 +16,8 @@ export const rotulosStatusLead: Record<StatusLead, string> = {
   arquivado: "Arquivado",
 };
 
-export const rotulosInteresseLead: Record<string, string> = {
-  implantacao: "Implantar na escola",
-  projeto_personalizado: "Projeto personalizado",
-  parceria: "Parceria",
-  outro: "Outro",
-};
+export const rotulosInteresseLead: Record<string, string> = Object.fromEntries(
+  INTERESSES.map((valor) => [valor, ROTULOS_INTERESSE[valor].longo]),
+);
 
 // Temporário: detalhe-lead.tsx ainda importa daqui. Trocar para formatarDataHora.

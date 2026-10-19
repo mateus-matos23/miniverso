@@ -93,7 +93,7 @@ export default function ClientesTable({
     <>
       <PageHeader
         actions={clientes.length > 0 ? createButton : undefined}
-        description="Marcas exibidas na seção “Clientes” da landing. Só itens publicados ficam visíveis, na ordem definida aqui. Arraste pela alça para reordenar."
+        description="Marcas exibidas na seção “Clientes” da landing. Só itens publicados ficam visíveis, na ordem definida aqui. No computador, arraste pela alça para reordenar."
         title="Clientes"
       />
 
@@ -124,12 +124,10 @@ export default function ClientesTable({
         {clientes.length === 0 ? (
           <Empty className="border border-border bg-card">
             <EmptyHeader>
-              <EmptyMedia className="bg-accent text-brand-blue" variant="icon">
+              <EmptyMedia variant="icon">
                 <UsersIcon />
               </EmptyMedia>
-              <EmptyTitle className="text-lg font-semibold text-brand-violet">
-                Nenhum cliente cadastrado
-              </EmptyTitle>
+              <EmptyTitle>Nenhum cliente cadastrado</EmptyTitle>
               <EmptyDescription>
                 Cadastre o primeiro cliente com nome e logo. Ele só aparece na
                 landing quando estiver como “Publicado”.
@@ -138,80 +136,111 @@ export default function ClientesTable({
             <EmptyContent>{createButton}</EmptyContent>
           </Empty>
         ) : (
-          <div className="overflow-hidden rounded-lg border border-border bg-card">
-            <Table
+          <>
+            <ul
               aria-label="Clientes cadastrados"
-              className="min-w-[40rem] text-left"
-              dragAndDropHooks={dragAndDropHooks}
+              className="flex flex-col gap-3 lg:hidden"
             >
-              <TableHeader className="border-b border-border bg-muted/60 text-sm text-muted-foreground">
-                <TableHead
-                  className="w-12 px-3 py-3 font-medium"
-                  id="reordenar"
+              {ordemExibida.map((cliente) => (
+                <li
+                  className="flex items-center gap-4 rounded-lg border border-border bg-card p-4"
+                  key={cliente.id}
                 >
-                  <span className="sr-only">Reordenar</span>
-                </TableHead>
-                <TableHead className="w-24 px-5 py-3 font-medium" id="logo">
-                  Logo
-                </TableHead>
-                <TableHead
-                  className="px-5 py-3 font-medium"
-                  id="nome"
-                  isRowHeader
-                >
-                  Nome
-                </TableHead>
-                <TableHead className="px-5 py-3 font-medium" id="status">
-                  Status
-                </TableHead>
-                <TableHead className="px-5 py-3 font-medium" id="ordem">
-                  Ordem
-                </TableHead>
-                <TableHead
-                  className="w-20 px-5 py-3 text-right font-medium"
-                  id="acoes"
-                >
-                  <span className="sr-only">Ações</span>
-                </TableHead>
-              </TableHeader>
-              <TableBody items={ordemExibida}>
-                {(cliente) => (
-                  <TableRow
-                    className="data-dragging:opacity-50"
-                    id={cliente.id}
-                    textValue={cliente.nome}
-                  >
-                    <TableCell className="px-3 py-3">
-                      <Button
-                        aria-label={`Arrastar cliente ${cliente.nome}`}
-                        className="cursor-grab"
-                        size="icon-sm"
-                        slot="drag"
-                        variant="ghost"
-                      >
-                        <GripVerticalIcon />
-                      </Button>
-                    </TableCell>
-                    <TableCell className="px-5 py-3">
-                      <Logo cliente={cliente} />
-                    </TableCell>
-                    <TableCell className="px-5 py-3 font-semibold text-brand-violet">
+                  <Logo cliente={cliente} />
+                  <div className="flex min-w-0 flex-1 flex-col gap-2">
+                    <p className="break-words font-semibold text-brand-violet">
                       {cliente.nome}
-                    </TableCell>
-                    <TableCell className="px-5 py-3">
+                    </p>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
                       <StatusBadge status={cliente.status} />
-                    </TableCell>
-                    <TableCell className="px-5 py-3 tabular-nums text-muted-foreground">
-                      {posicoes.get(cliente.id)}
-                    </TableCell>
-                    <TableCell className="px-5 py-3 text-right">
-                      <ClienteActions cliente={cliente} />
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                      <span className="tabular-nums">
+                        Ordem {posicoes.get(cliente.id)}
+                      </span>
+                    </div>
+                  </div>
+                  <ClienteActions cliente={cliente} />
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-sm text-muted-foreground lg:hidden">
+              Para reordenar, use uma tela maior.
+            </p>
+
+            <div className="hidden overflow-hidden rounded-lg border border-border bg-card lg:block">
+              <Table
+                aria-label="Clientes cadastrados"
+                className="text-left"
+                dragAndDropHooks={dragAndDropHooks}
+              >
+                <TableHeader className="border-b border-border bg-muted/60 text-sm text-muted-foreground">
+                  <TableHead
+                    className="w-12 px-3 py-3 font-medium"
+                    id="reordenar"
+                  >
+                    <span className="sr-only">Reordenar</span>
+                  </TableHead>
+                  <TableHead className="w-24 px-5 py-3 font-medium" id="logo">
+                    Logo
+                  </TableHead>
+                  <TableHead
+                    className="px-5 py-3 font-medium"
+                    id="nome"
+                    isRowHeader
+                  >
+                    Nome
+                  </TableHead>
+                  <TableHead className="px-5 py-3 font-medium" id="status">
+                    Status
+                  </TableHead>
+                  <TableHead className="px-5 py-3 font-medium" id="ordem">
+                    Ordem
+                  </TableHead>
+                  <TableHead
+                    className="w-20 px-5 py-3 text-right font-medium"
+                    id="acoes"
+                  >
+                    <span className="sr-only">Ações</span>
+                  </TableHead>
+                </TableHeader>
+                <TableBody items={ordemExibida}>
+                  {(cliente) => (
+                    <TableRow
+                      className="data-dragging:opacity-50"
+                      id={cliente.id}
+                      textValue={cliente.nome}
+                    >
+                      <TableCell className="px-3 py-3">
+                        <Button
+                          aria-label={`Arrastar cliente ${cliente.nome}`}
+                          className="cursor-grab"
+                          size="icon-sm"
+                          slot="drag"
+                          variant="ghost"
+                        >
+                          <GripVerticalIcon />
+                        </Button>
+                      </TableCell>
+                      <TableCell className="px-5 py-3">
+                        <Logo cliente={cliente} />
+                      </TableCell>
+                      <TableCell className="px-5 py-3 font-semibold text-brand-violet">
+                        {cliente.nome}
+                      </TableCell>
+                      <TableCell className="px-5 py-3">
+                        <StatusBadge status={cliente.status} />
+                      </TableCell>
+                      <TableCell className="px-5 py-3 tabular-nums text-muted-foreground">
+                        {posicoes.get(cliente.id)}
+                      </TableCell>
+                      <TableCell className="px-5 py-3 text-right">
+                        <ClienteActions cliente={cliente} />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </>
         )}
       </div>
     </>

@@ -2,15 +2,9 @@
 
 import { headers } from "next/headers";
 import { z } from "zod";
+import { INTERESSES } from "@/lib/leads";
 import { hashVisitante, ipDaRequisicao } from "@/lib/telemetria";
 import { criarClienteServidor } from "@/utils/supabase/admin";
-
-const interesses = [
-  "implantacao",
-  "projeto_personalizado",
-  "parceria",
-  "outro",
-] as const;
 
 const contatoSchema = z.object({
   nome: z
@@ -33,7 +27,7 @@ const contatoSchema = z.object({
     .trim()
     .max(80, "O cargo deve ter no máximo 80 caracteres.")
     .optional(),
-  interesse: z.enum(interesses, {
+  interesse: z.enum(INTERESSES, {
     error: "Escolha o seu interesse.",
   }),
   mensagem: z

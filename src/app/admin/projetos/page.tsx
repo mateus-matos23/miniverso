@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/auth";
+import { urlsAssinadas } from "@/lib/storage";
 
 import { AdminPage } from "../page-header";
 import ProjetosTabela, {
@@ -9,7 +10,6 @@ import ProjetosTabela, {
 
 export const metadata: Metadata = { title: "Projetos" };
 
-const bucket = "miniverso";
 const feedbacks = new Set<Feedback>(["criado", "atualizado", "excluido"]);
 
 export default async function ProjetosPage({
@@ -28,14 +28,11 @@ export default async function ProjetosPage({
   if (error) throw error;
 
   const rows = data ?? [];
-  const { data: urls, error: urlError } = rows.length
-    ? await supabase.storage.from(bucket).createSignedUrls(
-        rows.map((projeto) => projeto.caminho_midia),
-        3600,
-      )
-    : { data: [], error: null };
-
-  if (urlError) throw urlError;
+  const urls = await urlsAssinadas(
+    supabase,
+    rows.map((projeto) => projeto.caminho_midia),
+    3600,
+  );
 
   const projetos: ProjetoListItem[] = rows.map((projeto, index) => ({
     id: projeto.id,
@@ -46,7 +43,7 @@ export default async function ProjetosPage({
     ordem: projeto.ordem,
     tipoMidia: projeto.tipo_midia === "video" ? "video" : "imagem",
     clienteNome: projeto.clientes?.nome ?? "Cliente removido",
-    midiaUrl: urls?.[index]?.signedUrl ?? null,
+    midiaUrl: urls[index],
   }));
 
   return (

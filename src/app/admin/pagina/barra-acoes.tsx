@@ -66,7 +66,7 @@ export function BarraAcoes({
   const podePublicar = temRascunho && status.tipo === "salvo" && !emAcao;
 
   return (
-    <header className="sticky top-0 z-20 flex flex-col gap-4 border-b border-border bg-[#f5f7fb]/95 py-4 backdrop-blur supports-backdrop-filter:bg-[#f5f7fb]/80 lg:flex-row lg:items-center lg:justify-between">
+    <header className="sticky top-0 z-20 flex flex-col gap-4 border-b border-border bg-admin-canvas/95 py-4 backdrop-blur supports-backdrop-filter:bg-admin-canvas/80 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex min-w-0 flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-2">
           <p

@@ -5,9 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/lib/auth";
+import { BUCKET_PRIVADO } from "@/lib/storage";
 import type { ClienteRow } from "@/utils/supabase/database";
-
-const bucket = "miniverso";
 
 const camposCliente = {
   nome: z
@@ -40,6 +39,13 @@ export type Cliente = Pick<
   ClienteRow,
   "id" | "nome" | "caminho_logo" | "status" | "ordem"
 >;
+
+/** Revalida a landing, o admin geral e a listagem de clientes. */
+function revalidarClientes() {
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath("/admin/clientes");
+}
 
 function valoresDigitados(formData: FormData) {
   return {
@@ -129,7 +135,7 @@ export async function criarCliente(
 
   const caminhoLogo = `clientes/${crypto.randomUUID()}.${extensao}`;
   const { error: uploadError } = await supabase.storage
-    .from(bucket)
+    .from(BUCKET_PRIVADO)
     .upload(caminhoLogo, result.data.logo, {
       contentType: result.data.logo.type,
       upsert: false,
@@ -147,7 +153,7 @@ export async function criarCliente(
   });
 
   if (insertError) {
-    await supabase.storage.from(bucket).remove([caminhoLogo]);
+    await supabase.storage.from(BUCKET_PRIVADO).remove([caminhoLogo]);
 
     if (insertError.code === "23505") {
       return { erro: "Já existe um cliente com esse nome." };
@@ -156,9 +162,7 @@ export async function criarCliente(
     return { erro: "Não foi possível criar o cliente. Tente novamente." };
   }
 
-  revalidatePath("/");
-  revalidatePath("/admin");
-  revalidatePath("/admin/clientes");
+  revalidarClientes();
   redirect("/admin/clientes?feedback=criado");
 }
 
@@ -215,7 +219,7 @@ export async function atualizarCliente(
 
     novoCaminhoLogo = `clientes/${crypto.randomUUID()}.${extensao}`;
     const { error: uploadError } = await supabase.storage
-      .from(bucket)
+      .from(BUCKET_PRIVADO)
       .upload(novoCaminhoLogo, result.data.logo, {
         contentType: result.data.logo.type,
         upsert: false,
@@ -239,7 +243,7 @@ export async function atualizarCliente(
 
   if (updateError) {
     if (novoCaminhoLogo) {
-      await supabase.storage.from(bucket).remove([novoCaminhoLogo]);
+      await supabase.storage.from(BUCKET_PRIVADO).remove([novoCaminhoLogo]);
     }
 
     if (updateError.code === "23505") {
@@ -250,12 +254,10 @@ export async function atualizarCliente(
   }
 
   if (novoCaminhoLogo) {
-    await supabase.storage.from(bucket).remove([cliente.caminho_logo]);
+    await supabase.storage.from(BUCKET_PRIVADO).remove([cliente.caminho_logo]);
   }
 
-  revalidatePath("/");
-  revalidatePath("/admin");
-  revalidatePath("/admin/clientes");
+  revalidarClientes();
   redirect("/admin/clientes?feedback=atualizado");
 }
 
@@ -303,10 +305,8 @@ export async function excluirCliente(
     return { erro: "Não foi possível excluir o cliente. Tente novamente." };
   }
 
-  await supabase.storage.from(bucket).remove([cliente.caminho_logo]);
-  revalidatePath("/");
-  revalidatePath("/admin");
-  revalidatePath("/admin/clientes");
+  await supabase.storage.from(BUCKET_PRIVADO).remove([cliente.caminho_logo]);
+  revalidarClientes();
   redirect("/admin/clientes?feedback=excluido");
 }
 
@@ -324,9 +324,7 @@ export async function reordenarClientes(
   });
 
   // Revalida também em caso de erro: se a lista estiver defasada, a tela volta a mostrar a ordem do banco.
-  revalidatePath("/");
-  revalidatePath("/admin");
-  revalidatePath("/admin/clientes");
+  revalidarClientes();
 
   if (error) {
     return {

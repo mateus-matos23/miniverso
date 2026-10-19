@@ -3,6 +3,7 @@
 import { CheckCircle2Icon } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { type EstadoContato, enviarContato } from "@/app/actions/contato";
+import { INTERESSES, ROTULOS_INTERESSE } from "@/lib/leads";
 import { cn } from "@/lib/utils";
 
 const TAMANHO_MAXIMO_MENSAGEM = 2000;
@@ -10,14 +11,12 @@ const TAMANHO_MAXIMO_MENSAGEM = 2000;
 const estadoInicial: EstadoContato = {};
 
 const estiloCampo =
-  "w-full rounded-md border border-input bg-brand-white px-4 py-3 text-base text-brand-violet placeholder:text-brand-ink/60 transition-colors focus-visible:border-brand-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan aria-[invalid=true]:border-red-700";
+  "w-full rounded-md border border-input bg-brand-white px-4 py-3 text-base text-brand-violet placeholder:text-brand-ink/60 transition-colors focus-visible:border-brand-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan aria-[invalid=true]:border-destructive";
 
-const opcoesInteresse = [
-  { valor: "implantacao", rotulo: "Implantar na minha escola" },
-  { valor: "projeto_personalizado", rotulo: "Projeto personalizado" },
-  { valor: "parceria", rotulo: "Parceria" },
-  { valor: "outro", rotulo: "Outro" },
-];
+const opcoesInteresse = INTERESSES.map((valor) => ({
+  valor,
+  rotulo: ROTULOS_INTERESSE[valor].formulario,
+}));
 
 type Contexto = {
   utm_source: string;
@@ -58,7 +57,7 @@ function Campo({
       <div className="flex items-start justify-between gap-4">
         {erro ? (
           <p
-            className="text-sm font-medium text-red-700 surface-dark:text-red-300"
+            className="text-sm font-medium text-destructive surface-dark:text-destructive-on-dark"
             id={`${id}-erro`}
           >
             {erro}
@@ -125,7 +124,7 @@ export function ContatoForm() {
     <form action={formAction} className="flex flex-col gap-6" noValidate>
       {state.erro ? (
         <p
-          className="rounded-md border border-red-700 bg-brand-white p-4 text-sm font-medium text-red-700"
+          className="rounded-md border border-destructive bg-brand-white p-4 text-sm font-medium text-destructive"
           role="alert"
         >
           {state.erro}

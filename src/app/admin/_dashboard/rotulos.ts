@@ -1,5 +1,7 @@
 /** Rótulos legíveis para os valores gravados no banco. Valores desconhecidos aparecem crus. */
 
+import { INTERESSES, ROTULOS_INTERESSE } from "@/lib/leads";
+
 export const rotulosAlvoCta: Record<string, string> = {
   "hero-primario": "Hero · botão principal",
   "hero-secundario": "Hero · botão secundário",
@@ -18,9 +20,6 @@ export const rotulosDispositivo: Record<string, string> = {
   desktop: "Desktop",
 };
 
-export const rotulosInteresse: Record<string, string> = {
-  implantacao: "Implantação",
-  projeto_personalizado: "Projeto personalizado",
-  parceria: "Parceria",
-  outro: "Outro",
-};
+export const rotulosInteresse: Record<string, string> = Object.fromEntries(
+  INTERESSES.map((valor) => [valor, ROTULOS_INTERESSE[valor].curto]),
+);

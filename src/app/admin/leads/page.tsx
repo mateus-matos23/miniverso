@@ -224,15 +224,10 @@ export default async function LeadsPage({
           ) : totalGeral === 0 ? (
             <Empty className="border border-border bg-card">
               <EmptyHeader>
-                <EmptyMedia
-                  className="bg-accent text-brand-blue"
-                  variant="icon"
-                >
+                <EmptyMedia variant="icon">
                   <InboxIcon />
                 </EmptyMedia>
-                <EmptyTitle className="text-lg font-semibold text-brand-violet">
-                  Nenhum lead ainda
-                </EmptyTitle>
+                <EmptyTitle>Nenhum lead ainda</EmptyTitle>
                 <EmptyDescription>
                   Os contatos enviados pelo formulário da landing aparecem aqui.
                 </EmptyDescription>
@@ -241,15 +236,10 @@ export default async function LeadsPage({
           ) : (
             <Empty className="border border-border bg-card">
               <EmptyHeader>
-                <EmptyMedia
-                  className="bg-accent text-brand-blue"
-                  variant="icon"
-                >
+                <EmptyMedia variant="icon">
                   <SearchIcon />
                 </EmptyMedia>
-                <EmptyTitle className="text-lg font-semibold text-brand-violet">
-                  Nenhum resultado para o filtro
-                </EmptyTitle>
+                <EmptyTitle>Nenhum resultado para o filtro</EmptyTitle>
                 <EmptyDescription>
                   Nenhum lead corresponde a esta busca ou status.
                 </EmptyDescription>
@@ -279,15 +269,10 @@ export default async function LeadsPage({
           ) : (
             <Empty className="border border-border bg-card">
               <EmptyHeader>
-                <EmptyMedia
-                  className="bg-accent text-brand-blue"
-                  variant="icon"
-                >
+                <EmptyMedia variant="icon">
                   <InboxIcon />
                 </EmptyMedia>
-                <EmptyTitle className="text-lg font-semibold text-brand-violet">
-                  Selecione um lead
-                </EmptyTitle>
+                <EmptyTitle>Selecione um lead</EmptyTitle>
                 <EmptyDescription>
                   Escolha um contato na lista para ver a mensagem e registrar o
                   andamento.

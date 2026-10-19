@@ -6,7 +6,7 @@ import { AvisoBloco } from "./secao";
 
 // Cores dos dados vêm dos tokens da marca (globals.css); SVG não lê classes Tailwind.
 const COR_VISITANTES = "#1e4488"; // brand-blue
-const COR_LEADS = "#00b7e3"; // brand-cyan
+const COR_LEADS = "#1e1645"; // brand-violet (ciano não é texto nem marca sobre fundo claro)
 const COR_SUPERFICIE = "#ffffff";
 const COR_GRADE = "#dbe1ec"; // border
 const COR_EIXO = "#c9d2e3"; // brand-line
@@ -187,7 +187,7 @@ export function GraficoDiario({ metricas }: { metricas: Resultado<Metricas> }) {
         <span className="flex items-center gap-2">
           <span
             aria-hidden="true"
-            className="size-2.5 rounded-full bg-brand-cyan"
+            className="size-2.5 rounded-full bg-brand-violet"
           />
           Leads
         </span>

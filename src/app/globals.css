@@ -84,6 +84,13 @@
   --destructive: #b3261e;
   --destructive-foreground: #ffffff;
   --success: #17694a;
+  --success-foreground: #ffffff;
+  /* Manual sem amarelo: atenção usa o violeta da marca, sempre com fundo tintado e ícone */
+  --warning: #1e1645;
+  --warning-foreground: #fbfcff;
+  /* Texto de erro sobre superfícies escuras (o --destructive fica em 3,1:1 sobre preto) */
+  --destructive-on-dark: #ffb4ab;
+  --admin-canvas: #f5f7fb;
   --border: #dbe1ec;
   --input: #7d8aa5;
   --ring: #1e4488;
@@ -120,7 +127,12 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-on-dark: var(--destructive-on-dark);
   --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-admin-canvas: var(--admin-canvas);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

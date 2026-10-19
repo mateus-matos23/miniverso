@@ -34,16 +34,6 @@ export async function temRascunhoPendente(supabase: Supabase) {
   return (count ?? 0) > 0;
 }
 
-export async function contarLeadsNovos(supabase: Supabase) {
-  const { count, error } = await supabase
-    .from("leads")
-    .select("id", { count: "exact", head: true })
-    .eq("status", "novo");
-
-  if (error) throw error;
-  return count ?? 0;
-}
-
 export async function buscarMetricas(
   supabase: Supabase,
   inicio: string,
@@ -85,31 +75,41 @@ export async function buscarVitalsPorVersao(
 }
 
 export async function buscarResumoConteudo(supabase: Supabase) {
-  const [clientes, projetos, midias] = await Promise.all([
-    supabase.from("clientes").select("status"),
-    supabase.from("conteudos").select("status"),
+  const contagem = (tabela: "clientes" | "conteudos") =>
+    supabase.from(tabela).select("id", { count: "exact", head: true });
+
+  const [
+    clientesTotal,
+    clientesPublicados,
+    projetosTotal,
+    projetosPublicados,
+    midias,
+  ] = await Promise.all([
+    contagem("clientes"),
+    contagem("clientes").eq("status", "published"),
+    contagem("conteudos"),
+    contagem("conteudos").eq("status", "published"),
     supabase.from("midias").select("id", { count: "exact", head: true }),
   ]);
 
-  if (clientes.error) throw clientes.error;
-  if (projetos.error) throw projetos.error;
-  if (midias.error) throw midias.error;
-
-  const clientesLista = clientes.data ?? [];
-  const projetosLista = projetos.data ?? [];
+  for (const resultado of [
+    clientesTotal,
+    clientesPublicados,
+    projetosTotal,
+    projetosPublicados,
+    midias,
+  ]) {
+    if (resultado.error) throw resultado.error;
+  }
 
   return {
     clientes: {
-      total: clientesLista.length,
-      publicados: clientesLista.filter(
-        (cliente) => cliente.status === "published",
-      ).length,
+      total: clientesTotal.count ?? 0,
+      publicados: clientesPublicados.count ?? 0,
     },
     projetos: {
-      total: projetosLista.length,
-      publicados: projetosLista.filter(
-        (projeto) => projeto.status === "published",
-      ).length,
+      total: projetosTotal.count ?? 0,
+      publicados: projetosPublicados.count ?? 0,
     },
     midias: midias.count ?? 0,
   };

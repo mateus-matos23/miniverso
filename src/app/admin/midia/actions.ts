@@ -6,9 +6,9 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import type { MidiaRef } from "@/lib/landing/schema";
 import { paraMidiaRef } from "@/lib/midia";
+import { BUCKET_SITE } from "@/lib/storage";
 import type { MidiaRow } from "@/utils/supabase/database";
 
-const bucket = "site";
 const tiposMime = [
   "image/jpeg",
   "image/png",
@@ -209,7 +209,7 @@ export async function excluirMidia(id: string): Promise<ResultadoSimples> {
     };
   }
 
-  await supabase.storage.from(bucket).remove([midia.caminho]);
+  await supabase.storage.from(BUCKET_SITE).remove([midia.caminho]);
 
   revalidatePath("/admin/midia");
   return { ok: true };

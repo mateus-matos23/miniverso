@@ -30,7 +30,7 @@ export default async function AdminLayout({
   };
 
   return (
-    <div className="flex min-h-svh bg-[#f5f7fb] text-brand-black">
+    <div className="flex min-h-svh bg-admin-canvas text-brand-black">
       <a
         className="sr-only z-50 bg-brand-cyan px-4 py-3 font-semibold text-brand-black focus:not-sr-only focus:fixed focus:left-4 focus:top-3"
         href="#conteudo"

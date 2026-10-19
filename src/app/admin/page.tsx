@@ -8,7 +8,6 @@ import {
   buscarUltimosLeads,
   buscarVitalsPorVersao,
   buscarWebVitals,
-  contarLeadsNovos,
   seguro,
   temRascunhoPendente,
 } from "./_dashboard/dados";
@@ -22,6 +21,7 @@ import { ResumoConteudo } from "./_dashboard/resumo-conteudo";
 import { Secao } from "./_dashboard/secao";
 import { SeletorPeriodo } from "./_dashboard/seletor-periodo";
 import { UltimosLeads } from "./_dashboard/ultimos-leads";
+import { contarLeadsNovos } from "./leads/contagem";
 import { AdminPage, PageHeader } from "./page-header";
 
 export const metadata: Metadata = { title: "Visão geral" };

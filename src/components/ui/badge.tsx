@@ -17,10 +17,19 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
+        success: "bg-success/10 text-success [a]:hover:bg-success/20",
+        warning: "bg-warning/10 text-warning [a]:hover:bg-warning/20",
+        info: "bg-brand-blue/10 text-brand-blue [a]:hover:bg-brand-blue/20",
+      },
+      /** Ponto colorido à esquerda do texto, na cor atual do badge. */
+      dot: {
+        true: "gap-1.5 before:size-1.5 before:shrink-0 before:rounded-full before:bg-current",
+        false: "",
       },
     },
     defaultVariants: {
       variant: "default",
+      dot: false,
     },
   },
 );
@@ -28,6 +37,7 @@ const badgeVariants = cva(
 function Badge({
   className,
   variant = "default",
+  dot = false,
   render,
   ...props
 }: React.ComponentProps<"span"> &
@@ -38,7 +48,7 @@ function Badge({
     const renderProps = {
       "data-slot": "badge",
       "data-variant": variant,
-      className: cn(badgeVariants({ variant }), className),
+      className: cn(badgeVariants({ variant, dot }), className),
       ...props,
     };
 
@@ -49,7 +59,7 @@ function Badge({
     <span
       data-slot="badge"
       data-variant={variant}
-      className={cn(badgeVariants({ variant }), className)}
+      className={cn(badgeVariants({ variant, dot }), className)}
       {...props}
     />
   );

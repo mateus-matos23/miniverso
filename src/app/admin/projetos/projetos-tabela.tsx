@@ -109,7 +109,7 @@ export default function ProjetosTabela({
     <>
       <PageHeader
         actions={projetos.length > 0 ? novoProjeto : undefined}
-        description="Projetos exibidos na landing. Só os publicados aparecem, na ordem definida aqui. Arraste pela alça para reordenar."
+        description="Projetos exibidos na landing. Só os publicados aparecem, na ordem definida aqui. No computador, arraste pela alça para reordenar."
         title="Projetos"
       />
 
@@ -128,12 +128,10 @@ export default function ProjetosTabela({
         {projetos.length === 0 ? (
           <Empty className="border border-border bg-card">
             <EmptyHeader>
-              <EmptyMedia className="bg-accent text-brand-blue" variant="icon">
+              <EmptyMedia variant="icon">
                 <FolderKanbanIcon />
               </EmptyMedia>
-              <EmptyTitle className="text-lg font-semibold text-brand-violet">
-                Nenhum projeto cadastrado
-              </EmptyTitle>
+              <EmptyTitle>Nenhum projeto cadastrado</EmptyTitle>
               <EmptyDescription>
                 Cadastre o primeiro projeto com título, cliente e mídia. Ele só
                 aparece na landing quando estiver como “Publicado”.
@@ -142,116 +140,164 @@ export default function ProjetosTabela({
             <EmptyContent>{novoProjeto}</EmptyContent>
           </Empty>
         ) : (
-          <div className="overflow-hidden rounded-lg border border-border bg-card">
-            <Table
+          <>
+            <ul
               aria-label="Projetos cadastrados"
-              className="min-w-[56rem] text-left"
-              dragAndDropHooks={dragAndDropHooks}
+              className="flex flex-col gap-3 lg:hidden"
             >
-              <TableHeader className="border-b border-border bg-muted/60 text-sm text-muted-foreground">
-                <TableHead
-                  className="w-12 px-3 py-3 font-medium"
-                  id="reordenar"
+              {ordemExibida.map((projeto) => (
+                <li
+                  className="flex items-start gap-4 rounded-lg border border-border bg-card p-4"
+                  key={projeto.id}
                 >
-                  <span className="sr-only">Reordenar</span>
-                </TableHead>
-                <TableHead
-                  className="w-36 px-5 py-3 font-medium"
-                  id="miniatura"
-                >
-                  Miniatura
-                </TableHead>
-                <TableHead
-                  className="px-5 py-3 font-medium"
-                  id="titulo"
-                  isRowHeader
-                >
-                  Título
-                </TableHead>
-                <TableHead className="px-5 py-3 font-medium" id="cliente">
-                  Cliente
-                </TableHead>
-                <TableHead className="px-5 py-3 font-medium" id="categoria">
-                  Categoria
-                </TableHead>
-                <TableHead className="px-5 py-3 font-medium" id="status">
-                  Status
-                </TableHead>
-                <TableHead className="px-5 py-3 font-medium" id="ordem">
-                  Ordem
-                </TableHead>
-                <TableHead
-                  className="w-20 px-5 py-3 text-right font-medium"
-                  id="acoes"
-                >
-                  <span className="sr-only">Ações</span>
-                </TableHead>
-              </TableHeader>
-              <TableBody items={ordemExibida}>
-                {(projeto) => (
-                  <TableRow
-                    className="data-dragging:opacity-50"
-                    id={projeto.id}
-                    textValue={projeto.titulo}
-                  >
-                    <TableCell className="px-3 py-3">
-                      <Button
-                        aria-label={`Arrastar projeto ${projeto.titulo}`}
-                        className="cursor-grab"
-                        size="icon-sm"
-                        slot="drag"
-                        variant="ghost"
-                      >
-                        <GripVerticalIcon />
-                      </Button>
-                    </TableCell>
-                    <TableCell className="px-5 py-3">
-                      <Miniatura projeto={projeto} />
-                    </TableCell>
-                    <TableCell className="px-5 py-3">
-                      <Link
-                        className="font-semibold text-brand-violet hover:underline"
-                        href={`/admin/projetos/${projeto.id}`}
-                      >
-                        {projeto.titulo}
-                      </Link>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        /projetos/{projeto.slug}
-                      </p>
-                    </TableCell>
-                    <TableCell className="px-5 py-3 text-brand-ink">
+                  <Miniatura projeto={projeto} />
+                  <div className="flex min-w-0 flex-1 flex-col gap-2">
+                    <TituloProjeto projeto={projeto} />
+                    <p className="text-sm text-brand-ink">
                       {projeto.clienteNome}
-                    </TableCell>
-                    <TableCell className="px-5 py-3 text-muted-foreground">
-                      {projeto.categoria ?? "—"}
-                    </TableCell>
-                    <TableCell className="px-5 py-3">
+                      <span className="text-muted-foreground">
+                        {" · "}
+                        {projeto.categoria ?? "—"}
+                      </span>
+                    </p>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
                       <StatusBadge status={projeto.status} />
-                    </TableCell>
-                    <TableCell className="px-5 py-3 tabular-nums text-muted-foreground">
-                      {posicoes.get(projeto.id)}
-                    </TableCell>
-                    <TableCell className="px-5 py-3 text-right">
-                      <ProjetoAcoes
-                        disabled={isPending}
-                        onAcao={executar}
-                        projeto={projeto}
-                      />
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                      <span className="tabular-nums">
+                        Ordem {posicoes.get(projeto.id)}
+                      </span>
+                    </div>
+                  </div>
+                  <ProjetoAcoes
+                    disabled={isPending}
+                    onAcao={executar}
+                    projeto={projeto}
+                  />
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-sm text-muted-foreground lg:hidden">
+              Para reordenar, use uma tela maior.
+            </p>
+
+            <div className="hidden overflow-hidden rounded-lg border border-border bg-card lg:block">
+              <Table
+                aria-label="Projetos cadastrados"
+                className="text-left"
+                dragAndDropHooks={dragAndDropHooks}
+              >
+                <TableHeader className="border-b border-border bg-muted/60 text-sm text-muted-foreground">
+                  <TableHead
+                    className="w-12 px-3 py-3 font-medium"
+                    id="reordenar"
+                  >
+                    <span className="sr-only">Reordenar</span>
+                  </TableHead>
+                  <TableHead
+                    className="w-36 px-5 py-3 font-medium"
+                    id="miniatura"
+                  >
+                    Miniatura
+                  </TableHead>
+                  <TableHead
+                    className="px-5 py-3 font-medium"
+                    id="titulo"
+                    isRowHeader
+                  >
+                    Título
+                  </TableHead>
+                  <TableHead className="px-5 py-3 font-medium" id="cliente">
+                    Cliente
+                  </TableHead>
+                  <TableHead className="px-5 py-3 font-medium" id="categoria">
+                    Categoria
+                  </TableHead>
+                  <TableHead className="px-5 py-3 font-medium" id="status">
+                    Status
+                  </TableHead>
+                  <TableHead className="px-5 py-3 font-medium" id="ordem">
+                    Ordem
+                  </TableHead>
+                  <TableHead
+                    className="w-20 px-5 py-3 text-right font-medium"
+                    id="acoes"
+                  >
+                    <span className="sr-only">Ações</span>
+                  </TableHead>
+                </TableHeader>
+                <TableBody items={ordemExibida}>
+                  {(projeto) => (
+                    <TableRow
+                      className="data-dragging:opacity-50"
+                      id={projeto.id}
+                      textValue={projeto.titulo}
+                    >
+                      <TableCell className="px-3 py-3">
+                        <Button
+                          aria-label={`Arrastar projeto ${projeto.titulo}`}
+                          className="cursor-grab"
+                          size="icon-sm"
+                          slot="drag"
+                          variant="ghost"
+                        >
+                          <GripVerticalIcon />
+                        </Button>
+                      </TableCell>
+                      <TableCell className="px-5 py-3">
+                        <Miniatura projeto={projeto} />
+                      </TableCell>
+                      <TableCell className="px-5 py-3">
+                        <TituloProjeto projeto={projeto} />
+                      </TableCell>
+                      <TableCell className="px-5 py-3 text-brand-ink">
+                        {projeto.clienteNome}
+                      </TableCell>
+                      <TableCell className="px-5 py-3 text-muted-foreground">
+                        {projeto.categoria ?? "—"}
+                      </TableCell>
+                      <TableCell className="px-5 py-3">
+                        <StatusBadge status={projeto.status} />
+                      </TableCell>
+                      <TableCell className="px-5 py-3 tabular-nums text-muted-foreground">
+                        {posicoes.get(projeto.id)}
+                      </TableCell>
+                      <TableCell className="px-5 py-3 text-right">
+                        <ProjetoAcoes
+                          disabled={isPending}
+                          onAcao={executar}
+                          projeto={projeto}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </>
         )}
       </div>
     </>
   );
 }
 
+function TituloProjeto({ projeto }: { projeto: ProjetoListItem }) {
+  return (
+    <div className="min-w-0">
+      <Link
+        className="break-words font-semibold text-brand-violet hover:underline"
+        href={`/admin/projetos/${projeto.id}`}
+      >
+        {projeto.titulo}
+      </Link>
+      <p className="mt-1 break-all text-sm text-muted-foreground">
+        /projetos/{projeto.slug}
+      </p>
+    </div>
+  );
+}
+
 function Miniatura({ projeto }: { projeto: ProjetoListItem }) {
   return (
-    <span className="grid aspect-video w-24 place-items-center overflow-hidden rounded-md border border-border bg-brand-aurora">
+    <span className="grid aspect-video w-24 shrink-0 place-items-center overflow-hidden rounded-md border border-border bg-brand-aurora">
       {projeto.midiaUrl && projeto.tipoMidia === "imagem" ? (
         <Image
           alt={`Miniatura de ${projeto.titulo}`}
