@@ -1,12 +1,12 @@
 import { after } from "next/server";
 import { z } from "zod";
-import { criarClientePublico } from "@/lib/public-content";
 import {
   dispositivoDoUserAgent,
   ehBot,
   hashVisitante,
   ipDaRequisicao,
 } from "@/lib/telemetria";
+import { criarClienteServidor } from "@/utils/supabase/admin";
 import type { Json } from "@/utils/supabase/database";
 
 // Corpo máximo aceito. Lotes reais ficam bem abaixo disso (até 20 itens).
@@ -53,7 +53,7 @@ async function registrarLote(
   dispositivo: string,
 ) {
   try {
-    const { error } = await criarClientePublico().rpc("registrar_telemetria", {
+    const { error } = await criarClienteServidor().rpc("registrar_telemetria", {
       p_visitante_hash: visitanteHash,
       p_dispositivo: dispositivo,
       p_eventos: lote.eventos as unknown as Json,

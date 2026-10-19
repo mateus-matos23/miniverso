@@ -2,8 +2,8 @@
 
 import { headers } from "next/headers";
 import { z } from "zod";
-import { criarClientePublico } from "@/lib/public-content";
 import { hashVisitante, ipDaRequisicao } from "@/lib/telemetria";
+import { criarClienteServidor } from "@/utils/supabase/admin";
 
 const interesses = [
   "implantacao",
@@ -139,7 +139,7 @@ export async function enviarContato(
     userAgent: cabecalhos.get("user-agent") ?? "",
   });
 
-  const { error } = await criarClientePublico().rpc("registrar_lead", {
+  const { error } = await criarClienteServidor().rpc("registrar_lead", {
     p_nome: dados.nome,
     p_email: dados.email,
     p_escola: dados.escola ?? "",

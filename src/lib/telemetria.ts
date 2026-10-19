@@ -1,29 +1,13 @@
+import "server-only";
 import { createHash } from "node:crypto";
+import { envServidor } from "@/config/env.server";
 
 /**
  * Helpers da telemetria anônima. Só para o servidor (Route Handlers e Server
  * Actions): o salt vem de `TELEMETRIA_SALT` e nunca pode ir para o client.
  */
 
-const saltPadrao = "miniverso-telemetria-local";
-let avisouSaltAusente = false;
-
 type LeitorDeCabecalhos = { get(nome: string): string | null };
-
-function salt(): string {
-  const valor = process.env.TELEMETRIA_SALT;
-
-  if (valor) return valor;
-
-  if (!avisouSaltAusente) {
-    avisouSaltAusente = true;
-    console.warn(
-      "[telemetria] TELEMETRIA_SALT não definido; usando salt de desenvolvimento.",
-    );
-  }
-
-  return saltPadrao;
-}
 
 /** Data do dia no fuso de Fortaleza, no formato YYYY-MM-DD. */
 function diaEmFortaleza(agora: Date): string {
@@ -55,13 +39,20 @@ export function hashVisitante({
   agora?: Date;
 }): string {
   return createHash("sha256")
-    .update(`${ip}|${userAgent}|${diaEmFortaleza(agora)}|${salt()}`)
+    .update(
+      `${ip}|${userAgent}|${diaEmFortaleza(agora)}|${envServidor.TELEMETRIA_SALT}`,
+    )
     .digest("hex");
 }
 
-/** IP do cliente: primeiro valor de x-forwarded-for, depois x-real-ip. */
+/**
+ * IP do cliente: último valor de x-forwarded-for, depois x-real-ip.
+ * O primeiro valor é escrito pelo próprio cliente (qualquer um forja), então
+ * o último é o que o proxy mais próximo anexou. Usar o primeiro permitiria
+ * burlar o rate limit trocando o IP a cada envio.
+ */
 export function ipDaRequisicao(headers: LeitorDeCabecalhos): string {
-  const encaminhado = headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  const encaminhado = headers.get("x-forwarded-for")?.split(",").at(-1)?.trim();
   if (encaminhado) return encaminhado;
 
   const real = headers.get("x-real-ip")?.trim();
