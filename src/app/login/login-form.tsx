@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import { useActionState, useState } from "react";
 
 import { type LoginState, login } from "@/app/actions/auth";
 import { Alert } from "@/components/ui/alert";
@@ -12,12 +13,19 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 
 const initialState: LoginState = {};
 
 export default function LoginForm() {
   const [state, formAction, pending] = useActionState(login, initialState);
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
   return (
     <form action={formAction} className="mt-8" noValidate>
@@ -48,17 +56,38 @@ export default function LoginForm() {
 
         <Field data-invalid={Boolean(state.erros?.password) || undefined}>
           <FieldLabel htmlFor="login-password">Senha</FieldLabel>
-          <Input
-            aria-describedby={
-              state.erros?.password ? "login-password-error" : undefined
-            }
-            aria-invalid={Boolean(state.erros?.password) || undefined}
-            autoComplete="current-password"
-            id="login-password"
-            name="password"
-            required
-            type="password"
-          />
+          <InputGroup>
+            <InputGroupInput
+              aria-describedby={
+                state.erros?.password ? "login-password-error" : undefined
+              }
+              aria-invalid={Boolean(state.erros?.password) || undefined}
+              autoComplete="current-password"
+              id="login-password"
+              name="password"
+              required
+              type={mostrarSenha ? "text" : "password"}
+            />
+            <InputGroupAddon
+              align="inline-end"
+              className="self-stretch py-0 pr-1"
+            >
+              <InputGroupButton
+                aria-controls="login-password"
+                className="h-full px-2.5"
+                onPress={() => setMostrarSenha((atual) => !atual)}
+                size="sm"
+                variant="ghost"
+              >
+                {mostrarSenha ? (
+                  <EyeOffIcon aria-hidden="true" data-icon="inline-start" />
+                ) : (
+                  <EyeIcon aria-hidden="true" data-icon="inline-start" />
+                )}
+                {mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
           <FieldError id="login-password-error">
             {state.erros?.password}
           </FieldError>

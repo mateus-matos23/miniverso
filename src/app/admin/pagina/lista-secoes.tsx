@@ -110,6 +110,8 @@ export function ListaSecoes({
                 "flex items-center gap-1 rounded-md border bg-card pr-1 outline-none",
                 "border-border data-selected:border-ring data-selected:ring-2 data-selected:ring-ring/30",
                 "data-focus-visible:ring-3 data-focus-visible:ring-ring/50",
+                // Alça de arrasto (botão icon-sm, vinda de _fields/arrasto) com 44px de alvo de toque.
+                "[&_button[data-size=icon-sm]]:size-11",
                 classesItemArrastavel,
               )}
             >
@@ -121,9 +123,9 @@ export function ListaSecoes({
                 )}
               >
                 <Rotulo nome={nome} comErro={comErro} />
-                <span className="w-full truncate text-xs text-muted-foreground">
-                  {secao.dados.rotulo}
-                  {secao.visivel ? "" : " · oculta"}
+                <span className="flex w-full min-w-0 flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+                  <span className="truncate">{secao.dados.rotulo}</span>
+                  {secao.visivel ? null : <span>Oculta</span>}
                 </span>
               </div>
               <Button
@@ -133,7 +135,7 @@ export function ListaSecoes({
                     : `Mostrar seção ${nome}`
                 }
                 variant="ghost"
-                size="icon-sm"
+                size="icon-lg"
                 onPress={() => onAlternarVisivel(secao.tipo)}
               >
                 {secao.visivel ? (
@@ -184,7 +186,7 @@ export function ListaConfiguracoes({
                 type="button"
                 aria-current={selecionado ? "true" : undefined}
                 onClick={() => onSelecionar({ tipo: "config", grupo })}
-                className="flex w-full min-w-0 items-center rounded-md px-3 py-2.5 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                className="flex min-h-11 w-full min-w-0 items-center rounded-md px-3 py-2.5 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <Rotulo
                   nome={gruposConfig[grupo].nome}

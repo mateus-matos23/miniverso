@@ -14,9 +14,9 @@ export function SeletorPeriodo({ atual }: { atual: Periodo }) {
 
         return (
           <Link
-            aria-current={ativo ? "page" : undefined}
+            aria-current={ativo ? "true" : undefined}
             className={cn(
-              "inline-flex h-9 items-center rounded-sm px-3 text-sm font-medium transition-colors",
+              "inline-flex h-11 items-center rounded-sm px-3 text-sm font-medium transition-colors",
               ativo
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-accent hover:text-brand-violet",

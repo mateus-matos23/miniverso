@@ -1,3 +1,4 @@
+import { Card } from "@/components/ui/card";
 import type { Resultado } from "./dados";
 import { formatarInteiro } from "./formatar";
 import { rotulosAlvoCta, rotulosDispositivo, rotulosOrigem } from "./rotulos";
@@ -18,7 +19,7 @@ function ListaBarras({
   const maximo = Math.max(1, ...itens.map((item) => item.valor));
 
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
+    <Card className="p-5">
       <h3 className="text-sm font-semibold text-brand-black">{titulo}</h3>
       <p className="mt-1 text-xs text-muted-foreground">{descricao}</p>
       {itens.length === 0 ? (
@@ -50,7 +51,7 @@ function ListaBarras({
           ))}
         </ul>
       )}
-    </div>
+    </Card>
   );
 }
 

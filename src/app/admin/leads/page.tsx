@@ -1,4 +1,9 @@
-import { DownloadIcon, InboxIcon, SearchIcon } from "lucide-react";
+import {
+  DownloadIcon,
+  ExternalLinkIcon,
+  InboxIcon,
+  SearchIcon,
+} from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -142,10 +147,13 @@ export default async function LeadsPage({
               return (
                 <Link
                   aria-current={ativo ? "page" : undefined}
-                  className={buttonVariants({
-                    size: "sm",
-                    variant: ativo ? "secondary" : "ghost",
-                  })}
+                  className={cn(
+                    buttonVariants({
+                      size: "sm",
+                      variant: ativo ? "secondary" : "ghost",
+                    }),
+                    "h-11",
+                  )}
                   href={hrefLeads({ status: opcao.valor, q: filtros.q })}
                   key={opcao.valor}
                 >
@@ -232,6 +240,18 @@ export default async function LeadsPage({
                   Os contatos enviados pelo formulário da landing aparecem aqui.
                 </EmptyDescription>
               </EmptyHeader>
+              <EmptyContent>
+                <Link
+                  className={buttonVariants({ variant: "outline" })}
+                  href="/#contato"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  Ver o formulário na landing
+                  <ExternalLinkIcon aria-hidden="true" />
+                  <span className="sr-only">(abre em nova aba)</span>
+                </Link>
+              </EmptyContent>
             </Empty>
           ) : (
             <Empty className="border border-border bg-card">

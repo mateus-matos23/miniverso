@@ -164,26 +164,19 @@ export default function ClientesTable({
                   >
                     <span className="sr-only">Reordenar</span>
                   </TableHead>
-                  <TableHead className="w-24 px-5 py-3 font-medium" id="logo">
+                  <TableHead className="w-24 font-medium" id="logo">
                     Logo
                   </TableHead>
-                  <TableHead
-                    className="px-5 py-3 font-medium"
-                    id="nome"
-                    isRowHeader
-                  >
+                  <TableHead className="font-medium" id="nome" isRowHeader>
                     Nome
                   </TableHead>
-                  <TableHead className="px-5 py-3 font-medium" id="status">
+                  <TableHead className="font-medium" id="status">
                     Status
                   </TableHead>
-                  <TableHead className="px-5 py-3 font-medium" id="ordem">
+                  <TableHead className="font-medium" id="ordem">
                     Ordem
                   </TableHead>
-                  <TableHead
-                    className="w-20 px-5 py-3 text-right font-medium"
-                    id="acoes"
-                  >
+                  <TableHead className="w-20 text-right font-medium" id="acoes">
                     <span className="sr-only">Ações</span>
                   </TableHead>
                 </TableHeader>
@@ -205,19 +198,19 @@ export default function ClientesTable({
                           <GripVerticalIcon />
                         </Button>
                       </TableCell>
-                      <TableCell className="px-5 py-3">
+                      <TableCell>
                         <Logo cliente={cliente} />
                       </TableCell>
-                      <TableCell className="px-5 py-3 font-semibold text-brand-violet">
+                      <TableCell className="font-semibold text-brand-violet">
                         {cliente.nome}
                       </TableCell>
-                      <TableCell className="px-5 py-3">
+                      <TableCell>
                         <StatusBadge status={cliente.status} />
                       </TableCell>
-                      <TableCell className="px-5 py-3 tabular-nums text-muted-foreground">
+                      <TableCell className="tabular-nums text-muted-foreground">
                         {posicoes.get(cliente.id)}
                       </TableCell>
-                      <TableCell className="px-5 py-3 text-right">
+                      <TableCell className="text-right">
                         <ClienteActions cliente={cliente} />
                       </TableCell>
                     </TableRow>
@@ -241,7 +234,6 @@ function Logo({ cliente }: { cliente: ClienteListItem }) {
           className="size-full object-contain"
           height={56}
           src={cliente.logoUrl}
-          unoptimized
           width={56}
         />
       ) : (

@@ -91,8 +91,12 @@ export function DesempenhoVersoes({
             </th>
             {METRICAS_CORE.map((metrica) => (
               <th className="px-4 py-3 font-medium" key={metrica} scope="col">
-                {metrica} · {rotulosMetrica[metrica].nome.toLowerCase()}{" "}
-                (celular)
+                <span className="block font-semibold text-brand-ink">
+                  {metrica}
+                </span>
+                <span className="block font-normal">
+                  {rotulosMetrica[metrica].nome.toLowerCase()} (celular)
+                </span>
               </th>
             ))}
           </tr>

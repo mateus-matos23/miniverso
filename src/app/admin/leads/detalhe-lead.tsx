@@ -38,7 +38,6 @@ import {
   STATUS_LEAD,
   type StatusLead,
 } from "./rotulos";
-import { StatusLeadBadge } from "./status-lead-badge";
 
 const limiteNotas = 4000;
 
@@ -126,7 +125,26 @@ export function DetalheLead({
 
       <header className="flex flex-col gap-3 border-b border-border pb-6">
         <div className="flex flex-wrap items-center gap-3">
-          <StatusLeadBadge status={lead.status} />
+          <Select
+            aria-label="Status do lead"
+            className="w-full sm:w-56"
+            isDisabled={isPending}
+            onSelectionChange={(chave) => {
+              if (chave && chave !== lead.status) mudarStatus(String(chave));
+            }}
+            selectedKey={lead.status}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {STATUS_LEAD.map((status) => (
+                <SelectItem id={status} key={status}>
+                  {rotulosStatusLead[status]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <span className="text-sm text-muted-foreground">
             {rotulosInteresseLead[lead.interesse] ?? lead.interesse}
           </span>
@@ -166,9 +184,6 @@ export function DetalheLead({
         </Campo>
         <Campo rotulo="Escola">{lead.escola}</Campo>
         <Campo rotulo="Cargo">{lead.cargo}</Campo>
-        <Campo rotulo="Interesse">
-          {rotulosInteresseLead[lead.interesse] ?? lead.interesse}
-        </Campo>
         <Campo rotulo="Recebido em">
           <time dateTime={lead.criado_em}>
             {formatarDataHora(lead.criado_em)}
@@ -179,31 +194,6 @@ export function DetalheLead({
             {formatarDataHora(lead.atualizado_em)}
           </time>
         </Campo>
-        <div className="flex flex-col gap-2">
-          <dt className="text-sm font-medium text-muted-foreground">Status</dt>
-          <dd>
-            <Select
-              aria-label="Status do lead"
-              className="w-full sm:w-56"
-              isDisabled={isPending}
-              onSelectionChange={(chave) => {
-                if (chave && chave !== lead.status) mudarStatus(String(chave));
-              }}
-              selectedKey={lead.status}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUS_LEAD.map((status) => (
-                  <SelectItem id={status} key={status}>
-                    {rotulosStatusLead[status]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </dd>
-        </div>
       </dl>
 
       <section className="flex flex-col gap-3">

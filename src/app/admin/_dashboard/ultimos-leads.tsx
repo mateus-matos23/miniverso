@@ -41,11 +41,12 @@ export function UltimosLeads({
             >
               {lead.nome}
             </Link>
-            <p className="truncate text-sm text-muted-foreground">
-              {[lead.escola, rotulosInteresse[lead.interesse] ?? lead.interesse]
-                .filter(Boolean)
-                .join(" · ")}
-            </p>
+            <div className="flex min-w-0 flex-wrap gap-x-4 gap-y-0.5 text-sm text-muted-foreground">
+              {lead.escola ? (
+                <span className="truncate">{lead.escola}</span>
+              ) : null}
+              <span>{rotulosInteresse[lead.interesse] ?? lead.interesse}</span>
+            </div>
           </div>
           <time
             className="shrink-0 text-sm text-muted-foreground"

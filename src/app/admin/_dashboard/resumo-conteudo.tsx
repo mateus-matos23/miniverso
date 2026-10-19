@@ -1,6 +1,8 @@
 import { FolderKanbanIcon, ImageIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
 
+import { Card } from "@/components/ui/card";
+
 import type { Resultado, ResumoDeConteudo } from "./dados";
 import { formatarInteiro } from "./formatar";
 import { AvisoBloco } from "./secao";
@@ -53,10 +55,7 @@ export function ResumoConteudo({
       {cartoes.map((cartao) => {
         const Icone = cartao.icone;
         return (
-          <article
-            className="flex flex-col rounded-lg border border-border bg-card p-5"
-            key={cartao.id}
-          >
+          <Card className="flex flex-col p-5" key={cartao.id}>
             <h3 className="flex items-center gap-2 text-sm font-semibold text-brand-black">
               <Icone aria-hidden="true" className="size-4 text-brand-blue" />
               {cartao.titulo}
@@ -73,7 +72,7 @@ export function ResumoConteudo({
             >
               {cartao.rotulo}
             </Link>
-          </article>
+          </Card>
         );
       })}
     </div>

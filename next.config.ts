@@ -8,10 +8,27 @@ const producao = process.env.NODE_ENV === "production";
 // Mídias da biblioteca, logos de clientes e o cliente Supabase falam com esta origem.
 // Sem a variável (build sem .env) ela simplesmente fica de fora da CSP.
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const origemSupabase = supabaseUrl ? new URL(supabaseUrl).origin : null;
+const urlSupabase = supabaseUrl ? new URL(supabaseUrl) : null;
+const origemSupabase = urlSupabase?.origin ?? null;
 const supabase = origemSupabase ? [origemSupabase] : [];
 const supabaseWs = origemSupabase
   ? [origemSupabase.replace(/^https:/, "wss:")]
+  : [];
+
+// Imagens do Storage passam pelo otimizador. Os caminhos cobrem as URLs públicas
+// (biblioteca do site) e as assinadas (logos e mídias de projetos). Sem `search`
+// de propósito: as URLs assinadas levam ?token=, e o padrão fixa só host e caminho.
+const imagensSupabase: NonNullable<
+  NonNullable<NextConfig["images"]>["remotePatterns"]
+> = urlSupabase
+  ? ["/storage/v1/object/public/**", "/storage/v1/object/sign/**"].map(
+      (pathname) => ({
+        protocol: urlSupabase.protocol === "http:" ? "http" : "https",
+        hostname: urlSupabase.hostname,
+        port: urlSupabase.port,
+        pathname,
+      }),
+    )
   : [];
 
 const diretiva = (nome: string, ...fontes: string[]) =>
@@ -43,6 +60,9 @@ const contentSecurityPolicy = [
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  images: {
+    remotePatterns: imagensSupabase,
+  },
   experimental: {
     serverActions: { bodySizeLimit: uploadBodyLimit },
     // O proxy cobre /admin e, acima do limite, entregaria o body truncado.

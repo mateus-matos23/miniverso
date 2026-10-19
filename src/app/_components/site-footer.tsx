@@ -6,13 +6,16 @@ import { BrandMark } from "./brand-mark";
 /** Faixa contínua com os serviços; duas cópias para o loop não ter emenda. */
 function ServicesMarquee({ services }: { services: string[] }) {
   return (
-    <div
-      aria-hidden="true"
-      className="overflow-hidden border-b border-white/10 py-6"
-    >
-      <div className="flex w-max animate-marquee motion-reduce:animate-none">
+    <div className="group/marquee overflow-hidden border-b border-white/10 py-6">
+      <div className="flex w-max animate-marquee group-focus-within/marquee:[animation-play-state:paused] group-hover/marquee:[animation-play-state:paused] motion-reduce:animate-none">
+        {/* Só a primeira cópia é lida; a duplicata existe para o loop sem emenda. */}
         {[0, 1].map((copy) => (
-          <ul className="flex shrink-0" key={copy}>
+          <ul
+            aria-hidden={copy > 0 || undefined}
+            aria-label={copy === 0 ? "Serviços" : undefined}
+            className="flex shrink-0"
+            key={copy}
+          >
             {services.map((service) => (
               <li
                 className="flex items-center gap-8 pr-8 font-display text-display-md font-bold whitespace-nowrap text-brand-white/90"

@@ -7,7 +7,7 @@ type BrandMarkProps = {
   tone?: "white" | "color";
   href?: string;
   className?: string;
-  priority?: boolean;
+  preload?: boolean;
 };
 
 /** Logo horizontal oficial. A área de respiro segue a regra do "o" do manual. */
@@ -15,7 +15,7 @@ export function BrandMark({
   tone = "white",
   href = "/",
   className,
-  priority = false,
+  preload = false,
 }: BrandMarkProps) {
   return (
     <a
@@ -25,7 +25,7 @@ export function BrandMark({
       <Image
         alt="Miniverso"
         className="h-7 w-auto sm:h-8"
-        priority={priority}
+        preload={preload}
         sizes="200px"
         src={tone === "white" ? logoWhite : logoColor}
       />

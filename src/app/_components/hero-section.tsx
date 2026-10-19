@@ -31,9 +31,8 @@ function MoldaMidia({ midia }: { midia: MidiaRef }) {
           alt={midia.alt}
           className="object-cover"
           fill
-          priority
-          // o host da biblioteca não está em images.remotePatterns, então a imagem sai sem otimização
-          unoptimized
+          // LCP do hero: o preload coloca o <link> no <head>.
+          preload
           sizes="(min-width: 1024px) 45vw, 100vw"
           src={midia.url}
         />

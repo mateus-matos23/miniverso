@@ -43,7 +43,6 @@ function ProjectCard({ projeto }: { projeto: PublicConteudo }) {
             fill
             sizes="(min-width: 1280px) 26rem, (min-width: 640px) 45vw, 100vw"
             src={projeto.midiaUrl}
-            unoptimized
           />
         ) : null}
       </div>

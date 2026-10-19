@@ -140,7 +140,7 @@ export function AdminSidebar({
         <Image
           alt="Miniverso — painel"
           className="h-7 w-auto"
-          priority
+          preload
           src={logoWhite}
         />
       </Link>
@@ -170,7 +170,7 @@ export function AdminTopbar({
         <Image
           alt="Miniverso — painel"
           className="h-6 w-auto"
-          priority
+          preload
           src={logoWhite}
         />
       </Link>

@@ -18,7 +18,7 @@ export default async function LoginPage() {
         <Image
           alt=""
           className="h-24 w-auto self-start"
-          priority
+          preload
           src={logoWhite}
         />
         <p className="max-w-[12ch] font-display text-display-lg font-bold">
@@ -31,7 +31,7 @@ export default async function LoginPage() {
           <Image
             alt="Miniverso"
             className="h-8 w-auto lg:hidden"
-            priority
+            preload
             src={logoColor}
           />
           <h1 className="mt-10 font-display lg:mt-0 text-display-md font-bold text-brand-violet">

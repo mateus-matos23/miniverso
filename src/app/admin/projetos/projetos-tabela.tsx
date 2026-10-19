@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
 import { toast } from "sonner";
 
@@ -177,35 +176,25 @@ export default function ProjetosTabela({
                   >
                     <span className="sr-only">Reordenar</span>
                   </TableHead>
-                  <TableHead
-                    className="w-36 px-5 py-3 font-medium"
-                    id="miniatura"
-                  >
+                  <TableHead className="w-36 font-medium" id="miniatura">
                     Miniatura
                   </TableHead>
-                  <TableHead
-                    className="px-5 py-3 font-medium"
-                    id="titulo"
-                    isRowHeader
-                  >
+                  <TableHead className="font-medium" id="titulo" isRowHeader>
                     Título
                   </TableHead>
-                  <TableHead className="px-5 py-3 font-medium" id="cliente">
+                  <TableHead className="font-medium" id="cliente">
                     Cliente
                   </TableHead>
-                  <TableHead className="px-5 py-3 font-medium" id="categoria">
+                  <TableHead className="font-medium" id="categoria">
                     Categoria
                   </TableHead>
-                  <TableHead className="px-5 py-3 font-medium" id="status">
+                  <TableHead className="font-medium" id="status">
                     Status
                   </TableHead>
-                  <TableHead className="px-5 py-3 font-medium" id="ordem">
+                  <TableHead className="font-medium" id="ordem">
                     Ordem
                   </TableHead>
-                  <TableHead
-                    className="w-20 px-5 py-3 text-right font-medium"
-                    id="acoes"
-                  >
+                  <TableHead className="w-20 text-right font-medium" id="acoes">
                     <span className="sr-only">Ações</span>
                   </TableHead>
                 </TableHeader>
@@ -227,25 +216,25 @@ export default function ProjetosTabela({
                           <GripVerticalIcon />
                         </Button>
                       </TableCell>
-                      <TableCell className="px-5 py-3">
+                      <TableCell>
                         <Miniatura projeto={projeto} />
                       </TableCell>
-                      <TableCell className="px-5 py-3">
+                      <TableCell>
                         <TituloProjeto projeto={projeto} />
                       </TableCell>
-                      <TableCell className="px-5 py-3 text-brand-ink">
+                      <TableCell className="text-brand-ink">
                         {projeto.clienteNome}
                       </TableCell>
-                      <TableCell className="px-5 py-3 text-muted-foreground">
+                      <TableCell className="text-muted-foreground">
                         {projeto.categoria ?? "—"}
                       </TableCell>
-                      <TableCell className="px-5 py-3">
+                      <TableCell>
                         <StatusBadge status={projeto.status} />
                       </TableCell>
-                      <TableCell className="px-5 py-3 tabular-nums text-muted-foreground">
+                      <TableCell className="tabular-nums text-muted-foreground">
                         {posicoes.get(projeto.id)}
                       </TableCell>
-                      <TableCell className="px-5 py-3 text-right">
+                      <TableCell className="text-right">
                         <ProjetoAcoes
                           disabled={isPending}
                           onAcao={executar}
@@ -289,7 +278,6 @@ function Miniatura({ projeto }: { projeto: ProjetoListItem }) {
           className="size-full object-cover"
           height={54}
           src={projeto.midiaUrl}
-          unoptimized
           width={96}
         />
       ) : null}
@@ -320,7 +308,6 @@ function ProjetoAcoes({
   disabled: boolean;
   onAcao: (acao: () => Promise<AcaoConteudoState>) => void;
 }) {
-  const router = useRouter();
   const [excluirAberto, setExcluirAberto] = useState(false);
   const [deleteState, deleteAction, deleting] = useActionState(
     excluirConteudo,
@@ -341,9 +328,7 @@ function ProjetoAcoes({
         </Button>
         <DropdownMenu>
           <DropdownMenuGroup>
-            <DropdownMenuItem
-              onAction={() => router.push(`/admin/projetos/${projeto.id}`)}
-            >
+            <DropdownMenuItem href={`/admin/projetos/${projeto.id}`}>
               <PencilIcon data-icon="inline-start" />
               Editar
             </DropdownMenuItem>
@@ -375,13 +360,9 @@ function ProjetoAcoes({
             </DropdownMenuItem>
             {publicado ? (
               <DropdownMenuItem
-                onAction={() =>
-                  window.open(
-                    `/projetos/${projeto.slug}`,
-                    "_blank",
-                    "noopener,noreferrer",
-                  )
-                }
+                href={`/projetos/${projeto.slug}`}
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 <ExternalLinkIcon data-icon="inline-start" />
                 Ver na landing

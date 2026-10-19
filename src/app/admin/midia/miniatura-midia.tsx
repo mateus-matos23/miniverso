@@ -23,7 +23,6 @@ export function MiniaturaMidia({
           src={midia.url}
           alt={midia.alt}
           fill
-          unoptimized
           sizes="(min-width: 1024px) 240px, 45vw"
           className="object-cover"
         />

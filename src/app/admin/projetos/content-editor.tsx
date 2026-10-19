@@ -446,8 +446,9 @@ export default function ContentEditor({
                 alt=""
                 className="size-full object-cover"
                 height={500}
+                // blob: é a prévia local do upload recém-escolhido; a URL assinada do arquivo salvo passa pelo otimizador
                 src={midiaExibida.url}
-                unoptimized
+                unoptimized={midiaExibida.url.startsWith("blob:")}
                 width={900}
               />
             ) : null}

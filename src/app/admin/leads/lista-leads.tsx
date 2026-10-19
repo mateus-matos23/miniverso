@@ -63,9 +63,13 @@ export function ListaLeads({
                     {formatarRelativo(lead.criado_em)}
                   </time>
                 </span>
-                <span className="truncate text-sm text-muted-foreground">
-                  {lead.escola ?? "Escola não informada"} ·{" "}
-                  {rotulosInteresseLead[lead.interesse] ?? lead.interesse}
+                <span className="flex min-w-0 flex-wrap gap-x-4 gap-y-0.5 text-sm text-muted-foreground">
+                  <span className="truncate">
+                    {lead.escola ?? "Escola não informada"}
+                  </span>
+                  <span>
+                    {rotulosInteresseLead[lead.interesse] ?? lead.interesse}
+                  </span>
                 </span>
                 <span className="mt-1">
                   <StatusLeadBadge status={lead.status} />

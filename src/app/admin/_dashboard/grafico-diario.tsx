@@ -1,3 +1,6 @@
+"use client";
+
+import { type ReactNode, useState } from "react";
 import { formatarDiaMes } from "@/lib/formatar";
 import type { Resultado } from "./dados";
 import { formatarCompacto, formatarInteiro } from "./formatar";
@@ -18,6 +21,8 @@ const MARGEM = { topo: 12, direita: 12, base: 28, esquerda: 40 };
 const AREA_LARGURA = LARGURA - MARGEM.esquerda - MARGEM.direita;
 const AREA_ALTURA = ALTURA - MARGEM.topo - MARGEM.base;
 const MAX_ROTULOS_EIXO = 6;
+const TOOLTIP_LARGURA = 168;
+const TOOLTIP_ALTURA = 58;
 
 /** Menor passo "redondo" (1, 2, 2,5 ou 5 vezes uma potência de 10) que cobre `valor`. */
 function passoRedondo(valor: number) {
@@ -44,6 +49,8 @@ function indicesRotulos(total: number) {
 }
 
 function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
+  // Dia em destaque por foco, toque ou ponteiro: mostra o rótulo com os valores.
+  const [ativo, setAtivo] = useState<number | null>(null);
   const total = dias.length;
   const larguraBanda = AREA_LARGURA / total;
   const maximo = Math.max(1, ...dias.map((dia) => dia.visitantes));
@@ -67,11 +74,68 @@ function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
   const marcasEixoY = Array.from({ length: divisoes + 1 }, (_, k) => k * passo);
   const rotulosX = indicesRotulos(total);
 
+  let destaque: ReactNode = null;
+  if (ativo !== null) {
+    const dia = dias[ativo];
+    const xAtivo = xDe(ativo);
+    const xTooltip = Math.min(
+      Math.max(xAtivo - TOOLTIP_LARGURA / 2, MARGEM.esquerda),
+      LARGURA - MARGEM.direita - TOOLTIP_LARGURA,
+    );
+
+    destaque = (
+      <g pointerEvents="none">
+        <line
+          stroke={COR_EIXO}
+          strokeDasharray="3 3"
+          x1={xAtivo}
+          x2={xAtivo}
+          y1={MARGEM.topo}
+          y2={base}
+        />
+        <rect
+          fill={COR_SUPERFICIE}
+          height={TOOLTIP_ALTURA}
+          rx={6}
+          stroke={COR_EIXO}
+          width={TOOLTIP_LARGURA}
+          x={xTooltip}
+          y={MARGEM.topo}
+        />
+        <text
+          fill={COR_TEXTO}
+          fontSize={12}
+          x={xTooltip + 10}
+          y={MARGEM.topo + 17}
+        >
+          {formatarDiaMes(dia.dia)}
+        </text>
+        <text
+          fill={COR_VISITANTES}
+          fontSize={13}
+          fontWeight={600}
+          x={xTooltip + 10}
+          y={MARGEM.topo + 34}
+        >
+          {formatarInteiro(dia.visitantes)} visitantes
+        </text>
+        <text
+          fill={COR_LEADS}
+          fontSize={13}
+          fontWeight={600}
+          x={xTooltip + 10}
+          y={MARGEM.topo + 50}
+        >
+          {formatarInteiro(dia.leads)} {dia.leads === 1 ? "lead" : "leads"}
+        </text>
+      </g>
+    );
+  }
+
   return (
     <svg
       aria-label={`Gráfico de visitantes e leads por dia, ${total} dias. Os valores estão na tabela abaixo.`}
       className="hidden h-auto w-full sm:block sm:max-w-[40rem]"
-      role="img"
       viewBox={`0 0 ${LARGURA} ${ALTURA}`}
     >
       {marcasEixoY.map((valor) => (
@@ -108,15 +172,27 @@ function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
 
       {dias.map((dia, i) =>
         dia.leads > 0 ? (
-          <circle
-            cx={xDe(i)}
-            cy={yDe(dia.leads)}
-            fill={COR_LEADS}
-            key={`lead-${dia.dia}`}
-            r={4.5}
-            stroke={COR_SUPERFICIE}
-            strokeWidth={2}
-          />
+          <g key={`lead-${dia.dia}`}>
+            <circle
+              cx={xDe(i)}
+              cy={yDe(dia.leads)}
+              fill={COR_LEADS}
+              r={4.5}
+              stroke={COR_SUPERFICIE}
+              strokeWidth={2}
+            />
+            {/* Leads ficam colados ao eixo na escala de visitantes: o valor fica ao lado. */}
+            <text
+              fill={COR_LEADS}
+              fontSize={12}
+              fontWeight={600}
+              textAnchor="middle"
+              x={xDe(i)}
+              y={yDe(dia.leads) - 9}
+            >
+              {formatarInteiro(dia.leads)}
+            </text>
+          </g>
         ) : null,
       )}
 
@@ -140,21 +216,35 @@ function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
         </text>
       ))}
 
-      {/* Colunas transparentes com <title>: a área de hover cobre o dia inteiro. */}
-      {dias.map((dia, i) => (
-        <rect
-          fill="transparent"
-          height={AREA_ALTURA}
-          key={`hover-${dia.dia}`}
-          width={larguraBanda}
-          x={MARGEM.esquerda + i * larguraBanda}
-          y={MARGEM.topo}
-        >
-          <title>
-            {`${formatarDiaMes(dia.dia)}: ${formatarInteiro(dia.visitantes)} visitantes, ${formatarInteiro(dia.leads)} ${dia.leads === 1 ? "lead" : "leads"}`}
-          </title>
-        </rect>
-      ))}
+      {destaque}
+
+      {/* Colunas transparentes e focáveis: a área cobre o dia inteiro e recebe foco, toque e ponteiro. */}
+      {dias.map((dia, i) => {
+        return (
+          // O role img é o padrão de pontos de dados focáveis em gráficos (ex.: Highcharts); o nome do dia e os valores vêm do aria-label.
+          // biome-ignore lint/a11y/noInteractiveElementToNoninteractiveRole: ponto de dado focável; "img" com aria-label descreve a coluna
+          <rect
+            aria-label={`${formatarDiaMes(dia.dia)}: ${formatarInteiro(dia.visitantes)} visitantes, ${formatarInteiro(dia.leads)} ${dia.leads === 1 ? "lead" : "leads"}`}
+            fill="transparent"
+            height={AREA_ALTURA}
+            key={`hover-${dia.dia}`}
+            onBlur={() => setAtivo(null)}
+            onFocus={() => setAtivo(i)}
+            onPointerDown={() => setAtivo(i)}
+            onPointerEnter={(evento) => {
+              if (evento.pointerType === "mouse") setAtivo(i);
+            }}
+            onPointerLeave={(evento) => {
+              if (evento.pointerType === "mouse") setAtivo(null);
+            }}
+            role="img"
+            tabIndex={0}
+            width={larguraBanda}
+            x={MARGEM.esquerda + i * larguraBanda}
+            y={MARGEM.topo}
+          />
+        );
+      })}
     </svg>
   );
 }

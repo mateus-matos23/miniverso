@@ -236,12 +236,12 @@ export function EnviarMidia({
         </FileTrigger>
         <p className="min-w-0 text-sm text-muted-foreground">
           {arquivo ? (
-            <>
-              <span className="font-medium text-brand-black">
+            <span className="flex min-w-0 flex-wrap gap-x-3 gap-y-0.5">
+              <span className="min-w-0 truncate font-medium text-brand-black">
                 {arquivo.name}
-              </span>{" "}
-              · {formatarTamanho(arquivo.size)}
-            </>
+              </span>
+              <span className="shrink-0">{formatarTamanho(arquivo.size)}</span>
+            </span>
           ) : tipo ? (
             descricaoFormatos(tipo)
           ) : (

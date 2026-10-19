@@ -116,10 +116,9 @@ export default async function ProjetoPage({ params }: Props) {
                         alt={projeto.titulo}
                         className="object-cover"
                         fill
-                        priority
+                        preload
                         sizes="(min-width: 1280px) 72rem, 100vw"
                         src={projeto.midiaUrl}
-                        unoptimized
                       />
                     )}
                   </div>
