@@ -53,7 +53,11 @@ export default async function EditarProjetoPage({
             className="mb-4 inline-flex h-10 items-center gap-2 text-sm font-semibold text-brand-blue"
             href="/admin/projetos"
           >
-            <ArrowLeftIcon aria-hidden="true" className="size-4" />
+            <ArrowLeftIcon
+              aria-hidden="true"
+              className="size-4"
+              data-icon="inline-start"
+            />
             Projetos
           </Link>
         }

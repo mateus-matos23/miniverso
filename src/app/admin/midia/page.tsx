@@ -9,7 +9,7 @@ import { EnviarMidia } from "./enviar-midia";
 export const metadata: Metadata = { title: "Mídia" };
 
 export default async function MidiaPage() {
-  const midias = await listarMidias();
+  const { itens: midias, proximoCursor } = await listarMidias();
 
   return (
     <AdminPage>
@@ -38,7 +38,7 @@ export default async function MidiaPage() {
         >
           Biblioteca
         </h2>
-        <BibliotecaMidias midias={midias} />
+        <BibliotecaMidias midias={midias} proximoCursor={proximoCursor} />
       </section>
     </AdminPage>
   );

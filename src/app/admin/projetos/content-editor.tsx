@@ -412,7 +412,13 @@ export default function ContentEditor({
           <div className="flex justify-end">
             <Button isDisabled={pending} type="submit">
               {pending ? <Spinner data-icon="inline-start" /> : null}
-              {pending ? "Salvando…" : "Salvar projeto"}
+              {conteudo
+                ? pending
+                  ? "Salvando…"
+                  : "Salvar alterações"
+                : pending
+                  ? "Cadastrando…"
+                  : "Cadastrar projeto"}
             </Button>
           </div>
         </div>

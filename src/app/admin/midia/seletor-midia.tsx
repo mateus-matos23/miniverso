@@ -4,7 +4,11 @@ import { ImageIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { GridList, GridListItem } from "react-aria-components";
 
-import { listarMidias, type MidiaBiblioteca } from "@/app/admin/midia/actions";
+import {
+  type CursorMidias,
+  listarMidias,
+  type MidiaBiblioteca,
+} from "@/app/admin/midia/actions";
 import { EnviarMidia } from "@/app/admin/midia/enviar-midia";
 import { MiniaturaMidia } from "@/app/admin/midia/miniatura-midia";
 import { rotuloTipoMidia, type TipoMidia } from "@/app/admin/midia/utils";
@@ -47,7 +51,10 @@ export function SeletorMidia({
   const erroId = `${id}-erro`;
   const [aberto, setAberto] = useState(false);
   const [midias, setMidias] = useState<MidiaBiblioteca[]>([]);
+  const [proximoCursor, setProximoCursor] = useState<CursorMidias | null>(null);
   const [carregando, setCarregando] = useState(false);
+  const [carregandoMais, setCarregandoMais] = useState(false);
+  const [erroMais, setErroMais] = useState(false);
   const [falhou, setFalhou] = useState(false);
   const nomeTipo = tipo ? rotuloTipoMidia[tipo].toLowerCase() : "mídia";
 
@@ -64,11 +71,29 @@ export function SeletorMidia({
     setFalhou(false);
 
     try {
-      setMidias(await listarMidias(tipo));
+      const pagina = await listarMidias({ tipo });
+      setMidias(pagina.itens);
+      setProximoCursor(pagina.proximoCursor);
     } catch {
       setFalhou(true);
     } finally {
       setCarregando(false);
+    }
+  }
+
+  async function carregarMais() {
+    if (!proximoCursor) return;
+
+    setCarregandoMais(true);
+    setErroMais(false);
+    try {
+      const pagina = await listarMidias({ tipo, cursor: proximoCursor });
+      setMidias((anteriores) => [...anteriores, ...pagina.itens]);
+      setProximoCursor(pagina.proximoCursor);
+    } catch {
+      setErroMais(true);
+    } finally {
+      setCarregandoMais(false);
     }
   }
 
@@ -176,37 +201,61 @@ export function SeletorMidia({
                       Nenhuma {nomeTipo} na biblioteca ainda.
                     </p>
                   ) : (
-                    <GridList
-                      aria-label="Itens da biblioteca"
-                      className="grid max-h-[50svh] grid-cols-2 gap-3 overflow-y-auto sm:grid-cols-3"
-                      disallowEmptySelection
-                      layout="grid"
-                      onSelectionChange={(chaves) => {
-                        if (chaves === "all") return;
-                        const escolhida = midias.find(
-                          (midia) => midia.id === [...chaves][0],
-                        );
-                        if (escolhida) selecionar(escolhida);
-                      }}
-                      selectedKeys={valor ? [valor.id] : []}
-                      selectionBehavior="replace"
-                      selectionMode="single"
-                    >
-                      {midias.map((midia) => {
-                        const rotulo = `Escolher ${rotuloTipoMidia[midia.tipo].toLowerCase()}${midia.alt ? `: ${midia.alt}` : " (sem texto alternativo)"}`;
-                        return (
-                          <GridListItem
-                            key={midia.id}
-                            aria-label={rotulo}
-                            className="w-full cursor-pointer overflow-hidden rounded-md border-2 border-transparent text-left outline-none hover:border-border data-focus-visible:ring-2 data-focus-visible:ring-ring data-selected:border-brand-blue"
-                            id={midia.id}
-                            textValue={rotulo}
+                    <>
+                      <GridList
+                        aria-label="Itens da biblioteca"
+                        className="grid max-h-[50svh] grid-cols-2 gap-3 overflow-y-auto sm:grid-cols-3"
+                        disallowEmptySelection
+                        layout="grid"
+                        onSelectionChange={(chaves) => {
+                          if (chaves === "all") return;
+                          const escolhida = midias.find(
+                            (midia) => midia.id === [...chaves][0],
+                          );
+                          if (escolhida) selecionar(escolhida);
+                        }}
+                        selectedKeys={valor ? [valor.id] : []}
+                        selectionBehavior="replace"
+                        selectionMode="single"
+                      >
+                        {midias.map((midia) => {
+                          const rotulo = `Escolher ${rotuloTipoMidia[midia.tipo].toLowerCase()}${midia.alt ? `: ${midia.alt}` : " (sem texto alternativo)"}`;
+                          return (
+                            <GridListItem
+                              key={midia.id}
+                              aria-label={rotulo}
+                              className="w-full cursor-pointer overflow-hidden rounded-md border-2 border-transparent text-left outline-none hover:border-border data-focus-visible:ring-2 data-focus-visible:ring-ring data-selected:border-brand-blue"
+                              id={midia.id}
+                              textValue={rotulo}
+                            >
+                              <MiniaturaMidia midia={midia} />
+                            </GridListItem>
+                          );
+                        })}
+                      </GridList>
+                      {proximoCursor ? (
+                        <div className="flex justify-center">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            isDisabled={carregandoMais}
+                            onPress={carregarMais}
                           >
-                            <MiniaturaMidia midia={midia} />
-                          </GridListItem>
-                        );
-                      })}
-                    </GridList>
+                            {carregandoMais ? "Carregando…" : "Carregar mais"}
+                          </Button>
+                        </div>
+                      ) : null}
+                      {erroMais ? (
+                        <p
+                          className="text-center text-sm text-destructive"
+                          role="alert"
+                        >
+                          Não foi possível carregar mais mídias. Tente
+                          novamente.
+                        </p>
+                      ) : null}
+                    </>
                   )}
                 </div>
               </Dialog>

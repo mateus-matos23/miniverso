@@ -2,15 +2,17 @@ import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/auth";
 import { urlsAssinadas } from "@/lib/storage";
 
+import { FeedbackToast } from "../_componentes/feedback-toast";
 import { AdminPage } from "../page-header";
-import ProjetosTabela, {
-  type Feedback,
-  type ProjetoListItem,
-} from "./projetos-tabela";
+import ProjetosTabela, { type ProjetoListItem } from "./projetos-tabela";
 
 export const metadata: Metadata = { title: "Projetos" };
 
-const feedbacks = new Set<Feedback>(["criado", "atualizado", "excluido"]);
+const mensagensFeedback = {
+  criado: "Projeto cadastrado.",
+  atualizado: "Alterações salvas.",
+  excluido: "Projeto excluído.",
+} as const;
 
 export default async function ProjetosPage({
   searchParams,
@@ -46,16 +48,15 @@ export default async function ProjetosPage({
     midiaUrl: urls[index],
   }));
 
+  const mensagem =
+    typeof feedback === "string" && Object.hasOwn(mensagensFeedback, feedback)
+      ? mensagensFeedback[feedback as keyof typeof mensagensFeedback]
+      : undefined;
+
   return (
     <AdminPage>
-      <ProjetosTabela
-        feedback={
-          typeof feedback === "string" && feedbacks.has(feedback as Feedback)
-            ? (feedback as Feedback)
-            : undefined
-        }
-        projetos={projetos}
-      />
+      <FeedbackToast mensagem={mensagem} />
+      <ProjetosTabela projetos={projetos} />
     </AdminPage>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import type { Key } from "react-aria-components";
 import { toast } from "sonner";
 
@@ -16,6 +16,7 @@ import {
   tiposSecao,
 } from "@/lib/landing/schema";
 import { mesmaOrdem, moverItens } from "@/lib/reordenar";
+import { useMediaQuery } from "@/lib/use-media-query";
 import type { AncoraOpcao } from "./_fields/campo-cta";
 import { FormConfig } from "./_forms/config/form-config";
 import { FormSecao } from "./_forms/form-secao";
@@ -80,21 +81,6 @@ function ancorasDoDocumento(doc: LandingDocumento): AncoraOpcao[] {
   });
 }
 
-function useDesktop(): boolean {
-  const [desktop, setDesktop] = useState(false);
-
-  useEffect(() => {
-    // xl do Tailwind: o preview em iframe só existe no desktop.
-    const mq = window.matchMedia("(min-width: 80rem)");
-    setDesktop(mq.matches);
-    const ouvir = (evento: MediaQueryListEvent) => setDesktop(evento.matches);
-    mq.addEventListener("change", ouvir);
-    return () => mq.removeEventListener("change", ouvir);
-  }, []);
-
-  return desktop;
-}
-
 export function EditorLanding({
   modo,
   inicial,
@@ -103,7 +89,8 @@ export function EditorLanding({
   publicadoEm,
 }: EditorLandingProps) {
   const router = useRouter();
-  const desktop = useDesktop();
+  // xl do Tailwind: o preview em iframe só existe no desktop.
+  const desktop = useMediaQuery("(min-width: 80rem)");
   const [doc, setDoc] = useState(inicial);
   const [versao, setVersao] = useState(0);
   const [selecao, setSelecao] = useState<Selecao>(() =>
@@ -120,10 +107,6 @@ export function EditorLanding({
   const [emAcao, iniciarAcao] = useTransition();
   // Documento mais recente: respostas de salvamentos antigos são descartadas.
   const ultimoDoc = useRef<LandingDocumento | null>(doc);
-
-  useEffect(() => {
-    ultimoDoc.current = doc;
-  }, [doc]);
 
   // Autosave: depois de um período sem mudanças, salva se o documento inteiro for válido.
   useEffect(() => {
@@ -159,6 +142,7 @@ export function EditorLanding({
   }, [versao, doc]);
 
   function alterar(proximo: LandingDocumento) {
+    ultimoDoc.current = proximo;
     setDoc(proximo);
     setVersao((atual) => atual + 1);
     setStatus(
@@ -172,35 +156,24 @@ export function EditorLanding({
     selecao.tipo === "secao"
       ? doc.secoes.find((secao) => secao.tipo === selecao.secao)
       : undefined;
-  const erros = useMemo(
-    () =>
-      selecao.tipo === "secao"
-        ? secaoAtual
-          ? errosDaSecao(secaoAtual)
-          : {}
-        : errosDoGrupo(selecao.grupo, doc.config[selecao.grupo]),
-    [selecao, secaoAtual, doc],
+  const erros: Erros =
+    selecao.tipo === "secao"
+      ? secaoAtual
+        ? errosDaSecao(secaoAtual)
+        : {}
+      : errosDoGrupo(selecao.grupo, doc.config[selecao.grupo]);
+  const tiposComErro = new Set(
+    doc.secoes
+      .filter((secao) => !secaoSchema.safeParse(secao).success)
+      .map((secao) => secao.tipo),
   );
-  const tiposComErro = useMemo(
-    () =>
-      new Set(
-        doc.secoes
-          .filter((secao) => !secaoSchema.safeParse(secao).success)
-          .map((secao) => secao.tipo),
-      ),
-    [doc],
+  const gruposComErro = new Set(
+    (Object.keys(gruposConfig) as GrupoConfig[]).filter(
+      (grupo) =>
+        !configSchema.shape[grupo].safeParse(doc.config[grupo]).success,
+    ),
   );
-  const gruposComErro = useMemo(
-    () =>
-      new Set(
-        (Object.keys(gruposConfig) as GrupoConfig[]).filter(
-          (grupo) =>
-            !configSchema.shape[grupo].safeParse(doc.config[grupo]).success,
-        ),
-      ),
-    [doc],
-  );
-  const ancoras = useMemo(() => ancorasDoDocumento(doc), [doc]);
+  const ancoras = ancorasDoDocumento(doc);
 
   function alterarSecao(proxima: Secao) {
     alterar({

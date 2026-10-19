@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpIcon } from "lucide-react";
+import { useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -8,6 +9,7 @@ const SCROLL_THRESHOLD = 640;
 
 export function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
+  const reduzir = useReducedMotion();
 
   useEffect(() => {
     const handleScroll = () => setIsVisible(window.scrollY > SCROLL_THRESHOLD);
@@ -18,10 +20,7 @@ export function ScrollToTop() {
   }, []);
 
   function handleClick() {
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    window.scrollTo({ behavior: reduce ? "auto" : "smooth", top: 0 });
+    window.scrollTo({ behavior: reduzir ? "auto" : "smooth", top: 0 });
     document.getElementById("conteudo")?.focus({ preventScroll: true });
   }
 

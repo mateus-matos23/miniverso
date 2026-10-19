@@ -167,10 +167,12 @@ export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
       <div className="flex justify-end border-t border-border pt-5">
         <Button type="submit" isDisabled={pending}>
           {pending ? <Spinner data-icon="inline-start" /> : null}
-          {pending
-            ? "Salvando…"
-            : cliente
-              ? "Salvar alterações"
+          {cliente
+            ? pending
+              ? "Salvando…"
+              : "Salvar alterações"
+            : pending
+              ? "Cadastrando…"
               : "Cadastrar cliente"}
         </Button>
       </div>

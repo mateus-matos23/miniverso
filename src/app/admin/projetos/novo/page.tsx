@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/auth";
 import { AdminPage, PageHeader } from "../../page-header";
 import ContentEditor from "../content-editor";
 
-export const metadata: Metadata = { title: "Novo projeto" };
+export const metadata: Metadata = { title: "Cadastrar projeto" };
 
 export default async function NovoProjetoPage() {
   const { supabase } = await requireAdmin();
@@ -26,11 +26,15 @@ export default async function NovoProjetoPage() {
             className="mb-4 inline-flex h-10 items-center gap-2 text-sm font-semibold text-brand-blue"
             href="/admin/projetos"
           >
-            <ArrowLeftIcon aria-hidden="true" className="size-4" />
+            <ArrowLeftIcon
+              aria-hidden="true"
+              className="size-4"
+              data-icon="inline-start"
+            />
             Projetos
           </Link>
         }
-        title="Novo projeto"
+        title="Cadastrar projeto"
       />
       <ContentEditor clientes={data ?? []} />
     </AdminPage>

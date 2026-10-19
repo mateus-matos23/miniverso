@@ -17,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
+import { toast } from "sonner";
 
 import {
   type AcaoConteudoState,
@@ -51,12 +52,9 @@ import {
 } from "@/components/ui/table";
 
 import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
-import { type Feedback, FeedbackBanner } from "../_componentes/feedback-banner";
 import { useListaReordenavel } from "../_componentes/use-lista-reordenavel";
 import { PageHeader } from "../page-header";
 import { StatusBadge } from "../status-badge";
-
-export type { Feedback };
 
 export type ProjetoListItem = {
   id: string;
@@ -70,21 +68,12 @@ export type ProjetoListItem = {
   midiaUrl: string | null;
 };
 
-const feedbackMessages: Record<Feedback, string> = {
-  criado:
-    "Projeto cadastrado. Se estiver como publicado, já aparece na landing.",
-  atualizado: "Alterações salvas. A landing foi atualizada.",
-  excluido: "Projeto excluído permanentemente.",
-};
-
 const initialState: CadastroConteudoState = {};
 
 export default function ProjetosTabela({
   projetos,
-  feedback,
 }: {
   projetos: ProjetoListItem[];
-  feedback?: Feedback;
 }) {
   const {
     ordemExibida,
@@ -102,7 +91,7 @@ export default function ProjetosTabela({
   const novoProjeto = (
     <Link className={buttonVariants()} href="/admin/projetos/novo">
       <PlusIcon data-icon="inline-start" />
-      Novo projeto
+      Cadastrar projeto
     </Link>
   );
 
@@ -113,8 +102,6 @@ export default function ProjetosTabela({
         description="Projetos exibidos na landing. Só os publicados aparecem, na ordem definida aqui. No computador, arraste pela alça para reordenar."
         title="Projetos"
       />
-
-      <FeedbackBanner feedback={feedback} mensagens={feedbackMessages} />
 
       {erro ? (
         <Alert className="mt-6" variant="destructive">
@@ -362,12 +349,21 @@ function ProjetoAcoes({
             </DropdownMenuItem>
             <DropdownMenuItem
               onAction={() =>
-                onAcao(() =>
-                  alternarStatusConteudo(
+                onAcao(async () => {
+                  const resultado = await alternarStatusConteudo(
                     projeto.id,
                     publicado ? "draft" : "published",
-                  ),
-                )
+                  );
+                  // Erro continua na faixa da tabela (useListaReordenavel); aqui só o sucesso vira toast.
+                  if (!resultado.erro) {
+                    toast.success(
+                      publicado
+                        ? "Projeto despublicado."
+                        : "Projeto publicado.",
+                    );
+                  }
+                  return resultado;
+                })
               }
             >
               {publicado ? (

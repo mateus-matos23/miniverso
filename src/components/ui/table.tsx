@@ -1,6 +1,5 @@
 "use client";
 
-import type * as React from "react";
 import {
   Cell as CellPrimitive,
   type CellProps,
@@ -10,8 +9,6 @@ import {
   type RowProps,
   TableBody as TableBodyPrimitive,
   type TableBodyProps,
-  TableFooter as TableFooterPrimitive,
-  type TableFooterProps,
   TableHeader as TableHeaderPrimitive,
   type TableHeaderProps,
   Table as TablePrimitive,
@@ -58,19 +55,6 @@ function TableBody<T>({ className, ...props }: TableBodyProps<T>) {
   );
 }
 
-function TableFooter<T>({ className, ...props }: TableFooterProps<T>) {
-  return (
-    <TableFooterPrimitive
-      data-slot="table-footer"
-      className={cn(
-        "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-
 function TableRow<T>({ className, ...props }: RowProps<T>) {
   return (
     <RowPrimitive
@@ -110,29 +94,4 @@ function TableCell({ className, ...props }: CellProps) {
   );
 }
 
-function TableCaption({
-  className,
-  ...props
-}: React.ComponentProps<"figcaption">) {
-  return (
-    <figcaption
-      data-slot="table-caption"
-      className={cn(
-        "mt-4 text-center text-sm text-muted-foreground",
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-
-export {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-};
+export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow };

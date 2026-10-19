@@ -50,30 +50,19 @@ import {
 } from "@/components/ui/table";
 
 import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
-import { type Feedback, FeedbackBanner } from "../_componentes/feedback-banner";
 import { useListaReordenavel } from "../_componentes/use-lista-reordenavel";
 import { PageHeader } from "../page-header";
 import { StatusBadge } from "../status-badge";
 import ClienteForm from "./cliente-form";
 
-export type { Feedback };
 export type ClienteListItem = Cliente & { logoUrl: string | null };
-
-const feedbackMessages: Record<Feedback, string> = {
-  criado:
-    "Cliente cadastrado. Se estiver como publicado, já aparece na landing.",
-  atualizado: "Alterações salvas. A landing foi atualizada.",
-  excluido: "Cliente excluído permanentemente.",
-};
 
 const initialState: CadastroClienteState = {};
 
 export default function ClientesTable({
   clientes,
-  feedback,
 }: {
   clientes: ClienteListItem[];
-  feedback?: Feedback;
 }) {
   const [createOpen, setCreateOpen] = useState(false);
   const { ordemExibida, posicoes, dragAndDropHooks, erro } =
@@ -97,8 +86,6 @@ export default function ClientesTable({
         description="Marcas exibidas na seção “Clientes” da landing. Só itens publicados ficam visíveis, na ordem definida aqui. No computador, arraste pela alça para reordenar."
         title="Clientes"
       />
-
-      <FeedbackBanner feedback={feedback} mensagens={feedbackMessages} />
 
       {erro ? (
         <Alert className="mt-6" variant="destructive">

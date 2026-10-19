@@ -228,7 +228,7 @@ export function EnviarMidia({
               erroArquivo ? `${fieldId}-arquivo-erro` : undefined
             }
           >
-            <FileUpIcon aria-hidden="true" />
+            <FileUpIcon aria-hidden="true" data-icon="inline-start" />
             {tipo
               ? `Escolher ${rotuloTipoMidia[tipo].toLowerCase()}`
               : "Escolher arquivo"}
@@ -303,7 +303,7 @@ export function EnviarMidia({
           </Button>
           {!ocupado ? (
             <Button type="button" variant="ghost" onPress={limpar}>
-              <Trash2Icon aria-hidden="true" />
+              <Trash2Icon aria-hidden="true" data-icon="inline-start" />
               Remover seleção
             </Button>
           ) : null}

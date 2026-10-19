@@ -2,12 +2,17 @@ import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/auth";
 import { urlsAssinadas } from "@/lib/storage";
 
+import { FeedbackToast } from "../_componentes/feedback-toast";
 import { AdminPage } from "../page-header";
-import ClientesTable, { type Feedback } from "./clientes-table";
+import ClientesTable from "./clientes-table";
 
 export const metadata: Metadata = { title: "Clientes" };
 
-const feedbacks = new Set<Feedback>(["criado", "atualizado", "excluido"]);
+const mensagensFeedback = {
+  criado: "Cliente cadastrado.",
+  atualizado: "Alterações salvas.",
+  excluido: "Cliente excluído.",
+} as const;
 
 export default async function ClientesPage({
   searchParams,
@@ -34,16 +39,15 @@ export default async function ClientesPage({
     logoUrl: urls[index],
   }));
 
+  const mensagem =
+    typeof feedback === "string" && Object.hasOwn(mensagensFeedback, feedback)
+      ? mensagensFeedback[feedback as keyof typeof mensagensFeedback]
+      : undefined;
+
   return (
     <AdminPage>
-      <ClientesTable
-        clientes={clientes}
-        feedback={
-          typeof feedback === "string" && feedbacks.has(feedback as Feedback)
-            ? (feedback as Feedback)
-            : undefined
-        }
-      />
+      <FeedbackToast mensagem={mensagem} />
+      <ClientesTable clientes={clientes} />
     </AdminPage>
   );
 }

@@ -14,7 +14,6 @@ import {
   MenuTrigger as MenuTriggerPrimitive,
   Popover as PopoverPrimitive,
   Separator as SeparatorPrimitive,
-  SubmenuTrigger as SubmenuTriggerPrimitive,
 } from "react-aria-components";
 import { cn } from "@/lib/utils";
 
@@ -51,7 +50,7 @@ function DropdownMenu({
       offset={offset}
       crossOffset={crossOffset}
       className={cn(
-        "z-50 w-(--trigger-width) min-w-32 origin-(--trigger-anchor-point) overflow-x-hidden overflow-y-auto rounded-md bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/5 duration-100 outline-none data-entering:animate-in data-entering:fade-in-0 data-entering:zoom-in-95 data-exiting:animate-out data-exiting:overflow-hidden data-exiting:fade-out-0 data-exiting:zoom-out-95 data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2 **:data-[slot$=-item]:data-focused:bg-foreground/10 dark:ring-foreground/10",
+        "z-50 w-(--trigger-width) min-w-32 origin-(--trigger-anchor-point) overflow-x-hidden overflow-y-auto rounded-md bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/5 duration-100 outline-none data-entering:animate-in data-entering:fade-in-0 data-entering:zoom-in-95 data-exiting:animate-out data-exiting:overflow-hidden data-exiting:fade-out-0 data-exiting:zoom-out-95 data-[placement=bottom]:slide-in-from-top-2 data-[placement=left]:slide-in-from-right-2 data-[placement=right]:slide-in-from-left-2 data-[placement=top]:slide-in-from-bottom-2 **:data-[slot$=-item]:data-focused:bg-foreground/10",
         className,
       )}
     >
@@ -98,7 +97,7 @@ const dropdownMenuItemVariants = cva(
   {
     variants: {
       selectionMode: {
-        none: "min-h-7 gap-2 rounded-xl px-2 py-1.5 text-sm focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive",
+        none: "min-h-7 gap-2 rounded-xl px-2 py-1.5 text-sm focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive",
         single:
           "min-h-7 gap-2 rounded-xl py-1.5 pr-8 pl-2 text-sm focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground data-inset:pl-7 [&_svg:not([class*='size-'])]:size-4",
         multiple:
@@ -153,12 +152,6 @@ function DropdownMenuItem({
   );
 }
 
-function DropdownMenuSub({
-  ...props
-}: React.ComponentProps<typeof SubmenuTriggerPrimitive>) {
-  return <SubmenuTriggerPrimitive data-slot="dropdown-menu-sub" {...props} />;
-}
-
 function DropdownMenuSubTrigger({
   className,
   inset,
@@ -199,7 +192,7 @@ function DropdownMenuSubContent({
     <DropdownMenu
       data-slot="dropdown-menu-sub-content"
       className={cn(
-        "w-auto min-w-[96px] rounded-md bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/5 duration-100 dark:ring-foreground/10",
+        "w-auto min-w-[96px] rounded-md bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/5 duration-100",
         className,
       )}
       placement={placement}
@@ -246,7 +239,6 @@ export {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,

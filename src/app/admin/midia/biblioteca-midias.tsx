@@ -2,11 +2,13 @@
 
 import { ImageIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useState, useTransition } from "react";
+import { type FormEvent, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import {
   atualizarAlt,
+  type CursorMidias,
   excluirMidia,
+  listarMidias,
   type MidiaBiblioteca,
 } from "@/app/admin/midia/actions";
 import { MiniaturaMidia } from "@/app/admin/midia/miniatura-midia";
@@ -51,15 +53,100 @@ const formatadorData = new Intl.DateTimeFormat("pt-BR", {
   timeZone: FUSO,
 });
 
-export function BibliotecaMidias({ midias }: { midias: MidiaBiblioteca[] }) {
+type Lista = {
+  tipo: Filtro;
+  itens: MidiaBiblioteca[];
+  proximoCursor: CursorMidias | null;
+  /** Primeira página recebida do servidor que originou esta lista. */
+  origem: MidiaBiblioteca[];
+};
+
+export function BibliotecaMidias({
+  midias,
+  proximoCursor,
+}: {
+  midias: MidiaBiblioteca[];
+  proximoCursor: CursorMidias | null;
+}) {
   const router = useRouter();
-  const [filtro, setFiltro] = useState<Filtro>("todas");
+  const [lista, setLista] = useState<Lista>({
+    tipo: "todas",
+    itens: midias,
+    proximoCursor,
+    origem: midias,
+  });
+  const [carregandoPagina, startPagina] = useTransition();
+  const pedidoAtual = useRef(0);
   const [paraExcluir, setParaExcluir] = useState<MidiaBiblioteca | null>(null);
   const [erroExclusao, setErroExclusao] = useState<string>();
   const [excluindo, startExclusao] = useTransition();
 
-  const visiveis =
-    filtro === "todas" ? midias : midias.filter((m) => m.tipo === filtro);
+  // Depois de um router.refresh (envio, exclusão ou edição) chega uma primeira página nova:
+  // a lista volta para ela, descartando as páginas extras carregadas antes.
+  if (lista.origem !== midias) {
+    setLista({
+      tipo: "todas",
+      itens: midias,
+      proximoCursor,
+      origem: midias,
+    });
+  }
+
+  function trocarFiltro(novo: Filtro) {
+    if (novo === lista.tipo) return;
+
+    const pedido = ++pedidoAtual.current;
+
+    if (novo === "todas") {
+      setLista({ tipo: "todas", itens: midias, proximoCursor, origem: midias });
+      return;
+    }
+
+    startPagina(async () => {
+      try {
+        const pagina = await listarMidias({ tipo: novo });
+        if (pedido !== pedidoAtual.current) return;
+        setLista({
+          tipo: novo,
+          itens: pagina.itens,
+          proximoCursor: pagina.proximoCursor,
+          origem: midias,
+        });
+      } catch {
+        if (pedido === pedidoAtual.current) {
+          toast.error(
+            "Não foi possível carregar a biblioteca. Tente novamente.",
+          );
+        }
+      }
+    });
+  }
+
+  function carregarMais() {
+    const { tipo, proximoCursor: cursor } = lista;
+    if (!cursor) return;
+
+    startPagina(async () => {
+      try {
+        const pagina = await listarMidias({
+          tipo: tipo === "todas" ? undefined : tipo,
+          cursor,
+        });
+        // Ignora a resposta se o filtro mudou enquanto a página chegava.
+        setLista((anterior) =>
+          anterior.tipo === tipo && anterior.proximoCursor === cursor
+            ? {
+                ...anterior,
+                itens: [...anterior.itens, ...pagina.itens],
+                proximoCursor: pagina.proximoCursor,
+              }
+            : anterior,
+        );
+      } catch {
+        toast.error("Não foi possível carregar mais mídias. Tente novamente.");
+      }
+    });
+  }
 
   function fecharExclusao() {
     setParaExcluir(null);
@@ -111,10 +198,10 @@ export function BibliotecaMidias({ midias }: { midias: MidiaBiblioteca[] }) {
           aria-labelledby="filtro-tipo-rotulo"
           selectionMode="single"
           disallowEmptySelection
-          selectedKeys={[filtro]}
+          selectedKeys={[lista.tipo]}
           onSelectionChange={(chaves) => {
             const [chave] = chaves;
-            if (chave) setFiltro(String(chave) as Filtro);
+            if (chave) trocarFiltro(String(chave) as Filtro);
           }}
           variant="outline"
           size="sm"
@@ -127,13 +214,13 @@ export function BibliotecaMidias({ midias }: { midias: MidiaBiblioteca[] }) {
         </ToggleGroup>
       </FieldSet>
 
-      {visiveis.length === 0 ? (
+      {lista.itens.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           Nenhum item deste tipo na biblioteca.
         </p>
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {visiveis.map((midia) => (
+          {lista.itens.map((midia) => (
             <li key={midia.id}>
               <CartaoMidia
                 midia={midia}
@@ -143,6 +230,19 @@ export function BibliotecaMidias({ midias }: { midias: MidiaBiblioteca[] }) {
           ))}
         </ul>
       )}
+
+      {lista.proximoCursor ? (
+        <div className="flex justify-center">
+          <Button
+            type="button"
+            variant="outline"
+            isDisabled={carregandoPagina}
+            onPress={carregarMais}
+          >
+            {carregandoPagina ? "Carregando…" : "Carregar mais"}
+          </Button>
+        </div>
+      ) : null}
 
       <ConfirmarExclusaoDialog
         acao={confirmarExclusao}

@@ -82,7 +82,10 @@ export function ContatoForm() {
     utm_campaign: "",
     pagina: "",
   });
-  const [tamanhoMensagem, setTamanhoMensagem] = useState(0);
+  const [estadoAnterior, setEstadoAnterior] = useState(state);
+  const [tamanhoMensagem, setTamanhoMensagem] = useState(
+    state.values?.mensagem?.length ?? 0,
+  );
   const formRef = useRef<HTMLFormElement>(null);
 
   // UTMs e página vêm da URL atual, então só existem no client.
@@ -97,9 +100,11 @@ export function ContatoForm() {
   }, []);
 
   // O form é resetado após cada envio; o contador segue o valor restaurado.
-  useEffect(() => {
+  // Ajuste durante o render (sem effect): ao chegar um novo estado, recalcula.
+  if (state !== estadoAnterior) {
+    setEstadoAnterior(state);
     setTamanhoMensagem(state.values?.mensagem?.length ?? 0);
-  }, [state]);
+  }
 
   // Após erros de validação, leva o foco ao primeiro campo inválido.
   useEffect(() => {
