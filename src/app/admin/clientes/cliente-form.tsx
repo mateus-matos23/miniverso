@@ -92,11 +92,7 @@ export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
   const fieldId = cliente ? `cliente-${cliente.id}` : "cliente";
 
   return (
-    <form
-      className="flex flex-col gap-6"
-      action={formAction}
-      encType="multipart/form-data"
-    >
+    <form className="flex flex-col gap-6" action={formAction}>
       {cliente ? <Input type="hidden" name="id" value={cliente.id} /> : null}
       <Field data-invalid={Boolean(state.erros?.nome) || undefined}>
         <FieldLabel htmlFor={`${fieldId}-nome`}>Nome do cliente</FieldLabel>
@@ -130,58 +126,34 @@ export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
         </FieldError>
       </Field>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field data-invalid={Boolean(state.erros?.status) || undefined}>
-          <FieldLabel htmlFor={`${fieldId}-status`}>Status</FieldLabel>
-          <Select
-            name="status"
-            className="w-full"
-            defaultSelectedKey={
-              state.values?.status || cliente?.status || "draft"
+      <Field data-invalid={Boolean(state.erros?.status) || undefined}>
+        <FieldLabel htmlFor={`${fieldId}-status`}>Status</FieldLabel>
+        <Select
+          name="status"
+          className="w-full"
+          defaultSelectedKey={
+            state.values?.status || cliente?.status || "draft"
+          }
+        >
+          <SelectTrigger
+            id={`${fieldId}-status`}
+            type="button"
+            aria-invalid={Boolean(state.erros?.status)}
+            aria-describedby={
+              state.erros?.status ? `${fieldId}-status-error` : undefined
             }
           >
-            <SelectTrigger
-              id={`${fieldId}-status`}
-              type="button"
-              aria-invalid={Boolean(state.erros?.status)}
-              aria-describedby={
-                state.erros?.status ? `${fieldId}-status-error` : undefined
-              }
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem id="draft">Rascunho</SelectItem>
-              <SelectItem id="published">Publicado</SelectItem>
-            </SelectContent>
-          </Select>
-          <FieldError id={`${fieldId}-status-error`}>
-            {state.erros?.status}
-          </FieldError>
-        </Field>
-
-        <Field data-invalid={Boolean(state.erros?.ordem) || undefined}>
-          <FieldLabel htmlFor={`${fieldId}-ordem`}>
-            Ordem de exibição
-          </FieldLabel>
-          <Input
-            id={`${fieldId}-ordem`}
-            name="ordem"
-            type="number"
-            min="0"
-            step="1"
-            defaultValue={state.values?.ordem ?? cliente?.ordem ?? 0}
-            aria-invalid={Boolean(state.erros?.ordem)}
-            aria-describedby={
-              state.erros?.ordem ? `${fieldId}-ordem-error` : undefined
-            }
-            required
-          />
-          <FieldError id={`${fieldId}-ordem-error`}>
-            {state.erros?.ordem}
-          </FieldError>
-        </Field>
-      </div>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem id="draft">Rascunho</SelectItem>
+            <SelectItem id="published">Publicado</SelectItem>
+          </SelectContent>
+        </Select>
+        <FieldError id={`${fieldId}-status-error`}>
+          {state.erros?.status}
+        </FieldError>
+      </Field>
 
       {state.erro ? (
         <p

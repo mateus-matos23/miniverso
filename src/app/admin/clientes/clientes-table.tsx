@@ -2,6 +2,7 @@
 
 import {
   CheckCircle2Icon,
+  GripVerticalIcon,
   ImageOffIcon,
   MoreHorizontalIcon,
   PencilIcon,
@@ -10,12 +11,14 @@ import {
   UsersIcon,
 } from "lucide-react";
 import Image from "next/image";
-import { useActionState, useState } from "react";
+import { useActionState, useOptimistic, useState, useTransition } from "react";
+import { DropIndicator, type Key, useDragAndDrop } from "react-aria-components";
 
 import {
   type CadastroClienteState,
   type Cliente,
   excluirCliente,
+  reordenarClientes,
 } from "@/app/admin/clientes/actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,6 +44,14 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Spinner } from "@/components/ui/spinner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 import { PageHeader } from "../page-header";
 import { StatusBadge } from "../status-badge";
@@ -58,6 +69,33 @@ const feedbackMessages: Record<Feedback, string> = {
 
 const initialState: CadastroClienteState = {};
 
+/**
+ * Reposiciona as linhas arrastadas antes ou depois da linha de destino.
+ * Devolve a mesma referência quando o arrasto não muda nada.
+ */
+function moverItens(
+  itens: ClienteListItem[],
+  chaves: ReadonlySet<Key>,
+  alvo: Key,
+  posicao: "before" | "after" | "on",
+) {
+  if (posicao === "on" || chaves.has(alvo)) return itens;
+
+  const movidos = itens.filter((item) => chaves.has(item.id));
+  const restantes = itens.filter((item) => !chaves.has(item.id));
+  const indiceAlvo = restantes.findIndex((item) => item.id === alvo);
+
+  if (indiceAlvo === -1) return itens;
+
+  const indice = posicao === "after" ? indiceAlvo + 1 : indiceAlvo;
+
+  return [
+    ...restantes.slice(0, indice),
+    ...movidos,
+    ...restantes.slice(indice),
+  ];
+}
+
 export default function ClientesTable({
   clientes,
   feedback,
@@ -66,6 +104,49 @@ export default function ClientesTable({
   feedback?: Feedback;
 }) {
   const [createOpen, setCreateOpen] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+  const [, startTransition] = useTransition();
+  // A ordem exibida muda na hora ao soltar o cliente. Se a action falhar, a ordem
+  // volta sozinha para a que veio do servidor, porque as props não mudaram.
+  const [ordemExibida, definirOrdemExibida] = useOptimistic(
+    clientes,
+    (_atual, proxima: ClienteListItem[]) => proxima,
+  );
+  const posicoes = new Map(
+    ordemExibida.map((cliente, indice) => [cliente.id, indice + 1]),
+  );
+
+  const { dragAndDropHooks } = useDragAndDrop<ClienteListItem>({
+    // Sem isDisabled ligado ao isPending: a transição começa no drop, antes do
+    // dragend, e desligar o DnD nesse meio deixava a linha presa em data-dragging.
+    getItems: (_chaves, itens) =>
+      itens.map((cliente) => ({ "text/plain": cliente.nome })),
+    renderDropIndicator: (target) => (
+      <DropIndicator
+        className="bg-transparent data-drop-target:bg-brand-cyan [&>td]:h-0.5 [&>td]:p-0"
+        target={target}
+      />
+    ),
+    onReorder(e) {
+      const proxima = moverItens(
+        ordemExibida,
+        e.keys,
+        e.target.key,
+        e.target.dropPosition,
+      );
+
+      if (proxima === ordemExibida) return;
+
+      setErro(null);
+      startTransition(async () => {
+        definirOrdemExibida(proxima);
+        const resultado = await reordenarClientes(
+          proxima.map((cliente) => cliente.id),
+        );
+        if (resultado.erro) setErro(resultado.erro);
+      });
+    },
+  });
 
   const createButton = (
     <Button onPress={() => setCreateOpen(true)}>
@@ -78,7 +159,7 @@ export default function ClientesTable({
     <>
       <PageHeader
         actions={clientes.length > 0 ? createButton : undefined}
-        description="Marcas exibidas na seção “Clientes” da landing. Só itens publicados ficam visíveis, na ordem definida aqui."
+        description="Marcas exibidas na seção “Clientes” da landing. Só itens publicados ficam visíveis, na ordem definida aqui. Arraste pela alça para reordenar."
         title="Clientes"
       />
 
@@ -90,6 +171,15 @@ export default function ClientesTable({
           </span>
         ) : null}
       </div>
+
+      {erro ? (
+        <p
+          className="mt-6 rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+          role="alert"
+        >
+          {erro}
+        </p>
+      ) : null}
 
       <Dialog isOpen={createOpen} onOpenChange={setCreateOpen}>
         <DialogHeader>
@@ -121,79 +211,80 @@ export default function ClientesTable({
             <EmptyContent>{createButton}</EmptyContent>
           </Empty>
         ) : (
-          <>
-            {/* desktop: tabela */}
-            <div className="hidden overflow-hidden rounded-lg border border-border bg-card md:block">
-              <table className="w-full border-collapse text-left">
-                <caption className="sr-only">Clientes cadastrados</caption>
-                <thead className="border-b border-border bg-muted/60 text-sm text-muted-foreground">
-                  <tr>
-                    <th className="w-24 px-5 py-3 font-medium" scope="col">
-                      Logo
-                    </th>
-                    <th className="px-5 py-3 font-medium" scope="col">
-                      Nome
-                    </th>
-                    <th className="px-5 py-3 font-medium" scope="col">
-                      Status
-                    </th>
-                    <th
-                      className="w-24 px-5 py-3 text-right font-medium"
-                      scope="col"
-                    >
-                      Ordem
-                    </th>
-                    <th
-                      className="w-20 px-5 py-3 text-right font-medium"
-                      scope="col"
-                    >
-                      <span className="sr-only">Ações</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {clientes.map((cliente) => (
-                    <tr key={cliente.id}>
-                      <td className="px-5 py-3">
-                        <Logo cliente={cliente} />
-                      </td>
-                      <td className="px-5 py-3 font-semibold text-brand-violet">
-                        {cliente.nome}
-                      </td>
-                      <td className="px-5 py-3">
-                        <StatusBadge status={cliente.status} />
-                      </td>
-                      <td className="px-5 py-3 text-right tabular-nums text-muted-foreground">
-                        {cliente.ordem}
-                      </td>
-                      <td className="px-5 py-3 text-right">
-                        <ClienteActions cliente={cliente} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* mobile: lista empilhada */}
-            <ul className="flex flex-col divide-y divide-border rounded-lg border border-border bg-card md:hidden">
-              {clientes.map((cliente) => (
-                <li className="flex items-center gap-4 p-4" key={cliente.id}>
-                  <Logo cliente={cliente} />
-                  <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-                    <p className="truncate font-semibold text-brand-violet">
+          <div className="overflow-hidden rounded-lg border border-border bg-card">
+            <Table
+              aria-label="Clientes cadastrados"
+              className="min-w-[40rem] text-left"
+              dragAndDropHooks={dragAndDropHooks}
+            >
+              <TableHeader className="border-b border-border bg-muted/60 text-sm text-muted-foreground">
+                <TableHead
+                  className="w-12 px-3 py-3 font-medium"
+                  id="reordenar"
+                >
+                  <span className="sr-only">Reordenar</span>
+                </TableHead>
+                <TableHead className="w-24 px-5 py-3 font-medium" id="logo">
+                  Logo
+                </TableHead>
+                <TableHead
+                  className="px-5 py-3 font-medium"
+                  id="nome"
+                  isRowHeader
+                >
+                  Nome
+                </TableHead>
+                <TableHead className="px-5 py-3 font-medium" id="status">
+                  Status
+                </TableHead>
+                <TableHead className="px-5 py-3 font-medium" id="ordem">
+                  Ordem
+                </TableHead>
+                <TableHead
+                  className="w-20 px-5 py-3 text-right font-medium"
+                  id="acoes"
+                >
+                  <span className="sr-only">Ações</span>
+                </TableHead>
+              </TableHeader>
+              <TableBody items={ordemExibida}>
+                {(cliente) => (
+                  <TableRow
+                    className="data-dragging:opacity-50"
+                    id={cliente.id}
+                    textValue={cliente.nome}
+                  >
+                    <TableCell className="px-3 py-3">
+                      <Button
+                        aria-label={`Arrastar cliente ${cliente.nome}`}
+                        className="cursor-grab"
+                        size="icon-sm"
+                        slot="drag"
+                        variant="ghost"
+                      >
+                        <GripVerticalIcon />
+                      </Button>
+                    </TableCell>
+                    <TableCell className="px-5 py-3">
+                      <Logo cliente={cliente} />
+                    </TableCell>
+                    <TableCell className="px-5 py-3 font-semibold text-brand-violet">
                       {cliente.nome}
-                    </p>
-                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                    </TableCell>
+                    <TableCell className="px-5 py-3">
                       <StatusBadge status={cliente.status} />
-                      <span>Ordem {cliente.ordem}</span>
-                    </div>
-                  </div>
-                  <ClienteActions cliente={cliente} />
-                </li>
-              ))}
-            </ul>
-          </>
+                    </TableCell>
+                    <TableCell className="px-5 py-3 tabular-nums text-muted-foreground">
+                      {posicoes.get(cliente.id)}
+                    </TableCell>
+                    <TableCell className="px-5 py-3 text-right">
+                      <ClienteActions cliente={cliente} />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </div>
     </>

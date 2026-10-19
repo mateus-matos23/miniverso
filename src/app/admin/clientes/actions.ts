@@ -18,13 +18,9 @@ const camposCliente = {
   status: z.enum(["draft", "published"], {
     error: "Selecione um status válido.",
   }),
-  ordem: z
-    .string({ error: "Informe a ordem." })
-    .trim()
-    .regex(/^\d+$/, "A ordem deve ser um número inteiro não negativo.")
-    .transform(Number)
-    .pipe(z.number().int().min(0)),
 };
+
+const idsSchema = z.array(z.uuid({ error: "Cliente inválido." }));
 
 const logoSchema = z
   .file({ error: "Selecione o logo do cliente." })
@@ -49,21 +45,21 @@ function valoresDigitados(formData: FormData) {
   return {
     nome: String(formData.get("nome") ?? ""),
     status: String(formData.get("status") ?? ""),
-    ordem: String(formData.get("ordem") ?? ""),
   };
 }
 
 export type CadastroClienteState = {
   erro?: string;
   /** Valores digitados, devolvidos em caso de erro para não limpar o formulário. */
-  values?: { nome?: string; status?: string; ordem?: string };
+  values?: { nome?: string; status?: string };
   erros?: {
     nome?: string;
     logo?: string;
     status?: string;
-    ordem?: string;
   };
 };
+
+export type AcaoClienteState = { erro?: string };
 
 function formatarErros(error: z.ZodError): CadastroClienteState["erros"] {
   const erros: CadastroClienteState["erros"] = {};
@@ -71,12 +67,7 @@ function formatarErros(error: z.ZodError): CadastroClienteState["erros"] {
   for (const issue of error.issues) {
     const campo = issue.path[0];
 
-    if (
-      campo === "nome" ||
-      campo === "logo" ||
-      campo === "status" ||
-      campo === "ordem"
-    ) {
+    if (campo === "nome" || campo === "logo" || campo === "status") {
       erros[campo] ??= issue.message;
     }
   }
@@ -104,7 +95,6 @@ export async function criarCliente(
     nome: formData.get("nome"),
     logo: logoDoFormulario(formData),
     status: formData.get("status"),
-    ordem: formData.get("ordem"),
   });
 
   if (!result.success) {
@@ -120,6 +110,16 @@ export async function criarCliente(
   if (!extensao) {
     return { erro: "Formato de logo não suportado." };
   }
+
+  // Novo cliente entra no fim da lista: ordem = maior ordem atual + 1
+  const { data: ultimo, error: ultimoError } = await supabase
+    .from("clientes")
+    .select("ordem")
+    .order("ordem", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (ultimoError) throw ultimoError;
 
   const caminhoLogo = `clientes/${crypto.randomUUID()}.${extensao}`;
   const { error: uploadError } = await supabase.storage
@@ -137,7 +137,7 @@ export async function criarCliente(
     nome: result.data.nome,
     caminho_logo: caminhoLogo,
     status: result.data.status,
-    ordem: result.data.ordem,
+    ordem: (ultimo?.ordem ?? -1) + 1,
   });
 
   if (insertError) {
@@ -165,7 +165,6 @@ export async function atualizarCliente(
     nome: formData.get("nome"),
     logo: logoDoFormulario(formData),
     status: formData.get("status"),
-    ordem: formData.get("ordem"),
   });
 
   if (!result.success) {
@@ -216,7 +215,6 @@ export async function atualizarCliente(
       nome: result.data.nome,
       caminho_logo: caminhoLogo,
       status: result.data.status,
-      ordem: result.data.ordem,
     })
     .eq("id", cliente.id);
 
@@ -277,4 +275,34 @@ export async function excluirCliente(
   revalidatePath("/admin");
   revalidatePath("/admin/clientes");
   redirect("/admin/clientes?feedback=excluido");
+}
+
+/** Regrava `ordem` como 0, 1, 2… na sequência enviada, numa única operação no banco (função `reordenar_clientes`). */
+export async function reordenarClientes(
+  ids: string[],
+): Promise<AcaoClienteState> {
+  const idsValidos = idsSchema.safeParse(ids);
+
+  if (!idsValidos.success) return { erro: "Ordem inválida." };
+
+  const { supabase } = await requireAdmin();
+  const { error } = await supabase.rpc("reordenar_clientes", {
+    p_ids: idsValidos.data,
+  });
+
+  // Revalida também em caso de erro: se a lista estiver defasada, a tela volta a mostrar a ordem do banco.
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath("/admin/clientes");
+
+  if (error) {
+    return {
+      erro:
+        error.message === "lista de ordem invalida"
+          ? "A lista de clientes mudou. Atualize a página e tente novamente."
+          : "Não foi possível reordenar os clientes. Tente novamente.",
+    };
+  }
+
+  return {};
 }
