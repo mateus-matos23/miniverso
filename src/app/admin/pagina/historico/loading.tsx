@@ -1,5 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
+import { superficie } from "../../_componentes/painel";
 import { EsqueletoCabecalho, EsqueletoTela, repetir } from "../../esqueleto";
 
 /** Espelha o histórico: cartões empilhados (abaixo de lg) e tabela de versões (a partir de lg). */
@@ -8,10 +10,10 @@ export default function HistoricoPaginaLoading() {
     <EsqueletoTela>
       <EsqueletoCabecalho />
 
-      <div className="mt-8 flex flex-col gap-3 lg:hidden">
+      <div className="mt-6 flex flex-col gap-3 lg:hidden">
         {repetir(4, "cartao").map((chave) => (
           <div
-            className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4"
+            className={cn(superficie, "flex flex-col gap-3 p-4")}
             key={chave}
           >
             <div className="flex items-center justify-between gap-2">
@@ -24,7 +26,7 @@ export default function HistoricoPaginaLoading() {
         ))}
       </div>
 
-      <div className="mt-8 hidden overflow-hidden rounded-lg border border-border bg-card lg:block">
+      <div className={cn(superficie, "mt-6 hidden overflow-hidden lg:block")}>
         <div className="grid grid-cols-[12rem_minmax(0,1fr)_8rem_12rem] gap-4 border-b border-border bg-muted/50 px-4 py-3">
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-4 w-14" />

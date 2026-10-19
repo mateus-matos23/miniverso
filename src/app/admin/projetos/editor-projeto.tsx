@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 import { FileTrigger } from "react-aria-components";
-
+import { Painel, superficie } from "@/app/admin/_componentes/painel";
 import {
   atualizarConteudo,
   type CadastroConteudoState,
@@ -39,6 +39,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { sincronizarArquivoFormulario } from "@/lib/arquivo-formulario";
 import { slugify } from "@/lib/slug";
+import { cn } from "@/lib/utils";
 
 const estadoInicial: CadastroConteudoState = {};
 const TITULO_MAX = 90;
@@ -159,154 +160,151 @@ export default function EditorProjeto({
   const erros = estado.erros ?? {};
 
   return (
-    <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.85fr)]">
-      <form
-        action={acaoFormulario}
-        aria-labelledby={`${id}-formulario-titulo`}
-        className="rounded-lg border border-border bg-card p-6"
-      >
+    <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.85fr)]">
+      <form action={acaoFormulario} className="flex min-w-0 flex-col gap-5">
         {conteudo ? (
           <input name="id" type="hidden" value={conteudo.id} />
         ) : null}
-        <h2
-          className="text-lg font-semibold text-heading"
-          id={`${id}-formulario-titulo`}
+        <Painel
+          conteudoClassName="flex flex-col gap-6"
+          titulo="Dados do projeto"
         >
-          Dados do projeto
-        </h2>
-        <FieldGroup className="mt-6 gap-6">
-          <Field data-invalid={Boolean(erros.titulo) || undefined}>
-            <FieldLabel htmlFor={`${id}-titulo`}>Título</FieldLabel>
-            <Input
-              aria-describedby={descreverPor(
-                `${id}-titulo-contador`,
-                erros.titulo && `${id}-titulo-erro`,
-              )}
-              aria-invalid={Boolean(erros.titulo) || undefined}
-              id={`${id}-titulo`}
-              maxLength={TITULO_MAX}
-              name="titulo"
-              onChange={aoMudarTitulo}
-              placeholder="Ex.: Aprender também é explorar"
-              required
-              value={titulo}
-            />
-            <FieldDescription id={`${id}-titulo-contador`}>
-              {titulo.length}/{TITULO_MAX} caracteres
-            </FieldDescription>
-            <FieldError id={`${id}-titulo-erro`}>{erros.titulo}</FieldError>
-          </Field>
-
-          <Field data-invalid={Boolean(erros.slug) || undefined}>
-            <FieldLabel htmlFor={`${id}-slug`}>Endereço (slug)</FieldLabel>
-            <Input
-              aria-describedby={descreverPor(
-                `${id}-slug-ajuda`,
-                erros.slug && `${id}-slug-erro`,
-              )}
-              aria-invalid={Boolean(erros.slug) || undefined}
-              id={`${id}-slug`}
-              maxLength={120}
-              name="slug"
-              onChange={(event) => {
-                setSlug(event.currentTarget.value);
-                setSlugEditado(true);
-              }}
-              placeholder="aprender-tambem-e-explorar"
-              required
-              value={slug}
-            />
-            <FieldDescription id={`${id}-slug-ajuda`}>
-              Página do projeto: /projetos/{slug || "slug"}
-            </FieldDescription>
-            <FieldError id={`${id}-slug-erro`}>{erros.slug}</FieldError>
-          </Field>
-
-          <div className="grid gap-6 sm:grid-cols-2">
-            <Field data-invalid={Boolean(erros.clienteId) || undefined}>
-              <FieldLabel id={`${id}-cliente-rotulo`}>Cliente</FieldLabel>
-              <Select
-                aria-labelledby={`${id}-cliente-rotulo`}
-                className="w-full"
-                defaultSelectedKey={
-                  estado.values?.clienteId || conteudo?.clienteId || undefined
-                }
-                name="clienteId"
-                placeholder="Selecione"
-              >
-                <SelectTrigger
-                  aria-describedby={descreverPor(
-                    erros.clienteId && `${id}-cliente-erro`,
-                  )}
-                  aria-invalid={Boolean(erros.clienteId) || undefined}
-                  id={`${id}-cliente`}
-                  type="button"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {clientes.map((cliente) => (
-                    <SelectItem id={cliente.id} key={cliente.id}>
-                      {cliente.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError id={`${id}-cliente-erro`}>
-                {erros.clienteId}
-              </FieldError>
-            </Field>
-
-            <Field data-invalid={Boolean(erros.categoria) || undefined}>
-              <FieldLabel htmlFor={`${id}-categoria`}>
-                Categoria (opcional)
-              </FieldLabel>
+          <FieldGroup className="gap-6">
+            <Field data-invalid={Boolean(erros.titulo) || undefined}>
+              <FieldLabel htmlFor={`${id}-titulo`}>Título</FieldLabel>
               <Input
                 aria-describedby={descreverPor(
-                  erros.categoria && `${id}-categoria-erro`,
+                  `${id}-titulo-contador`,
+                  erros.titulo && `${id}-titulo-erro`,
                 )}
-                aria-invalid={Boolean(erros.categoria) || undefined}
-                defaultValue={
-                  estado.values?.categoria ?? conteudo?.categoria ?? undefined
-                }
-                id={`${id}-categoria`}
-                maxLength={60}
-                name="categoria"
-                onChange={(event) => setCategoria(event.currentTarget.value)}
-                placeholder="Ex.: Realidade virtual"
-                type="text"
+                aria-invalid={Boolean(erros.titulo) || undefined}
+                id={`${id}-titulo`}
+                maxLength={TITULO_MAX}
+                name="titulo"
+                onChange={aoMudarTitulo}
+                placeholder="Ex.: Aprender também é explorar"
+                required
+                value={titulo}
               />
-              <FieldError id={`${id}-categoria-erro`}>
-                {erros.categoria}
+              <FieldDescription id={`${id}-titulo-contador`}>
+                {titulo.length}/{TITULO_MAX} caracteres
+              </FieldDescription>
+              <FieldError id={`${id}-titulo-erro`}>{erros.titulo}</FieldError>
+            </Field>
+
+            <Field data-invalid={Boolean(erros.slug) || undefined}>
+              <FieldLabel htmlFor={`${id}-slug`}>Endereço (slug)</FieldLabel>
+              <Input
+                aria-describedby={descreverPor(
+                  `${id}-slug-ajuda`,
+                  erros.slug && `${id}-slug-erro`,
+                )}
+                aria-invalid={Boolean(erros.slug) || undefined}
+                id={`${id}-slug`}
+                maxLength={120}
+                name="slug"
+                onChange={(event) => {
+                  setSlug(event.currentTarget.value);
+                  setSlugEditado(true);
+                }}
+                placeholder="aprender-tambem-e-explorar"
+                required
+                value={slug}
+              />
+              <FieldDescription id={`${id}-slug-ajuda`}>
+                Página do projeto: /projetos/{slug || "slug"}
+              </FieldDescription>
+              <FieldError id={`${id}-slug-erro`}>{erros.slug}</FieldError>
+            </Field>
+
+            <div className="grid gap-6 sm:grid-cols-2">
+              <Field data-invalid={Boolean(erros.clienteId) || undefined}>
+                <FieldLabel id={`${id}-cliente-rotulo`}>Cliente</FieldLabel>
+                <Select
+                  aria-labelledby={`${id}-cliente-rotulo`}
+                  className="w-full"
+                  defaultSelectedKey={
+                    estado.values?.clienteId || conteudo?.clienteId || undefined
+                  }
+                  name="clienteId"
+                  placeholder="Selecione"
+                >
+                  <SelectTrigger
+                    aria-describedby={descreverPor(
+                      erros.clienteId && `${id}-cliente-erro`,
+                    )}
+                    aria-invalid={Boolean(erros.clienteId) || undefined}
+                    id={`${id}-cliente`}
+                    type="button"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {clientes.map((cliente) => (
+                      <SelectItem id={cliente.id} key={cliente.id}>
+                        {cliente.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FieldError id={`${id}-cliente-erro`}>
+                  {erros.clienteId}
+                </FieldError>
+              </Field>
+
+              <Field data-invalid={Boolean(erros.categoria) || undefined}>
+                <FieldLabel htmlFor={`${id}-categoria`}>
+                  Categoria (opcional)
+                </FieldLabel>
+                <Input
+                  aria-describedby={descreverPor(
+                    erros.categoria && `${id}-categoria-erro`,
+                  )}
+                  aria-invalid={Boolean(erros.categoria) || undefined}
+                  defaultValue={
+                    estado.values?.categoria ?? conteudo?.categoria ?? undefined
+                  }
+                  id={`${id}-categoria`}
+                  maxLength={60}
+                  name="categoria"
+                  onChange={(event) => setCategoria(event.currentTarget.value)}
+                  placeholder="Ex.: Realidade virtual"
+                  type="text"
+                />
+                <FieldError id={`${id}-categoria-erro`}>
+                  {erros.categoria}
+                </FieldError>
+              </Field>
+            </div>
+
+            <Field data-invalid={Boolean(erros.descricao) || undefined}>
+              <FieldLabel htmlFor={`${id}-descricao`}>Descrição</FieldLabel>
+              <Textarea
+                aria-describedby={descreverPor(
+                  `${id}-descricao-contador`,
+                  erros.descricao && `${id}-descricao-erro`,
+                )}
+                aria-invalid={Boolean(erros.descricao) || undefined}
+                className="min-h-36"
+                id={`${id}-descricao`}
+                maxLength={DESCRICAO_MAX}
+                name="descricao"
+                onChange={(event) => setDescricao(event.currentTarget.value)}
+                placeholder="Conte o que acontece nesta experiência."
+                required
+                value={descricao}
+              />
+              <FieldDescription id={`${id}-descricao-contador`}>
+                {descricao.length}/{DESCRICAO_MAX} caracteres
+              </FieldDescription>
+              <FieldError id={`${id}-descricao-erro`}>
+                {erros.descricao}
               </FieldError>
             </Field>
-          </div>
+          </FieldGroup>
+        </Painel>
 
-          <Field data-invalid={Boolean(erros.descricao) || undefined}>
-            <FieldLabel htmlFor={`${id}-descricao`}>Descrição</FieldLabel>
-            <Textarea
-              aria-describedby={descreverPor(
-                `${id}-descricao-contador`,
-                erros.descricao && `${id}-descricao-erro`,
-              )}
-              aria-invalid={Boolean(erros.descricao) || undefined}
-              className="min-h-36"
-              id={`${id}-descricao`}
-              maxLength={DESCRICAO_MAX}
-              name="descricao"
-              onChange={(event) => setDescricao(event.currentTarget.value)}
-              placeholder="Conte o que acontece nesta experiência."
-              required
-              value={descricao}
-            />
-            <FieldDescription id={`${id}-descricao-contador`}>
-              {descricao.length}/{DESCRICAO_MAX} caracteres
-            </FieldDescription>
-            <FieldError id={`${id}-descricao-erro`}>
-              {erros.descricao}
-            </FieldError>
-          </Field>
-
+        <Painel conteudoClassName="flex flex-col gap-6" titulo="Mídia">
           <Field data-invalid={erroMidia || erros.midia ? true : undefined}>
             <FieldLabel id={`${id}-midia-rotulo`}>Imagem ou vídeo</FieldLabel>
             <FileTrigger
@@ -359,7 +357,9 @@ export default function EditorProjeto({
               {erroMidia ?? erros.midia}
             </FieldError>
           </Field>
+        </Painel>
 
+        <Painel conteudoClassName="flex flex-col gap-6" titulo="Publicação">
           <div className="grid gap-6 sm:grid-cols-2">
             <Field data-invalid={Boolean(erros.status) || undefined}>
               <FieldLabel id={`${id}-status-rotulo`}>Status</FieldLabel>
@@ -407,24 +407,22 @@ export default function EditorProjeto({
               <FieldError id={`${id}-ordem-erro`}>{erros.ordem}</FieldError>
             </Field>
           </div>
-        </FieldGroup>
+        </Painel>
 
-        <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6">
-          {estado.erro ? (
-            <Alert variant="destructive">{estado.erro}</Alert>
-          ) : null}
-          <div className="flex justify-end">
-            <Button isDisabled={pendente} type="submit">
-              {pendente ? <Spinner data-icon="inline-start" /> : null}
-              {conteudo
-                ? pendente
-                  ? "Salvando…"
-                  : "Salvar alterações"
-                : pendente
-                  ? "Cadastrando…"
-                  : "Cadastrar projeto"}
-            </Button>
-          </div>
+        {estado.erro ? (
+          <Alert variant="destructive">{estado.erro}</Alert>
+        ) : null}
+        <div className="flex justify-end">
+          <Button isDisabled={pendente} type="submit">
+            {pendente ? <Spinner data-icon="inline-start" /> : null}
+            {conteudo
+              ? pendente
+                ? "Salvando…"
+                : "Salvar alterações"
+              : pendente
+                ? "Cadastrando…"
+                : "Cadastrar projeto"}
+          </Button>
         </div>
       </form>
 
@@ -443,7 +441,7 @@ export default function EditorProjeto({
             Rascunho, ainda não publicado
           </Badge>
         </div>
-        <article className="overflow-hidden rounded-lg border border-border bg-brand-white">
+        <article className={cn(superficie, "overflow-hidden")}>
           <div className="grid aspect-video place-items-center overflow-hidden bg-brand-aurora text-sm text-brand-mist">
             {midiaExibida?.tipo === "imagem" ? (
               <Image

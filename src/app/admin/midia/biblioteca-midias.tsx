@@ -4,6 +4,7 @@ import { ImageIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
+import { superficie } from "@/app/admin/_componentes/painel";
 import {
   atualizarAlt,
   type CursorMidias,
@@ -219,7 +220,7 @@ export function BibliotecaMidias({
           Nenhum item deste tipo na biblioteca.
         </p>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {lista.itens.map((midia) => (
             <li key={midia.id}>
               <CartaoMidia
@@ -295,35 +296,35 @@ function CartaoMidia({
   return (
     <article
       className={cn(
-        "flex h-full flex-col overflow-hidden rounded-lg border bg-card",
-        semAlt ? "border-destructive/40" : "border-border",
+        superficie,
+        "flex h-full flex-col overflow-hidden",
+        semAlt && "border-destructive/40",
       )}
     >
-      <MiniaturaMidia midia={midia} className="rounded-none" />
+      <MiniaturaMidia midia={midia} className="aspect-video rounded-none" />
 
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        <dl className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-          <div className="flex gap-1">
-            <dt className="sr-only">Tipo</dt>
-            <dd className="font-semibold text-foreground">
-              {rotuloTipoMidia[midia.tipo]}
-            </dd>
-          </div>
-          {dimensoes ? (
+      <div className="flex flex-1 flex-col gap-3 p-3">
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-heading">
+            {rotuloTipoMidia[midia.tipo]}
+          </p>
+          <dl className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+            {dimensoes ? (
+              <div className="flex gap-1">
+                <dt className="sr-only">Dimensões</dt>
+                <dd>{dimensoes} px</dd>
+              </div>
+            ) : null}
             <div className="flex gap-1">
-              <dt className="sr-only">Dimensões</dt>
-              <dd>{dimensoes} px</dd>
+              <dt className="sr-only">Tamanho</dt>
+              <dd>{formatarTamanho(midia.tamanho)}</dd>
             </div>
-          ) : null}
-          <div className="flex gap-1">
-            <dt className="sr-only">Tamanho</dt>
-            <dd>{formatarTamanho(midia.tamanho)}</dd>
-          </div>
-          <div className="flex gap-1">
-            <dt className="sr-only">Enviada em</dt>
-            <dd>{formatadorData.format(new Date(midia.criadoEm))}</dd>
-          </div>
-        </dl>
+            <div className="flex gap-1">
+              <dt className="sr-only">Enviada em</dt>
+              <dd>{formatadorData.format(new Date(midia.criadoEm))}</dd>
+            </div>
+          </dl>
+        </div>
 
         {semAlt ? (
           <p className="text-sm font-medium text-destructive">
@@ -335,7 +336,7 @@ function CartaoMidia({
           <FieldLabel htmlFor={altId} className="font-semibold text-foreground">
             Texto alternativo
           </FieldLabel>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
             <Input
               id={altId}
               type="text"
@@ -347,6 +348,8 @@ function CartaoMidia({
               onChange={(event) => setAlt(event.currentTarget.value)}
             />
             <Button
+              className="self-start"
+              size="sm"
               type="submit"
               variant="outline"
               isDisabled={!alterado || salvando}
@@ -359,7 +362,7 @@ function CartaoMidia({
           ) : null}
         </form>
 
-        <div className="mt-auto flex justify-end">
+        <div className="mt-auto flex justify-end border-t border-border/80 pt-3">
           <Button type="button" variant="ghost" size="sm" onClick={onExcluir}>
             <Trash2Icon aria-hidden="true" />
             Excluir

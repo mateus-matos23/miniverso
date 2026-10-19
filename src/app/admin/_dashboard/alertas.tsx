@@ -1,5 +1,12 @@
-import { ActivityIcon, InboxIcon, NotebookPenIcon } from "lucide-react";
+import {
+  ActivityIcon,
+  ArrowRightIcon,
+  InboxIcon,
+  NotebookPenIcon,
+} from "lucide-react";
 import Link from "next/link";
+
+import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 import type { Resultado } from "./dados";
 import { rotulosDispositivo } from "./rotulos";
@@ -14,9 +21,14 @@ import {
 } from "./web-vitals";
 
 // Tom de atenção usa o violeta da marca (o manual não tem amarelo); ver --warning em globals.css.
-const estiloPorTom: Record<"aviso" | "info", string> = {
-  aviso: "border-warning/40 bg-warning/10 text-warning",
-  info: "border-line bg-muted text-body",
+const estiloIconePorTom: Record<"aviso" | "info", string> = {
+  aviso: "bg-warning/10 text-warning",
+  info: "bg-accent text-primary",
+};
+
+const estiloFaixaPorTom: Record<"aviso" | "info", string> = {
+  aviso: "border-warning/30",
+  info: "border-border",
 };
 
 type Alerta = {
@@ -87,27 +99,41 @@ export function AlertasTopo({
   if (alertas.length === 0) return null;
 
   return (
-    <section aria-label="Alertas" className="mb-8">
+    <section aria-label="Alertas">
       <ul className="flex flex-col gap-2">
         {alertas.map((alerta) => {
           const Icone = alerta.icone;
           return (
             <li
               className={cn(
-                "flex flex-col gap-2 rounded-md border px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between",
-                estiloPorTom[alerta.tom],
+                "flex flex-col gap-3 rounded-xl border bg-card px-4 py-3 sm:flex-row sm:items-center sm:justify-between",
+                estiloFaixaPorTom[alerta.tom],
               )}
               key={alerta.id}
             >
-              <span className="flex items-center gap-2">
-                <Icone aria-hidden="true" className="size-4 shrink-0" />
-                {alerta.texto}
-              </span>
+              <div className="flex min-w-0 items-center gap-3">
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "grid size-8 shrink-0 place-items-center rounded-lg",
+                    estiloIconePorTom[alerta.tom],
+                  )}
+                >
+                  <Icone className="size-4" />
+                </span>
+                <span className="text-sm font-medium text-heading">
+                  {alerta.texto}
+                </span>
+              </div>
               <Link
-                className="shrink-0 font-semibold text-primary underline-offset-4 hover:underline"
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "sm" }),
+                  "shrink-0 self-start sm:self-auto",
+                )}
                 href={alerta.href}
               >
                 {alerta.rotuloLink}
+                <ArrowRightIcon />
               </Link>
             </li>
           );

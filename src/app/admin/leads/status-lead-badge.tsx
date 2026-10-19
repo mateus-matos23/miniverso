@@ -8,7 +8,7 @@ type VarianteBadge = NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
 
 const variantes: Record<StatusLead, VarianteBadge> = {
   novo: "info",
-  em_contato: "secondary",
+  em_contato: "warning",
   convertido: "success",
   arquivado: "outline",
 };

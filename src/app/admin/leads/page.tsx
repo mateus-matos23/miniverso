@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { Button, LinkButton } from "@/components/ui/button";
+import { LinkButton } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import {
   Empty,
@@ -18,7 +18,12 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Pagination,
   PaginationContent,
@@ -127,63 +132,88 @@ export default async function LeadsPage({
           </LinkButton>
         }
         description="Contatos enviados pelo formulário da landing. Abra um lead para ver a mensagem, registrar o andamento e responder."
+        meta={
+          <>
+            <span>{totalGeral} no total</span>
+            <span aria-hidden="true">·</span>
+            <span>
+              {porStatus.novo} {porStatus.novo === 1 ? "novo" : "novos"}
+            </span>
+          </>
+        }
         title="Leads"
       />
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start">
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start">
         <section
           aria-label="Lista de leads"
           className={cn(
-            "flex min-w-0 flex-col gap-4",
+            "flex min-w-0 flex-col gap-6",
             filtros.selecionado && "hidden lg:flex",
           )}
         >
-          <nav aria-label="Filtrar por status" className="flex flex-wrap gap-2">
-            {OPCOES_STATUS_LEAD.map((opcao) => {
-              const quantidade =
-                opcao.valor === "todos" ? totalAtivos : porStatus[opcao.valor];
-              const ativo = filtros.status === opcao.valor;
+          <div className="flex flex-col gap-3">
+            <nav aria-label="Filtrar por status" className="min-w-0">
+              <div className="flex flex-wrap gap-1 rounded-lg bg-muted p-1">
+                {OPCOES_STATUS_LEAD.map((opcao) => {
+                  const quantidade =
+                    opcao.valor === "todos"
+                      ? totalAtivos
+                      : porStatus[opcao.valor];
+                  const ativo = filtros.status === opcao.valor;
 
-              return (
-                <Link
-                  aria-current={ativo ? "page" : undefined}
-                  className={cn(
-                    buttonVariants({
-                      size: "sm",
-                      variant: ativo ? "secondary" : "ghost",
-                    }),
-                    "h-11",
-                  )}
-                  href={hrefLeads({ status: opcao.valor, q: filtros.q })}
-                  key={opcao.valor}
-                >
-                  {opcao.rotulo}
-                  <span className="tabular-nums text-muted-foreground">
-                    {quantidade}
-                  </span>
-                </Link>
-              );
-            })}
-          </nav>
+                  return (
+                    <Link
+                      aria-current={ativo ? "page" : undefined}
+                      className={cn(
+                        "inline-flex h-9 grow items-center justify-center gap-2 rounded-md px-3 text-sm font-medium whitespace-nowrap outline-none transition-colors focus-visible:ring-3 focus-visible:ring-ring/30",
+                        ativo
+                          ? "bg-card text-heading shadow-xs"
+                          : "text-muted-foreground hover:text-heading",
+                      )}
+                      href={hrefLeads({ status: opcao.valor, q: filtros.q })}
+                      key={opcao.valor}
+                    >
+                      {opcao.rotulo}
+                      <span
+                        className={cn(
+                          "rounded-full px-1.5 text-xs tabular-nums",
+                          ativo ? "bg-accent text-primary" : "bg-background/80",
+                        )}
+                      >
+                        {quantidade}
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </nav>
 
-          <search>
-            <form action="/admin/leads" className="flex gap-2">
-              {filtros.status !== "todos" ? (
-                <input name="status" type="hidden" value={filtros.status} />
-              ) : null}
-              <Input
-                aria-label="Buscar por nome, e-mail ou escola"
-                defaultValue={filtros.q}
-                name="q"
-                placeholder="Nome, e-mail ou escola"
-                type="search"
-              />
-              <Button type="submit" variant="outline">
-                <SearchIcon data-icon="inline-start" />
-                Buscar
-              </Button>
-            </form>
-          </search>
+            <search className="w-full">
+              <form action="/admin/leads">
+                {filtros.status !== "todos" ? (
+                  <input name="status" type="hidden" value={filtros.status} />
+                ) : null}
+                <InputGroup>
+                  <InputGroupAddon>
+                    <SearchIcon aria-hidden="true" />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    aria-label="Buscar por nome, e-mail ou escola"
+                    defaultValue={filtros.q}
+                    name="q"
+                    placeholder="Nome, e-mail ou escola"
+                    type="search"
+                  />
+                  <InputGroupAddon align="inline-end">
+                    <InputGroupButton size="xs" type="submit" variant="default">
+                      Buscar
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
+              </form>
+            </search>
+          </div>
 
           {leads && leads.length > 0 ? (
             <>
@@ -230,7 +260,7 @@ export default async function LeadsPage({
               ) : null}
             </>
           ) : totalGeral === 0 ? (
-            <Empty className="border border-border bg-card">
+            <Empty className="border border-dashed border-border bg-card/60">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
                   <InboxIcon />
@@ -254,7 +284,7 @@ export default async function LeadsPage({
               </EmptyContent>
             </Empty>
           ) : (
-            <Empty className="border border-border bg-card">
+            <Empty className="border border-dashed border-border bg-card/60">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
                   <SearchIcon />
@@ -287,7 +317,7 @@ export default async function LeadsPage({
               voltarHref={hrefLista}
             />
           ) : (
-            <Empty className="border border-border bg-card">
+            <Empty className="border border-dashed border-border bg-card/60">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
                   <InboxIcon />

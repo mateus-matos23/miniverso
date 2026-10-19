@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { superficie } from "@/app/admin/_componentes/painel";
 import { formatarDataHora, formatarRelativo } from "@/lib/formatar";
 import { cn } from "@/lib/utils";
 import type { LeadRow } from "@/utils/supabase/database";
@@ -33,8 +34,10 @@ export function ListaLeads({
             <Link
               aria-current={ativo ? "true" : undefined}
               className={cn(
-                "flex items-start gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:border-primary/60",
-                ativo && "border-primary ring-1 ring-primary/40",
+                superficie,
+                "flex items-start gap-3 p-4 transition-colors hover:border-primary/40",
+                ativo &&
+                  "border-primary/50 bg-accent/60 shadow-[inset_3px_0_0_var(--color-primary)]",
               )}
               href={hrefLeads({ ...filtros, selecionado: lead.id })}
             >
@@ -47,12 +50,7 @@ export function ListaLeads({
               />
               <span className="flex min-w-0 flex-1 flex-col gap-1">
                 <span className="flex items-center justify-between gap-3">
-                  <span
-                    className={cn(
-                      "truncate text-heading",
-                      novo ? "font-bold" : "font-semibold",
-                    )}
-                  >
+                  <span className="truncate font-medium text-heading">
                     {lead.nome}
                   </span>
                   <time
@@ -63,11 +61,11 @@ export function ListaLeads({
                     {formatarRelativo(lead.criado_em)}
                   </time>
                 </span>
-                <span className="flex min-w-0 flex-wrap gap-x-4 gap-y-0.5 text-sm text-muted-foreground">
+                <span className="flex min-w-0 flex-wrap gap-x-3 gap-y-0.5 text-sm text-muted-foreground">
                   <span className="truncate">
                     {lead.escola ?? "Escola não informada"}
                   </span>
-                  <span>
+                  <span className="shrink-0">
                     {rotulosInteresseLead[lead.interesse] ?? lead.interesse}
                   </span>
                 </span>

@@ -1,7 +1,15 @@
-import { FolderKanbanIcon, ImageIcon, UsersIcon } from "lucide-react";
+import {
+  ArrowRightIcon,
+  FolderKanbanIcon,
+  ImageIcon,
+  UsersIcon,
+} from "lucide-react";
 import Link from "next/link";
 
-import { Card } from "@/components/ui/card";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
+
+import { superficie } from "../_componentes/painel";
 
 import type { Resultado, ResumoDeConteudo } from "./dados";
 import { formatarInteiro } from "./formatar";
@@ -55,24 +63,33 @@ export function ResumoConteudo({
       {cartoes.map((cartao) => {
         const Icone = cartao.icone;
         return (
-          <Card className="flex flex-col p-5" key={cartao.id}>
-            <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <Icone aria-hidden="true" className="size-4 text-primary" />
+          <div className={cn(superficie, "flex flex-col p-5")} key={cartao.id}>
+            <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <span
+                aria-hidden="true"
+                className="grid size-8 shrink-0 place-items-center rounded-lg bg-accent text-primary"
+              >
+                <Icone className="size-4" />
+              </span>
               {cartao.titulo}
             </h3>
-            <p className="mt-4 font-display text-4xl font-bold leading-none text-heading">
+            <p className="mt-4 font-display text-4xl font-bold leading-none text-heading tabular-nums">
               {cartao.principal}
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
               {cartao.detalhe}
             </p>
             <Link
-              className="mt-4 inline-flex w-fit items-center rounded-md px-2 py-1 text-sm font-semibold text-primary hover:bg-accent"
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "mt-4 -ml-3 self-start",
+              )}
               href={cartao.href}
             >
               {cartao.rotulo}
+              <ArrowRightIcon />
             </Link>
-          </Card>
+          </div>
         );
       })}
     </div>

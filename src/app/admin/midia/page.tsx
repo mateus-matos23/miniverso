@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { Painel } from "@/app/admin/_componentes/painel";
 import { listarMidias } from "@/app/admin/midia/actions";
 import { AdminPage, PageHeader } from "@/app/admin/page-header";
 
@@ -11,6 +12,8 @@ export const metadata: Metadata = { title: "Mídia" };
 export default async function MidiaPage() {
   const { itens: midias, proximoCursor } = await listarMidias();
 
+  const contagem = `${midias.length}${proximoCursor ? "+" : ""} ${midias.length === 1 && !proximoCursor ? "item" : "itens"}`;
+
   return (
     <AdminPage>
       <PageHeader
@@ -18,28 +21,18 @@ export default async function MidiaPage() {
         description="Biblioteca de imagens e vídeos usados na página inicial e nos projetos. Todo item precisa de texto alternativo."
       />
 
-      <section
-        aria-labelledby="enviar-midia-titulo"
-        className="mt-10 rounded-lg border border-border bg-card p-5 sm:p-6"
-      >
-        <h2
-          id="enviar-midia-titulo"
-          className="mb-4 text-lg font-semibold text-foreground"
-        >
-          Enviar arquivo
-        </h2>
+      <Painel aria-label="Enviar mídia" className="mt-6" titulo="Enviar mídia">
         <EnviarMidia />
-      </section>
+      </Painel>
 
-      <section aria-labelledby="biblioteca-titulo" className="mt-12">
-        <h2
-          id="biblioteca-titulo"
-          className="mb-6 text-lg font-semibold text-foreground"
-        >
-          Biblioteca
-        </h2>
+      <Painel
+        aria-label="Biblioteca"
+        className="mt-6"
+        descricao={contagem}
+        titulo="Biblioteca"
+      >
         <BibliotecaMidias midias={midias} proximoCursor={proximoCursor} />
-      </section>
+      </Painel>
     </AdminPage>
   );
 }

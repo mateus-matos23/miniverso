@@ -4,6 +4,7 @@ import { ImageIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { GridList, GridListItem } from "react-aria-components";
 
+import { superficie } from "@/app/admin/_componentes/painel";
 import {
   type CursorMidias,
   listarMidias,
@@ -128,8 +129,9 @@ export function SeletorMidia({
       ) : null}
       <div
         className={cn(
-          "flex flex-col gap-3 rounded-lg border bg-card p-3 sm:flex-row sm:items-center",
-          erro ? "border-destructive/40" : "border-border",
+          superficie,
+          "flex flex-col gap-3 p-3 sm:flex-row sm:items-center",
+          erro && "border-destructive/40",
         )}
       >
         <div className="w-full shrink-0 sm:w-40">

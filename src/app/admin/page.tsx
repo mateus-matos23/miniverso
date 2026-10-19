@@ -1,5 +1,8 @@
+import { ArrowRightIcon } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 
+import { buttonVariants } from "@/components/ui/button-variants";
 import { requireAdmin } from "@/lib/auth";
 import { AlertasTopo } from "./_dashboard/alertas";
 import {
@@ -68,7 +71,7 @@ export default async function AdminOverviewPage({
         title="Visão geral"
       />
 
-      <div className="mt-8">
+      <div className="mt-6 empty:hidden">
         <AlertasTopo
           leadsNovos={leadsNovos}
           rascunhoPendente={rascunhoPendente}
@@ -79,35 +82,60 @@ export default async function AdminOverviewPage({
       <Secao
         descricao={`Números de ${rotuloPeriodo}, no fuso de Fortaleza.`}
         id="indicadores"
+        semMoldura
         titulo="Indicadores"
-        className="mt-8"
       >
         <KpisPeriodo metricas={metricas} />
       </Secao>
 
-      <Secao
-        descricao={`Visitantes e leads de cada dia de ${rotuloPeriodo}.`}
-        id="tendencia"
-        titulo="Tendência diária"
-      >
-        <GraficoDiario metricas={metricas} />
-      </Secao>
+      <div className="mt-6 grid gap-6 xl:grid-cols-3">
+        <Secao
+          className="mt-0 xl:col-span-2"
+          descricao={`Visitantes e leads de cada dia de ${rotuloPeriodo}.`}
+          id="tendencia"
+          titulo="Tendência diária"
+        >
+          <GraficoDiario metricas={metricas} />
+        </Secao>
 
-      <Secao
-        descricao={`Cliques, origens e dispositivos de ${rotuloPeriodo}.`}
-        id="origem-e-cliques"
-        titulo="Cliques e origem"
-      >
-        <RankingsPeriodo metricas={metricas} />
-      </Secao>
+        <Secao
+          acao={
+            <Link
+              className={buttonVariants({ variant: "ghost", size: "sm" })}
+              href="/admin/leads"
+            >
+              Ver todos
+              <ArrowRightIcon />
+            </Link>
+          }
+          className="mt-0"
+          descricao="Os cinco contatos mais recentes do formulário."
+          id="ultimos-leads"
+          titulo="Últimos leads"
+        >
+          <UltimosLeads agora={agora} leads={ultimosLeads} />
+        </Secao>
+      </div>
 
-      <Secao
-        descricao={`Medições de ${rotuloPeriodo}.`}
-        id="desempenho"
-        titulo="Desempenho"
-      >
-        <DesempenhoWebVitals vitals={vitals} />
-      </Secao>
+      <div className="mt-6 grid gap-6">
+        <Secao
+          className="mt-0"
+          descricao={`Cliques, origens e dispositivos de ${rotuloPeriodo}.`}
+          id="origem-e-cliques"
+          titulo="Cliques e origem"
+        >
+          <RankingsPeriodo metricas={metricas} />
+        </Secao>
+
+        <Secao
+          className="mt-0"
+          descricao={`Medições de ${rotuloPeriodo}.`}
+          id="desempenho"
+          titulo="Desempenho"
+        >
+          <DesempenhoWebVitals vitals={vitals} />
+        </Secao>
+      </div>
 
       <Secao
         descricao="p75 no celular de cada versão publicada, comparado à versão anterior. Piora acima de 20% é destacada."
@@ -117,16 +145,8 @@ export default async function AdminOverviewPage({
         <DesempenhoVersoes versoes={versoes} />
       </Secao>
 
-      <Secao id="conteudo" titulo="Conteúdo">
+      <Secao id="resumo-conteudo" semMoldura titulo="Conteúdo">
         <ResumoConteudo conteudo={conteudo} />
-      </Secao>
-
-      <Secao
-        descricao="Os cinco contatos mais recentes do formulário."
-        id="ultimos-leads"
-        titulo="Últimos leads"
-      >
-        <UltimosLeads agora={agora} leads={ultimosLeads} />
       </Secao>
     </AdminPage>
   );

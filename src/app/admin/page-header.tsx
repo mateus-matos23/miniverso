@@ -12,7 +12,7 @@ export function AdminPage({
   return (
     <div
       className={cn(
-        "mx-auto w-full px-5 py-10 sm:px-8 lg:px-12 lg:py-14",
+        "mx-auto w-full px-4 py-6 sm:px-6 lg:px-8 lg:py-8",
         ampla ? "max-w-admin-wide" : "max-w-admin",
       )}
     >
@@ -26,26 +26,36 @@ export function PageHeader({
   description,
   actions,
   eyebrow,
+  meta,
 }: {
   title: string;
   description?: string;
   actions?: ReactNode;
   eyebrow?: ReactNode;
+  /** Números de contexto exibidos abaixo da descrição (ex.: "12 projetos · 8 publicados"). */
+  meta?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-6 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
         {eyebrow}
-        <h1 className="font-display text-display-md font-bold text-heading">
+        <h1 className="font-display text-4xl leading-none font-bold text-heading sm:text-5xl">
           {title}
         </h1>
         {description ? (
-          <p className="mt-3 max-w-[40rem] text-muted-foreground">
+          <p className="mt-2 max-w-[42rem] text-sm text-muted-foreground">
             {description}
           </p>
         ) : null}
+        {meta ? (
+          <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium text-body tabular-nums">
+            {meta}
+          </p>
+        ) : null}
       </div>
-      {actions ? <div className="flex shrink-0 gap-2">{actions}</div> : null}
+      {actions ? (
+        <div className="flex shrink-0 flex-wrap gap-2">{actions}</div>
+      ) : null}
     </div>
   );
 }

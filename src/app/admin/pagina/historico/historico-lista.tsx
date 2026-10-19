@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
+import { superficie } from "@/app/admin/_componentes/painel";
 import { restaurarVersao } from "@/app/admin/pagina/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatarDataHora } from "@/lib/formatar";
+import { cn } from "@/lib/utils";
 
 export type VersaoHistorico = {
   id: string;
@@ -84,7 +86,7 @@ export function HistoricoLista({ versoes }: { versoes: VersaoHistorico[] }) {
       >
         {versoes.map((versao) => (
           <li
-            className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4"
+            className={cn(superficie, "flex flex-col gap-3 p-4")}
             key={versao.id}
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -101,22 +103,22 @@ export function HistoricoLista({ versoes }: { versoes: VersaoHistorico[] }) {
         ))}
       </ul>
 
-      <div className="hidden overflow-hidden rounded-lg border border-border bg-card lg:block">
+      <div className={cn(superficie, "hidden overflow-hidden lg:block")}>
         <Table
           aria-label="Versões publicadas da página inicial"
           className="text-left"
         >
-          <TableHeader className="border-b border-border bg-muted/50 text-sm text-muted-foreground">
-            <TableHead className="px-4 py-3 font-medium" id="publicada">
+          <TableHeader className="bg-muted/50">
+            <TableHead className="px-4 py-3" id="publicada">
               Publicada em
             </TableHead>
-            <TableHead className="px-4 py-3 font-medium" id="nota">
+            <TableHead className="px-4 py-3" id="nota">
               Nota
             </TableHead>
-            <TableHead className="px-4 py-3 font-medium" id="situacao">
+            <TableHead className="px-4 py-3" id="situacao">
               Situação
             </TableHead>
-            <TableHead className="px-4 py-3 text-right font-medium" id="acoes">
+            <TableHead className="px-4 py-3 text-right" id="acoes">
               <span className="sr-only">Ações</span>
             </TableHead>
           </TableHeader>

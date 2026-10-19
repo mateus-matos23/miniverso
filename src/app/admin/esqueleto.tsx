@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
+import { superficie } from "./_componentes/painel";
 import { AdminPage } from "./page-header";
 
 /**
@@ -37,11 +38,11 @@ export function EsqueletoCabecalho({
   children?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-6 border-b border-border pb-8 sm:flex-row sm:items-end sm:justify-between">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-col gap-3">
         {children}
-        <Skeleton className="h-11 w-56 max-w-full" />
-        {comDescricao ? <Skeleton className="h-5 w-96 max-w-full" /> : null}
+        <Skeleton className="h-10 w-56 max-w-full sm:h-12" />
+        {comDescricao ? <Skeleton className="h-4 w-96 max-w-full" /> : null}
       </div>
       {comAcao ? <Skeleton className="h-10 w-40 shrink-0" /> : null}
     </div>
@@ -57,7 +58,7 @@ export function EsqueletoSecao({
   children: ReactNode;
 }) {
   return (
-    <section className={cn("mt-12", className)}>
+    <section className={cn("mt-8", className)}>
       <div className="mb-4 flex flex-col gap-2">
         <Skeleton className="h-6 w-44" />
         <Skeleton className="h-4 w-72 max-w-full" />
@@ -106,12 +107,12 @@ export function EsqueletoEditor({ quantidade }: { quantidade: number }) {
     <EsqueletoTela ampla>
       <EsqueletoCabecalho />
 
-      <div className="mt-8 grid gap-6 grid-editor">
+      <div className="mt-6 grid gap-6 grid-editor">
         <aside className="flex flex-col gap-2">
           <EsqueletoLinhas quantidade={quantidade} altura="h-10" />
         </aside>
 
-        <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5 sm:p-6">
+        <div className={cn(superficie, "flex flex-col gap-4 p-5 sm:p-6")}>
           <Skeleton className="h-7 w-48" />
           <Skeleton className="h-4 w-full max-w-[36rem]" />
           <Skeleton className="mt-2 h-10 w-full" />
@@ -120,7 +121,7 @@ export function EsqueletoEditor({ quantidade }: { quantidade: number }) {
           <Skeleton className="h-24 w-full" />
         </div>
 
-        <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-5 sm:p-6">
+        <div className={cn(superficie, "flex flex-col gap-4 p-5 sm:p-6")}>
           <Skeleton className="h-6 w-32" />
           <Skeleton className="aspect-video w-full" />
           <Skeleton className="h-4 w-4/5" />
@@ -139,10 +140,10 @@ export function EsqueletoFormularioProjeto({
 }) {
   return (
     <EsqueletoTela>
-      <div className="flex flex-col gap-6 border-b border-border pb-8">
-        <Skeleton className="h-10 w-24" />
-        <Skeleton className="h-11 w-56 max-w-full" />
-        <Skeleton className="h-5 w-96 max-w-full" />
+      <div className="flex flex-col gap-3">
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="h-10 w-56 max-w-full sm:h-12" />
+        <Skeleton className="h-4 w-96 max-w-full" />
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">

@@ -4,9 +4,15 @@ import { TriangleAlertIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 
-import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+} from "@/components/ui/empty";
 
 import { AdminPage, PageHeader } from "./page-header";
 
@@ -36,24 +42,28 @@ export default function AdminError({
         title="Não foi possível carregar"
       />
 
-      <Alert
-        className="mt-8 flex flex-col items-start gap-5 rounded-lg p-6 sm:p-8"
-        variant="destructive"
+      <Empty
+        className="mt-6 border border-dashed border-border bg-card/60"
+        role="alert"
       >
-        <TriangleAlertIcon
-          aria-hidden="true"
-          className="size-8 text-destructive"
-        />
-        <p className="max-w-160 text-body">
-          Tente de novo. Se o problema continuar, volte à Visão geral e tente
-          mais tarde.
-        </p>
-        {codigo ? (
-          <p className="text-xs text-muted-foreground">
-            Código do erro: <span className="font-mono">{codigo}</span>
-          </p>
-        ) : null}
-        <div className="flex flex-wrap gap-2">
+        <EmptyHeader>
+          <EmptyMedia
+            variant="icon"
+            className="bg-destructive/10 text-destructive"
+          >
+            <TriangleAlertIcon aria-hidden="true" />
+          </EmptyMedia>
+          <EmptyDescription>
+            Tente de novo. Se o problema continuar, volte à Visão geral e tente
+            mais tarde.
+          </EmptyDescription>
+          {codigo ? (
+            <p className="text-xs text-muted-foreground">
+              Código do erro: <span className="font-mono">{codigo}</span>
+            </p>
+          ) : null}
+        </EmptyHeader>
+        <EmptyContent className="flex-row flex-wrap justify-center gap-2">
           <Button onPress={() => retry()}>Tentar novamente</Button>
           <Link
             className={buttonVariants({ variant: "outline" })}
@@ -61,8 +71,8 @@ export default function AdminError({
           >
             Ir para a Visão geral
           </Link>
-        </div>
-      </Alert>
+        </EmptyContent>
+      </Empty>
     </AdminPage>
   );
 }

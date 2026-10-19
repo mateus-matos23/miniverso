@@ -32,7 +32,7 @@ export default async function ConfiguracoesPage({
         title="Configurações"
         description="Contato, SEO, cabeçalho, rodapé e aviso do site. As alterações entram no mesmo rascunho da página inicial e vão ao ar ao publicar."
       />
-      <div className="mt-8">
+      <div className="mt-6">
         {/* A chave remonta o editor quando o servidor muda o estado (publicar, descartar). */}
         <EditorLanding
           key={estado.chave}

@@ -44,9 +44,9 @@ export default async function HistoricoPaginaPage() {
         title="Histórico"
         description="Versões publicadas da página inicial. Restaurar copia o conteúdo para o rascunho, sem publicar."
       />
-      <div className="mt-8">
+      <div className="mt-6">
         {versoes.length === 0 ? (
-          <Empty className="border border-border bg-card">
+          <Empty className="border border-dashed border-border bg-card/60">
             <EmptyHeader>
               <EmptyMedia variant="icon" />
               <EmptyTitle>Nenhuma versão publicada</EmptyTitle>

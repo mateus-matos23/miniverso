@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useId, useState } from "react";
 import { formatarDiaMes } from "@/lib/formatar";
 import type { Resultado } from "./dados";
 import { formatarCompacto, formatarInteiro } from "./formatar";
@@ -51,6 +51,10 @@ function indicesRotulos(total: number) {
 function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
   // Dia em destaque por foco, toque ou ponteiro: mostra o rótulo com os valores.
   const [ativo, setAtivo] = useState<number | null>(null);
+  // IDs de gradiente e sombra: sem os dois-pontos do useId, para não quebrar a referência url(#…).
+  const idBase = useId().replace(/:/g, "");
+  const idGradiente = `${idBase}-area`;
+  const idSombra = `${idBase}-sombra`;
   const total = dias.length;
   const larguraBanda = AREA_LARGURA / total;
   const maximo = Math.max(1, ...dias.map((dia) => dia.visitantes));
@@ -95,9 +99,10 @@ function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
         />
         <rect
           fill={COR_SUPERFICIE}
+          filter={`url(#${idSombra})`}
           height={TOOLTIP_ALTURA}
-          rx={6}
-          stroke={COR_EIXO}
+          rx={8}
+          stroke={COR_GRADE}
           width={TOOLTIP_LARGURA}
           x={xTooltip}
           y={MARGEM.topo}
@@ -138,10 +143,27 @@ function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
       className="hidden h-auto w-full sm:block sm:max-w-[40rem]"
       viewBox={`0 0 ${LARGURA} ${ALTURA}`}
     >
+      <defs>
+        <linearGradient id={idGradiente} x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stopColor={COR_VISITANTES} stopOpacity={0.18} />
+          <stop offset="1" stopColor={COR_VISITANTES} stopOpacity={0} />
+        </linearGradient>
+        <filter height="160%" id={idSombra} width="130%" x="-15%" y="-15%">
+          <feDropShadow
+            dx={0}
+            dy={2}
+            floodColor="#1e1645"
+            floodOpacity={0.12}
+            stdDeviation={3}
+          />
+        </filter>
+      </defs>
+
       {marcasEixoY.map((valor) => (
         <g key={valor}>
           <line
             stroke={valor === 0 ? COR_EIXO : COR_GRADE}
+            strokeDasharray={valor === 0 ? undefined : "3 4"}
             strokeWidth={1}
             x1={MARGEM.esquerda}
             x2={LARGURA - MARGEM.direita}
@@ -160,7 +182,7 @@ function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
         </g>
       ))}
 
-      <path d={area} fill={COR_VISITANTES} fillOpacity={0.1} />
+      <path d={area} fill={`url(#${idGradiente})`} />
       <path
         d={linha}
         fill="none"
@@ -265,12 +287,12 @@ export function GraficoDiario({ metricas }: { metricas: Resultado<Metricas> }) {
   }
 
   return (
-    <figure className="rounded-lg border border-border bg-card p-5">
-      <figcaption className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-body">
+    <figure className="flex flex-col">
+      <figcaption className="mb-2 flex flex-wrap items-center justify-end gap-x-5 gap-y-2 text-sm text-body">
         <span className="flex items-center gap-2">
           <span
             aria-hidden="true"
-            className="h-0.5 w-5 rounded-full bg-primary"
+            className="size-2.5 rounded-full bg-primary"
           />
           Visitantes por dia
         </span>

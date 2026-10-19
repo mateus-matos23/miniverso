@@ -1,11 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
-import {
-  EsqueletoCabecalho,
-  EsqueletoSecao,
-  EsqueletoTela,
-  repetir,
-} from "../esqueleto";
+import { superficie } from "../_componentes/painel";
+import { EsqueletoCabecalho, EsqueletoTela, repetir } from "../esqueleto";
 
 /** Espelha a mídia: área de envio e a grade da biblioteca. */
 export default function MidiaLoading() {
@@ -13,25 +10,25 @@ export default function MidiaLoading() {
     <EsqueletoTela>
       <EsqueletoCabecalho />
 
-      <section className="mt-10 rounded-lg border border-border bg-card p-5 sm:p-6">
+      <section className={cn(superficie, "mt-6 p-5 sm:p-6")}>
         <Skeleton className="mb-4 h-6 w-36" />
         <Skeleton className="h-32 w-full" />
       </section>
 
-      <EsqueletoSecao className="mt-12">
-        <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <section className={cn(superficie, "mt-6 p-5 sm:p-6")}>
+        <Skeleton className="mb-4 h-6 w-28" />
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {repetir(6, "item").map((chave) => (
-            <li
-              className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4"
-              key={chave}
-            >
-              <Skeleton className="aspect-video w-full" />
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
+            <li className={cn(superficie, "overflow-hidden")} key={chave}>
+              <Skeleton className="aspect-video w-full rounded-none" />
+              <div className="flex flex-col gap-2 p-3">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
             </li>
           ))}
         </ul>
-      </EsqueletoSecao>
+      </section>
     </EsqueletoTela>
   );
 }

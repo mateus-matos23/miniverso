@@ -1,6 +1,6 @@
 "use client";
 
-import { FileUpIcon, Trash2Icon, TriangleAlertIcon } from "lucide-react";
+import { Trash2Icon, TriangleAlertIcon, UploadIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useEffect, useId, useState } from "react";
@@ -208,7 +208,7 @@ export function EnviarMidia({
     <form className="flex flex-col gap-4" onSubmit={enviar} noValidate>
       <DropZone
         aria-label="Área para soltar o arquivo"
-        className="flex flex-wrap items-center gap-3 rounded-md data-[drop-target]:bg-muted data-[drop-target]:ring-2 data-[drop-target]:ring-ring/40"
+        className="flex flex-col items-center gap-3 rounded-xl border-2 border-dashed border-border bg-muted/40 px-6 py-8 text-center transition-colors hover:border-primary/50 data-[drop-target]:border-primary/60 data-[drop-target]:bg-accent"
         getDropOperation={() => (ocupado ? "cancel" : "copy")}
         isDisabled={ocupado}
         onDrop={async (event) => {
@@ -216,6 +216,12 @@ export function EnviarMidia({
           if (item?.kind === "file") escolherArquivo(await item.getFile());
         }}
       >
+        <span
+          aria-hidden="true"
+          className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent text-primary"
+        >
+          <UploadIcon className="size-5" />
+        </span>
         <FileTrigger
           acceptedFileTypes={aceitos}
           onSelect={(files) => escolherArquivo(files?.[0])}
@@ -228,7 +234,6 @@ export function EnviarMidia({
               erroArquivo ? `${fieldId}-arquivo-erro` : undefined
             }
           >
-            <FileUpIcon aria-hidden="true" data-icon="inline-start" />
             {tipo
               ? `Escolher ${rotuloTipoMidia[tipo].toLowerCase()}`
               : "Escolher arquivo"}
@@ -236,7 +241,7 @@ export function EnviarMidia({
         </FileTrigger>
         <p className="min-w-0 text-sm text-muted-foreground">
           {arquivo ? (
-            <span className="flex min-w-0 flex-wrap gap-x-3 gap-y-0.5">
+            <span className="flex min-w-0 flex-wrap items-center justify-center gap-x-3 gap-y-0.5">
               <span className="min-w-0 truncate font-medium text-foreground">
                 {arquivo.name}
               </span>

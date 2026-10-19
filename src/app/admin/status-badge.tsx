@@ -15,7 +15,7 @@ export function StatusBadge({ status }: { status: string }) {
   const chave = status === "published" ? "published" : "draft";
 
   return (
-    <Badge className="h-6 font-semibold" dot variant={variantes[chave]}>
+    <Badge className="h-6 font-medium" dot variant={variantes[chave]}>
       {rotulos[chave]}
     </Badge>
   );

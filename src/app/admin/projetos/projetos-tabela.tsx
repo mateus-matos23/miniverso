@@ -51,7 +51,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { cn } from "@/lib/utils";
 import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
+import { superficie } from "../_componentes/painel";
 import { useListaReordenavel } from "../_componentes/use-lista-reordenavel";
 import { PageHeader } from "../page-header";
 import { StatusBadge } from "../status-badge";
@@ -88,6 +90,10 @@ export default function ProjetosTabela({
     reordenar: reordenarConteudos,
   });
 
+  const publicados = projetos.filter(
+    (projeto) => projeto.status === "published",
+  ).length;
+
   const novoProjeto = (
     <Link className={buttonVariants()} href="/admin/projetos/novo">
       <PlusIcon data-icon="inline-start" />
@@ -99,6 +105,18 @@ export default function ProjetosTabela({
     <>
       <PageHeader
         actions={projetos.length > 0 ? novoProjeto : undefined}
+        meta={
+          projetos.length > 0 ? (
+            <>
+              <span>
+                {projetos.length}{" "}
+                {projetos.length === 1 ? "projeto" : "projetos"}
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>{publicados} publicados</span>
+            </>
+          ) : undefined
+        }
         description="Projetos exibidos na landing. Só os publicados aparecem, na ordem definida aqui. No computador, arraste pela alça para reordenar."
         title="Projetos"
       />
@@ -109,9 +127,9 @@ export default function ProjetosTabela({
         </Alert>
       ) : null}
 
-      <div className="mt-8">
+      <div className="mt-6">
         {projetos.length === 0 ? (
-          <Empty className="border border-border bg-card">
+          <Empty className="border border-dashed border-border bg-card/60">
             <EmptyHeader>
               <EmptyMedia variant="icon">
                 <FolderKanbanIcon />
@@ -132,7 +150,7 @@ export default function ProjetosTabela({
             >
               {ordemExibida.map((projeto) => (
                 <li
-                  className="flex items-start gap-4 rounded-lg border border-border bg-card p-4"
+                  className={cn(superficie, "flex items-start gap-4 p-4")}
                   key={projeto.id}
                 >
                   <Miniatura projeto={projeto} />
@@ -164,38 +182,27 @@ export default function ProjetosTabela({
               Para reordenar, use uma tela maior.
             </p>
 
-            <div className="hidden overflow-hidden rounded-lg border border-border bg-card lg:block">
+            <div className={cn(superficie, "hidden overflow-hidden lg:block")}>
               <Table
                 aria-label="Projetos cadastrados"
                 className="text-left"
                 dragAndDropHooks={dragAndDropHooks}
               >
-                <TableHeader className="border-b border-border bg-muted/60 text-sm text-muted-foreground">
-                  <TableHead
-                    className="w-12 px-3 py-3 font-medium"
-                    id="reordenar"
-                  >
+                <TableHeader className="border-b border-border/80 bg-muted/50">
+                  <TableHead className="w-12 px-3" id="reordenar">
                     <span className="sr-only">Reordenar</span>
                   </TableHead>
-                  <TableHead className="w-36 font-medium" id="miniatura">
+                  <TableHead className="w-36" id="miniatura">
                     Miniatura
                   </TableHead>
-                  <TableHead className="font-medium" id="titulo" isRowHeader>
+                  <TableHead id="titulo" isRowHeader>
                     Título
                   </TableHead>
-                  <TableHead className="font-medium" id="cliente">
-                    Cliente
-                  </TableHead>
-                  <TableHead className="font-medium" id="categoria">
-                    Categoria
-                  </TableHead>
-                  <TableHead className="font-medium" id="status">
-                    Status
-                  </TableHead>
-                  <TableHead className="font-medium" id="ordem">
-                    Ordem
-                  </TableHead>
-                  <TableHead className="w-20 text-right font-medium" id="acoes">
+                  <TableHead id="cliente">Cliente</TableHead>
+                  <TableHead id="categoria">Categoria</TableHead>
+                  <TableHead id="status">Status</TableHead>
+                  <TableHead id="ordem">Ordem</TableHead>
+                  <TableHead className="w-20 text-right" id="acoes">
                     <span className="sr-only">Ações</span>
                   </TableHead>
                 </TableHeader>
@@ -206,7 +213,7 @@ export default function ProjetosTabela({
                       id={projeto.id}
                       textValue={projeto.titulo}
                     >
-                      <TableCell className="px-3 py-3">
+                      <TableCell className="px-3">
                         <Button
                           aria-label={`Arrastar projeto ${projeto.titulo}`}
                           className="cursor-grab"
@@ -258,7 +265,7 @@ function TituloProjeto({ projeto }: { projeto: ProjetoListItem }) {
   return (
     <div className="min-w-0">
       <Link
-        className="wrap-break-word font-semibold text-heading hover:underline"
+        className="wrap-break-word font-medium text-heading hover:underline"
         href={`/admin/projetos/${projeto.id}`}
       >
         {projeto.titulo}
@@ -272,7 +279,7 @@ function TituloProjeto({ projeto }: { projeto: ProjetoListItem }) {
 
 function Miniatura({ projeto }: { projeto: ProjetoListItem }) {
   return (
-    <span className="grid aspect-video w-24 shrink-0 place-items-center overflow-hidden rounded-md border border-border bg-brand-aurora">
+    <span className="grid aspect-video w-24 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted ring-1 ring-border/80">
       {projeto.midiaUrl && projeto.tipoMidia === "imagem" ? (
         <Image
           alt=""
@@ -285,14 +292,14 @@ function Miniatura({ projeto }: { projeto: ProjetoListItem }) {
       {projeto.tipoMidia === "video" ? (
         <FilmIcon
           aria-label="Vídeo"
-          className="size-5 text-brand-mist"
+          className="size-5 text-muted-foreground"
           role="img"
         />
       ) : null}
       {!projeto.midiaUrl && projeto.tipoMidia === "imagem" ? (
         <ImageOffIcon
           aria-label="Mídia indisponível"
-          className="size-5 text-brand-mist"
+          className="size-5 text-muted-foreground"
           role="img"
         />
       ) : null}
@@ -322,7 +329,7 @@ function ProjetoAcoes({
         <Button
           aria-label={`Ações para ${projeto.titulo}`}
           isDisabled={disabled}
-          size="icon"
+          size="icon-sm"
           variant="ghost"
         >
           <MoreHorizontalIcon />

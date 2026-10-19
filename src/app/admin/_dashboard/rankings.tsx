@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import type { Resultado } from "./dados";
 import { formatarInteiro } from "./formatar";
 import { rotulosAlvoCta, rotulosDispositivo, rotulosOrigem } from "./rotulos";
@@ -19,8 +18,8 @@ function ListaBarras({
   const maximo = Math.max(1, ...itens.map((item) => item.valor));
 
   return (
-    <Card className="p-5">
-      <h3 className="text-sm font-semibold text-foreground">{titulo}</h3>
+    <div className="flex min-w-0 flex-col">
+      <h3 className="text-sm font-semibold text-heading">{titulo}</h3>
       <p className="mt-1 text-xs text-muted-foreground">{descricao}</p>
       {itens.length === 0 ? (
         <p className="mt-6 text-sm text-muted-foreground">
@@ -40,10 +39,10 @@ function ListaBarras({
               </div>
               <div
                 aria-hidden="true"
-                className="mt-1.5 h-2 w-full rounded-r-sm bg-muted"
+                className="mt-1.5 h-1.5 w-full rounded-full bg-muted"
               >
                 <div
-                  className="h-2 rounded-r-sm bg-primary"
+                  className="h-1.5 rounded-full bg-primary"
                   style={{ width: `${(item.valor / maximo) * 100}%` }}
                 />
               </div>
@@ -51,7 +50,7 @@ function ListaBarras({
           ))}
         </ul>
       )}
-    </Card>
+    </div>
   );
 }
 
@@ -69,7 +68,7 @@ export function RankingsPeriodo({
   const { ctas, origens, dispositivos } = metricas.dados;
 
   return (
-    <div className="grid gap-6 md:grid-cols-3">
+    <div className="grid gap-8 md:grid-cols-3">
       <ListaBarras
         descricao="Cliques nos botões e links da landing."
         itens={ctas.map((cta) => ({

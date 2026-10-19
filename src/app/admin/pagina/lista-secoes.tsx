@@ -107,8 +107,8 @@ export function ListaSecoes({
               value={secao}
               textValue={nome}
               className={cn(
-                "flex items-center gap-1 rounded-md border bg-card pr-1 outline-none",
-                "border-border data-selected:border-ring data-selected:ring-2 data-selected:ring-ring/30",
+                "flex items-center gap-1 rounded-lg border border-transparent pr-1 outline-none transition-colors hover:bg-muted",
+                "data-selected:border-border/80 data-selected:bg-accent data-selected:text-heading data-selected:shadow-[inset_3px_0_0_var(--color-primary)]",
                 "data-focus-visible:ring-3 data-focus-visible:ring-ring/50",
                 // Alça de arrasto (botão icon-sm, vinda de _fields/arrasto) com 44px de alvo de toque.
                 "[&_button[data-size=icon-sm]]:size-11",
@@ -118,7 +118,7 @@ export function ListaSecoes({
               <AlcaArrasto label={`Arrastar seção ${nome}`} />
               <div
                 className={cn(
-                  "flex min-w-0 flex-1 flex-col items-start gap-0.5 py-2.5 text-left",
+                  "flex min-w-0 flex-1 flex-col items-start gap-0.5 py-2 text-left",
                   !secao.visivel && "text-muted-foreground",
                 )}
               >
@@ -173,20 +173,16 @@ export function ListaConfiguracoes({
             selecao.tipo === "config" && selecao.grupo === grupo;
 
           return (
-            <li
-              key={grupo}
-              className={cn(
-                "rounded-md border bg-card",
-                selecionado
-                  ? "border-ring ring-2 ring-ring/30"
-                  : "border-border",
-              )}
-            >
+            <li key={grupo} className="rounded-lg">
               <button
                 type="button"
                 aria-current={selecionado ? "true" : undefined}
                 onClick={() => onSelecionar({ tipo: "config", grupo })}
-                className="flex min-h-11 w-full min-w-0 items-center rounded-md px-3 py-2.5 text-left outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                className={cn(
+                  "flex h-10 w-full min-w-0 items-center rounded-lg px-3 text-left text-sm outline-none transition-colors hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50",
+                  selecionado &&
+                    "bg-accent font-medium text-heading shadow-[inset_3px_0_0_var(--color-primary)] hover:bg-accent",
+                )}
               >
                 <Rotulo
                   nome={gruposConfig[grupo].nome}

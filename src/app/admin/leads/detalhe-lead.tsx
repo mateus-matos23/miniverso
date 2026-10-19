@@ -10,6 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 import { type ReactNode, useState, useTransition } from "react";
 import { toast } from "sonner";
+import { superficie } from "@/app/admin/_componentes/painel";
 import {
   atualizarStatusLead,
   excluirLead,
@@ -24,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { formatarDataHora } from "@/lib/formatar";
@@ -38,8 +40,12 @@ import {
   STATUS_LEAD,
   type StatusLead,
 } from "./rotulos";
+import { StatusLeadBadge } from "./status-lead-badge";
 
 const limiteNotas = 4000;
+
+const rotuloSecao =
+  "text-xs font-medium uppercase tracking-wide text-muted-foreground";
 
 export function DetalheLead({
   lead,
@@ -112,7 +118,7 @@ export function DetalheLead({
   }
 
   return (
-    <article className="flex flex-col gap-8 rounded-lg border border-border bg-card p-6 sm:p-8">
+    <article className={cn(superficie, "flex flex-col gap-6 p-5 sm:p-6")}>
       <LinkButton
         className="w-fit lg:hidden"
         href={voltarHref}
@@ -123,35 +129,20 @@ export function DetalheLead({
         Voltar para a lista
       </LinkButton>
 
-      <header className="flex flex-col gap-3 border-b border-border pb-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <Select
-            aria-label="Status do lead"
-            className="w-full sm:w-56"
-            isDisabled={isPending}
-            onSelectionChange={(chave) => {
-              if (chave && chave !== lead.status) mudarStatus(String(chave));
-            }}
-            selectedKey={lead.status}
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {STATUS_LEAD.map((status) => (
-                <SelectItem id={status} key={status}>
-                  {rotulosStatusLead[status]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <span className="text-sm text-muted-foreground">
-            {rotulosInteresseLead[lead.interesse] ?? lead.interesse}
-          </span>
+      <header className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h2 className="text-xl font-semibold break-words text-heading">
+              {lead.nome}
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {lead.escola ?? "Escola não informada"}
+              <span aria-hidden="true"> · </span>
+              {rotulosInteresseLead[lead.interesse] ?? lead.interesse}
+            </p>
+          </div>
+          <StatusLeadBadge status={lead.status} />
         </div>
-        <h2 className="font-display text-2xl font-bold break-words text-heading">
-          {lead.nome}
-        </h2>
         <div className="flex flex-wrap gap-2">
           <LinkButton
             href={`mailto:${encodeURIComponent(lead.email)}?subject=${encodeURIComponent("Contato Miniverso")}`}
@@ -178,34 +169,18 @@ export function DetalheLead({
         </div>
       </header>
 
-      <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-        <Campo className="break-all" rotulo="E-mail">
-          {lead.email}
-        </Campo>
-        <Campo rotulo="Escola">{lead.escola}</Campo>
-        <Campo rotulo="Cargo">{lead.cargo}</Campo>
-        <Campo rotulo="Recebido em">
-          <time dateTime={lead.criado_em}>
-            {formatarDataHora(lead.criado_em)}
-          </time>
-        </Campo>
-        <Campo rotulo="Atualizado em">
-          <time dateTime={lead.atualizado_em}>
-            {formatarDataHora(lead.atualizado_em)}
-          </time>
-        </Campo>
-      </dl>
+      <Separator />
 
-      <section className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold text-heading">Mensagem</h3>
-        <p className="rounded-md bg-muted/50 p-4 leading-relaxed whitespace-pre-line break-words text-body">
-          {lead.mensagem}
-        </p>
-      </section>
-
-      <section className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold text-heading">Origem</h3>
-        <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+      <section className="flex flex-col gap-4">
+        <h3 className={rotuloSecao}>Contato</h3>
+        <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+          <Campo className="break-all" rotulo="E-mail">
+            {lead.email}
+          </Campo>
+          <Campo rotulo="Escola">{lead.escola}</Campo>
+          <Campo rotulo="Cargo">{lead.cargo}</Campo>
+        </dl>
+        <dl className="grid gap-x-8 gap-y-4 border-t border-border/80 pt-4 sm:grid-cols-2">
           {origem.map(([rotulo, valor]) => (
             <Campo key={rotulo} rotulo={rotulo}>
               {valor}
@@ -214,38 +189,88 @@ export function DetalheLead({
         </dl>
       </section>
 
+      <Separator />
+
       <section className="flex flex-col gap-3">
-        <FieldLabel
-          className="font-semibold text-heading"
-          htmlFor={`notas-${lead.id}`}
+        <h3 className={rotuloSecao}>Mensagem</h3>
+        <p className="rounded-lg bg-muted/60 p-4 leading-relaxed break-words whitespace-pre-wrap text-body">
+          {lead.mensagem}
+        </p>
+      </section>
+
+      <Separator />
+
+      <section className="flex flex-col gap-5">
+        <h3 className={rotuloSecao}>Andamento</h3>
+        <Select
+          aria-label="Status do lead"
+          className="w-full sm:w-56"
+          isDisabled={isPending}
+          onSelectionChange={(chave) => {
+            if (chave && chave !== lead.status) mudarStatus(String(chave));
+          }}
+          selectedKey={lead.status}
         >
-          Notas internas
-        </FieldLabel>
-        <Textarea
-          id={`notas-${lead.id}`}
-          maxLength={limiteNotas}
-          onChange={(event) => setNotas(event.target.value)}
-          placeholder="Anote contatos feitos, retornos e combinados. Só o painel vê este texto."
-          value={notas}
-        />
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="text-sm text-muted-foreground tabular-nums">
-            {notas.length}/{limiteNotas}
-          </span>
-          <Button
-            isDisabled={isPending || !notasAlteradas}
-            onPress={salvarNotas}
-            size="sm"
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {STATUS_LEAD.map((status) => (
+              <SelectItem id={status} key={status}>
+                {rotulosStatusLead[status]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <dl className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+          <Campo rotulo="Recebido em">
+            <time dateTime={lead.criado_em}>
+              {formatarDataHora(lead.criado_em)}
+            </time>
+          </Campo>
+          <Campo rotulo="Atualizado em">
+            <time dateTime={lead.atualizado_em}>
+              {formatarDataHora(lead.atualizado_em)}
+            </time>
+          </Campo>
+        </dl>
+
+        <div className="flex flex-col gap-3">
+          <FieldLabel
+            className="font-semibold text-heading"
+            htmlFor={`notas-${lead.id}`}
           >
-            {isPending && notasAlteradas ? (
-              <Spinner data-icon="inline-start" />
-            ) : null}
-            Salvar notas
-          </Button>
+            Notas internas
+          </FieldLabel>
+          <Textarea
+            id={`notas-${lead.id}`}
+            maxLength={limiteNotas}
+            onChange={(event) => setNotas(event.target.value)}
+            placeholder="Anote contatos feitos, retornos e combinados. Só o painel vê este texto."
+            value={notas}
+          />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="text-sm text-muted-foreground tabular-nums">
+              {notas.length}/{limiteNotas}
+            </span>
+            <Button
+              isDisabled={isPending || !notasAlteradas}
+              onPress={salvarNotas}
+              size="sm"
+            >
+              {isPending && notasAlteradas ? (
+                <Spinner data-icon="inline-start" />
+              ) : null}
+              Salvar notas
+            </Button>
+          </div>
         </div>
       </section>
 
-      <div className="flex justify-end border-t border-border pt-6">
+      <Separator />
+
+      <div className="flex justify-end">
         <Button
           isDisabled={isPending}
           onPress={() => setExcluirAberto(true)}

@@ -31,7 +31,7 @@ export default async function PaginaInicialPage({
         title="Página inicial"
         description="Edite as seções da landing. Cada alteração fica em rascunho até ser publicada."
       />
-      <div className="mt-8">
+      <div className="mt-6">
         {/* A chave remonta o editor quando o servidor muda o estado (publicar, descartar). */}
         <EditorLanding
           key={estado.chave}

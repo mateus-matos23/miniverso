@@ -9,7 +9,6 @@ import {
   Trash2Icon,
   UsersIcon,
 } from "lucide-react";
-import Image from "next/image";
 import { useActionState, useState } from "react";
 
 import {
@@ -19,6 +18,7 @@ import {
   reordenarClientes,
 } from "@/app/admin/clientes/actions";
 import { Alert } from "@/components/ui/alert";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -49,7 +49,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { cn } from "@/lib/utils";
 import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
+import { superficie } from "../_componentes/painel";
 import { useListaReordenavel } from "../_componentes/use-lista-reordenavel";
 import { PageHeader } from "../page-header";
 import { StatusBadge } from "../status-badge";
@@ -72,6 +74,10 @@ export default function TabelaClientes({
       reordenar: reordenarClientes,
     });
 
+  const publicados = clientes.filter(
+    (cliente) => cliente.status === "published",
+  ).length;
+
   const botaoCadastro = (
     <Button onPress={() => setCadastroAberto(true)}>
       <PlusIcon data-icon="inline-start" />
@@ -83,6 +89,18 @@ export default function TabelaClientes({
     <>
       <PageHeader
         actions={clientes.length > 0 ? botaoCadastro : undefined}
+        meta={
+          clientes.length > 0 ? (
+            <>
+              <span>
+                {clientes.length}{" "}
+                {clientes.length === 1 ? "cliente" : "clientes"}
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>{publicados} publicados</span>
+            </>
+          ) : undefined
+        }
         description="Marcas exibidas na seção “Clientes” da landing. Só itens publicados ficam visíveis, na ordem definida aqui. No computador, arraste pela alça para reordenar."
         title="Clientes"
       />
@@ -105,9 +123,9 @@ export default function TabelaClientes({
         <FormularioCliente />
       </Dialog>
 
-      <div className="mt-8">
+      <div className="mt-6">
         {clientes.length === 0 ? (
-          <Empty className="border border-border bg-card">
+          <Empty className="border border-dashed border-border bg-card/60">
             <EmptyHeader>
               <EmptyMedia variant="icon">
                 <UsersIcon />
@@ -128,12 +146,12 @@ export default function TabelaClientes({
             >
               {ordemExibida.map((cliente) => (
                 <li
-                  className="flex items-center gap-4 rounded-lg border border-border bg-card p-4"
+                  className={cn(superficie, "flex items-center gap-4 p-4")}
                   key={cliente.id}
                 >
                   <LogoCliente cliente={cliente} />
                   <div className="flex min-w-0 flex-1 flex-col gap-2">
-                    <p className="break-words font-semibold text-heading">
+                    <p className="break-words font-medium text-heading">
                       {cliente.nome}
                     </p>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
@@ -151,32 +169,25 @@ export default function TabelaClientes({
               Para reordenar, use uma tela maior.
             </p>
 
-            <div className="hidden overflow-hidden rounded-lg border border-border bg-card lg:block">
+            <div className={cn(superficie, "hidden overflow-hidden lg:block")}>
               <Table
                 aria-label="Clientes cadastrados"
                 className="text-left"
                 dragAndDropHooks={dragAndDropHooks}
               >
-                <TableHeader className="border-b border-border bg-muted/60 text-sm text-muted-foreground">
-                  <TableHead
-                    className="w-12 px-3 py-3 font-medium"
-                    id="reordenar"
-                  >
+                <TableHeader className="border-b border-border/80 bg-muted/50">
+                  <TableHead className="w-12 px-3" id="reordenar">
                     <span className="sr-only">Reordenar</span>
                   </TableHead>
-                  <TableHead className="w-24 font-medium" id="logo">
+                  <TableHead className="w-24" id="logo">
                     Logo
                   </TableHead>
-                  <TableHead className="font-medium" id="nome" isRowHeader>
+                  <TableHead id="nome" isRowHeader>
                     Nome
                   </TableHead>
-                  <TableHead className="font-medium" id="status">
-                    Status
-                  </TableHead>
-                  <TableHead className="font-medium" id="ordem">
-                    Ordem
-                  </TableHead>
-                  <TableHead className="w-20 text-right font-medium" id="acoes">
+                  <TableHead id="status">Status</TableHead>
+                  <TableHead id="ordem">Ordem</TableHead>
+                  <TableHead className="w-20 text-right" id="acoes">
                     <span className="sr-only">Ações</span>
                   </TableHead>
                 </TableHeader>
@@ -187,7 +198,7 @@ export default function TabelaClientes({
                       id={cliente.id}
                       textValue={cliente.nome}
                     >
-                      <TableCell className="px-3 py-3">
+                      <TableCell className="px-3">
                         <Button
                           aria-label={`Arrastar cliente ${cliente.nome}`}
                           className="cursor-grab"
@@ -201,7 +212,7 @@ export default function TabelaClientes({
                       <TableCell>
                         <LogoCliente cliente={cliente} />
                       </TableCell>
-                      <TableCell className="font-semibold text-heading">
+                      <TableCell className="font-medium text-heading">
                         {cliente.nome}
                       </TableCell>
                       <TableCell>
@@ -227,22 +238,19 @@ export default function TabelaClientes({
 
 function LogoCliente({ cliente }: { cliente: ClienteListado }) {
   return (
-    <span className="grid size-14 shrink-0 place-items-center overflow-hidden rounded-md border border-border bg-white p-1.5">
-      {cliente.logoUrl ? (
-        <Image
-          alt={`Logo de ${cliente.nome}`}
-          className="size-full object-contain"
-          height={56}
-          src={cliente.logoUrl}
-          width={56}
-        />
-      ) : (
+    <Avatar className="size-14 bg-brand-white">
+      <AvatarImage
+        alt={`Logo de ${cliente.nome}`}
+        className="object-cover"
+        src={cliente.logoUrl ?? undefined}
+      />
+      <AvatarFallback>
         <ImageOffIcon
           aria-label="Logo indisponível"
           className="size-5 text-muted-foreground"
         />
-      )}
-    </span>
+      </AvatarFallback>
+    </Avatar>
   );
 }
 
@@ -258,7 +266,7 @@ function ClienteAcoes({ cliente }: { cliente: ClienteListado }) {
       <DropdownMenuTrigger>
         <Button
           aria-label={`Ações para ${cliente.nome}`}
-          size="icon"
+          size="icon-sm"
           variant="ghost"
         >
           <MoreHorizontalIcon />

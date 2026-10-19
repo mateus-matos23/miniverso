@@ -3,7 +3,7 @@
 import { ImagePlus } from "lucide-react";
 import { useActionState, useRef, useState } from "react";
 import { FileTrigger } from "react-aria-components";
-
+import { Painel } from "@/app/admin/_componentes/painel";
 import {
   atualizarCliente,
   type CadastroClienteState,
@@ -101,73 +101,77 @@ export default function FormularioCliente({ cliente }: { cliente?: Cliente }) {
   const campoId = cliente ? `cliente-${cliente.id}` : "cliente";
 
   return (
-    <form className="flex flex-col gap-6" action={acaoFormulario}>
+    <form className="flex flex-col gap-5" action={acaoFormulario}>
       {cliente ? <Input type="hidden" name="id" value={cliente.id} /> : null}
-      <Field data-invalid={Boolean(estado.erros?.nome) || undefined}>
-        <FieldLabel htmlFor={`${campoId}-nome`}>Nome do cliente</FieldLabel>
-        <Input
-          id={`${campoId}-nome`}
-          name="nome"
-          type="text"
-          autoComplete="organization"
-          placeholder="Ex.: Escola Horizonte"
-          defaultValue={estado.values?.nome ?? cliente?.nome}
-          aria-invalid={Boolean(estado.erros?.nome)}
-          aria-describedby={
-            estado.erros?.nome ? `${campoId}-nome-erro` : undefined
-          }
-          required
-        />
-        <FieldError id={`${campoId}-nome-erro`}>
-          {estado.erros?.nome}
-        </FieldError>
-      </Field>
-
-      <Field data-invalid={Boolean(estado.erros?.logo) || undefined}>
-        <FieldLabel>Logo</FieldLabel>
-        <CampoLogo
-          campoId={campoId}
-          mensagem={estado.erros?.logo}
-          obrigatorio={!cliente}
-        />
-        <FieldError id={`${campoId}-logo-erro`}>
-          {estado.erros?.logo}
-        </FieldError>
-      </Field>
-
-      <Field data-invalid={Boolean(estado.erros?.status) || undefined}>
-        <FieldLabel id={`${campoId}-status-rotulo`}>Status</FieldLabel>
-        <Select
-          aria-labelledby={`${campoId}-status-rotulo`}
-          name="status"
-          className="w-full"
-          defaultSelectedKey={
-            estado.values?.status || cliente?.status || "draft"
-          }
-        >
-          <SelectTrigger
-            id={`${campoId}-status`}
-            type="button"
-            aria-invalid={Boolean(estado.erros?.status)}
+      <Painel conteudoClassName="flex flex-col gap-5" titulo="Informações">
+        <Field data-invalid={Boolean(estado.erros?.nome) || undefined}>
+          <FieldLabel htmlFor={`${campoId}-nome`}>Nome do cliente</FieldLabel>
+          <Input
+            id={`${campoId}-nome`}
+            name="nome"
+            type="text"
+            autoComplete="organization"
+            placeholder="Ex.: Escola Horizonte"
+            defaultValue={estado.values?.nome ?? cliente?.nome}
+            aria-invalid={Boolean(estado.erros?.nome)}
             aria-describedby={
-              estado.erros?.status ? `${campoId}-status-erro` : undefined
+              estado.erros?.nome ? `${campoId}-nome-erro` : undefined
+            }
+            required
+          />
+          <FieldError id={`${campoId}-nome-erro`}>
+            {estado.erros?.nome}
+          </FieldError>
+        </Field>
+
+        <Field data-invalid={Boolean(estado.erros?.logo) || undefined}>
+          <FieldLabel>Logo</FieldLabel>
+          <CampoLogo
+            campoId={campoId}
+            mensagem={estado.erros?.logo}
+            obrigatorio={!cliente}
+          />
+          <FieldError id={`${campoId}-logo-erro`}>
+            {estado.erros?.logo}
+          </FieldError>
+        </Field>
+      </Painel>
+
+      <Painel conteudoClassName="flex flex-col gap-5" titulo="Publicação">
+        <Field data-invalid={Boolean(estado.erros?.status) || undefined}>
+          <FieldLabel id={`${campoId}-status-rotulo`}>Status</FieldLabel>
+          <Select
+            aria-labelledby={`${campoId}-status-rotulo`}
+            name="status"
+            className="w-full"
+            defaultSelectedKey={
+              estado.values?.status || cliente?.status || "draft"
             }
           >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem id="draft">Rascunho</SelectItem>
-            <SelectItem id="published">Publicado</SelectItem>
-          </SelectContent>
-        </Select>
-        <FieldError id={`${campoId}-status-erro`}>
-          {estado.erros?.status}
-        </FieldError>
-      </Field>
+            <SelectTrigger
+              id={`${campoId}-status`}
+              type="button"
+              aria-invalid={Boolean(estado.erros?.status)}
+              aria-describedby={
+                estado.erros?.status ? `${campoId}-status-erro` : undefined
+              }
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem id="draft">Rascunho</SelectItem>
+              <SelectItem id="published">Publicado</SelectItem>
+            </SelectContent>
+          </Select>
+          <FieldError id={`${campoId}-status-erro`}>
+            {estado.erros?.status}
+          </FieldError>
+        </Field>
+      </Painel>
 
       {estado.erro ? <Alert variant="destructive">{estado.erro}</Alert> : null}
 
-      <div className="flex justify-end border-t border-border pt-5">
+      <div className="flex justify-end">
         <Button type="submit" isDisabled={pendente}>
           {pendente ? <Spinner data-icon="inline-start" /> : null}
           {cliente

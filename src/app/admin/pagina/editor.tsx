@@ -17,6 +17,8 @@ import {
 } from "@/lib/landing/schema";
 import { mesmaOrdem, moverItens } from "@/lib/reordenar";
 import { useMediaQuery } from "@/lib/use-media-query";
+import { cn } from "@/lib/utils";
+import { superficie } from "../_componentes/painel";
 import type { AncoraOpcao } from "./_fields/campo-cta";
 import { FormConfig } from "./_forms/config/form-config";
 import { FormSecao } from "./_forms/form-secao";
@@ -257,7 +259,7 @@ export function EditorLanding({
       key={previewKey}
       src="/previa"
       title="Pré-visualização da landing"
-      className="h-[70svh] w-full rounded-lg border border-border bg-card"
+      className="block h-[calc(100svh-6.5rem)] w-full border-0 bg-card"
     />
   );
 
@@ -273,8 +275,14 @@ export function EditorLanding({
       />
 
       <div className="grid gap-6 grid-editor">
-        <section aria-labelledby="titulo-lista" className="flex flex-col gap-3">
-          <h2 id="titulo-lista" className="text-sm font-semibold text-heading">
+        <section
+          aria-labelledby="titulo-lista"
+          className={cn(superficie, "flex min-w-0 flex-col gap-2 p-3")}
+        >
+          <h2
+            id="titulo-lista"
+            className="px-2 pt-1 text-sm font-semibold text-heading"
+          >
             {modo === "configuracoes" ? "Configurações" : "Seções"}
           </h2>
           {modo === "configuracoes" ? (
@@ -297,7 +305,7 @@ export function EditorLanding({
 
         <section
           aria-labelledby={`${idSecao}-cabecalho`}
-          className="flex min-w-0 flex-col gap-6 rounded-lg border border-border bg-card p-6"
+          className={cn(superficie, "flex min-w-0 flex-col gap-6 p-5 sm:p-6")}
         >
           {selecao.tipo === "config" ? (
             <>
@@ -337,20 +345,26 @@ export function EditorLanding({
 
         <section
           aria-label="Pré-visualização"
-          className="flex min-w-0 flex-col gap-3"
+          // Acompanha a rolagem do formulário (abaixo da barra de 3.5rem), sem sobrar vazio embaixo.
+          className={cn(
+            superficie,
+            "flex min-w-0 flex-col overflow-hidden xl:sticky xl:top-20 xl:self-start",
+          )}
         >
           {desktop ? (
             preview
           ) : (
-            <a
-              className={buttonVariants({ variant: "outline" })}
-              href="/previa"
-              rel="noreferrer"
-              target="_blank"
-            >
-              Pré-visualizar
-              <span className="sr-only">(abre em nova aba)</span>
-            </a>
+            <div className="p-5 sm:p-6">
+              <a
+                className={buttonVariants({ variant: "outline" })}
+                href="/previa"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Pré-visualizar
+                <span className="sr-only">(abre em nova aba)</span>
+              </a>
+            </div>
           )}
         </section>
       </div>

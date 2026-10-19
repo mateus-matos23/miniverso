@@ -1,7 +1,6 @@
 import { CircleCheckIcon, CircleXIcon, TriangleAlertIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Resultado } from "./dados";
 import { formatarInteiro } from "./formatar";
@@ -130,10 +129,10 @@ export function DesempenhoWebVitals({
         responde rápido.
       </p>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
         {METRICAS.map((metrica) => (
-          <Card className="flex flex-col p-5" key={metrica}>
-            <h3 className="text-sm font-semibold text-foreground">
+          <div className="flex min-w-0 flex-col" key={metrica}>
+            <h3 className="text-sm font-semibold text-heading">
               {metrica}
               <span className="block text-xs font-normal text-muted-foreground">
                 {rotulosMetrica[metrica].nome}
@@ -155,7 +154,7 @@ export function DesempenhoWebVitals({
                 metrica={metrica}
               />
             ))}
-          </Card>
+          </div>
         ))}
       </div>
 
