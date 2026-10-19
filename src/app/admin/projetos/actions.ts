@@ -32,9 +32,7 @@ const camposConteudo = {
     .trim()
     .max(60, "A categoria deve ter no máximo 60 caracteres.")
     .optional(),
-  clienteId: z
-    .string({ error: "Selecione o cliente." })
-    .min(1, "Selecione o cliente."),
+  clienteId: z.uuid({ error: "Selecione o cliente." }),
   descricao: z
     .string({ error: "Informe a descrição." })
     .trim()
@@ -59,7 +57,6 @@ const midiaSchema = z
 
 const conteudoSchema = z.object({ ...camposConteudo, midia: midiaSchema });
 const atualizarConteudoSchema = z.object({
-  id: z.uuid({ error: "Projeto inválido." }),
   ...camposConteudo,
   midia: midiaSchema.optional(),
 });
@@ -140,17 +137,22 @@ function revalidarConteudo(...slugs: string[]) {
   revalidatePath("/admin/projetos");
 }
 
+/** Devolve `null` se a consulta falhar, para a action responder com erro em vez de quebrar a tela. */
 async function clienteExiste(
   supabase: Awaited<ReturnType<typeof requireAdmin>>["supabase"],
   clienteId: string,
-) {
+): Promise<boolean | null> {
   const { data, error } = await supabase
     .from("clientes")
     .select("id")
     .eq("id", clienteId)
     .maybeSingle();
 
-  if (error) throw error;
+  if (error) {
+    console.error("[projetos] falha ao verificar cliente", error);
+    return null;
+  }
+
   return Boolean(data);
 }
 
@@ -201,7 +203,16 @@ export async function criarConteudo(
 
   const { supabase } = await requireAdmin();
 
-  if (!(await clienteExiste(supabase, dados.clienteId))) {
+  const existeCliente = await clienteExiste(supabase, dados.clienteId);
+
+  if (existeCliente === null) {
+    return {
+      erro: "Não foi possível criar o projeto. Tente novamente.",
+      values: valoresDigitados(formData),
+    };
+  }
+
+  if (!existeCliente) {
     return {
       erros: { clienteId: "Cliente não encontrado." },
       values: valoresDigitados(formData),
@@ -253,8 +264,11 @@ export async function atualizarConteudo(
   _previousState: CadastroConteudoState,
   formData: FormData,
 ): Promise<CadastroConteudoState> {
+  const idValido = idSchema.safeParse(formData.get("id"));
+
+  if (!idValido.success) return { erro: "Projeto inválido." };
+
   const result = atualizarConteudoSchema.safeParse({
-    id: formData.get("id"),
     titulo: formData.get("titulo"),
     slug: formData.get("slug"),
     categoria: formData.get("categoria"),
@@ -272,7 +286,7 @@ export async function atualizarConteudo(
     };
   }
 
-  const { id, midia, ...dados } = result.data;
+  const { midia, ...dados } = result.data;
   const erroMidia = midia ? erroDaMidia(midia) : undefined;
 
   if (erroMidia) {
@@ -290,13 +304,32 @@ export async function atualizarConteudo(
   const { data: atual, error: atualError } = await supabase
     .from("conteudos")
     .select("id,slug,caminho_midia")
-    .eq("id", id)
+    .eq("id", idValido.data)
     .maybeSingle();
 
-  if (atualError) throw atualError;
+  if (atualError) {
+    console.error(
+      "[projetos] falha ao buscar projeto para atualizar",
+      atualError,
+    );
+    return {
+      erro: "Não foi possível salvar o projeto. Tente novamente.",
+      values: valoresDigitados(formData),
+    };
+  }
+
   if (!atual) return { erro: "Projeto não encontrado." };
 
-  if (!(await clienteExiste(supabase, dados.clienteId))) {
+  const existeCliente = await clienteExiste(supabase, dados.clienteId);
+
+  if (existeCliente === null) {
+    return {
+      erro: "Não foi possível salvar o projeto. Tente novamente.",
+      values: valoresDigitados(formData),
+    };
+  }
+
+  if (!existeCliente) {
     return {
       erros: { clienteId: "Cliente não encontrado." },
       values: valoresDigitados(formData),
@@ -378,7 +411,14 @@ export async function alternarStatusConteudo(
     .eq("id", idValido.data)
     .maybeSingle();
 
-  if (atualError) throw atualError;
+  if (atualError) {
+    console.error(
+      "[projetos] falha ao buscar projeto para alterar status",
+      atualError,
+    );
+    return { erro: "Não foi possível alterar o status. Tente novamente." };
+  }
+
   if (!atual) return { erro: "Projeto não encontrado." };
 
   const novoStatus = atual.status === "published" ? "draft" : "published";
@@ -443,7 +483,14 @@ export async function excluirConteudo(
     .eq("id", id.data)
     .maybeSingle();
 
-  if (conteudoError) throw conteudoError;
+  if (conteudoError) {
+    console.error(
+      "[projetos] falha ao buscar projeto para excluir",
+      conteudoError,
+    );
+    return { erro: "Não foi possível excluir o projeto. Tente novamente." };
+  }
+
   if (!conteudo) return { erro: "Projeto não encontrado." };
 
   const { error: deleteError } = await supabase
@@ -451,7 +498,10 @@ export async function excluirConteudo(
     .delete()
     .eq("id", conteudo.id);
 
-  if (deleteError) throw deleteError;
+  if (deleteError) {
+    console.error("[projetos] falha ao excluir projeto", deleteError);
+    return { erro: "Não foi possível excluir o projeto. Tente novamente." };
+  }
 
   await supabase.storage.from(bucket).remove([conteudo.caminho_midia]);
   revalidarConteudo(conteudo.slug);

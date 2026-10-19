@@ -69,7 +69,7 @@ function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
   return (
     <svg
       aria-label={`Gráfico de visitantes e leads por dia, ${total} dias. Os valores estão na tabela abaixo.`}
-      className="h-auto w-full max-w-[40rem]"
+      className="hidden h-auto w-full sm:block sm:max-w-[40rem]"
       role="img"
       viewBox={`0 0 ${LARGURA} ${ALTURA}`}
     >
@@ -85,7 +85,7 @@ function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
           />
           <text
             fill={COR_TEXTO}
-            fontSize={12}
+            fontSize={13}
             textAnchor="end"
             x={MARGEM.esquerda - 6}
             y={yDe(valor) + 4}
@@ -122,7 +122,7 @@ function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
       {rotulosX.map((i) => (
         <text
           fill={COR_TEXTO}
-          fontSize={12}
+          fontSize={13}
           key={`rotulo-${dias[i].dia}`}
           textAnchor={i === 0 ? "start" : i === total - 1 ? "end" : "middle"}
           x={
@@ -194,23 +194,54 @@ export function GraficoDiario({ metricas }: { metricas: Resultado<Metricas> }) {
 
       <GraficoSvg dias={dias} />
 
-      <table className="sr-only">
-        <caption>Visitantes, visualizações e leads por dia</caption>
+      {/* Abaixo de sm o SVG some e esta tabela vira a leitura visível dos dados. */}
+      <table className="w-full border-collapse text-sm tabular-nums sm:sr-only">
+        <caption className="mb-2 text-left text-sm text-brand-ink">
+          Visitantes, visualizações e leads por dia
+        </caption>
         <thead>
-          <tr>
-            <th scope="col">Dia</th>
-            <th scope="col">Visitantes</th>
-            <th scope="col">Visualizações</th>
-            <th scope="col">Leads</th>
+          <tr className="border-b border-border">
+            <th
+              className="px-2 py-2 text-left text-xs font-medium text-brand-ink"
+              scope="col"
+            >
+              Dia
+            </th>
+            <th
+              className="px-2 py-2 text-right text-xs font-medium text-brand-ink"
+              scope="col"
+            >
+              Visitantes
+            </th>
+            <th
+              className="px-2 py-2 text-right text-xs font-medium text-brand-ink"
+              scope="col"
+            >
+              Visualizações
+            </th>
+            <th
+              className="px-2 py-2 text-right text-xs font-medium text-brand-ink"
+              scope="col"
+            >
+              Leads
+            </th>
           </tr>
         </thead>
         <tbody>
           {dias.map((dia) => (
-            <tr key={dia.dia}>
-              <th scope="row">{formatarDiaMes(dia.dia)}</th>
-              <td>{dia.visitantes}</td>
-              <td>{dia.pageviews}</td>
-              <td>{dia.leads}</td>
+            <tr
+              className="border-b border-border last:border-b-0"
+              key={dia.dia}
+            >
+              <th
+                className="px-2 py-2 text-left font-normal text-brand-ink"
+                scope="row"
+              >
+                {formatarDiaMes(dia.dia)}
+              </th>
+              <td className="px-2 py-2 text-right">{dia.visitantes}</td>
+              <td className="px-2 py-2 text-right">{dia.pageviews}</td>
+              <td className="px-2 py-2 text-right">{dia.leads}</td>
             </tr>
           ))}
         </tbody>

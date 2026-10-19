@@ -20,7 +20,8 @@ const camposCliente = {
   }),
 };
 
-const idsSchema = z.array(z.uuid({ error: "Cliente inválido." }));
+const idSchema = z.uuid({ error: "Cliente inválido." });
+const idsSchema = z.array(idSchema);
 
 const logoSchema = z
   .file({ error: "Selecione o logo do cliente." })
@@ -30,7 +31,6 @@ const logoSchema = z
 
 const clienteSchema = z.object({ ...camposCliente, logo: logoSchema });
 const atualizarClienteSchema = z.object({
-  id: z.string().min(1, "Cliente inválido."),
   ...camposCliente,
   logo: logoSchema.optional(),
 });
@@ -119,7 +119,13 @@ export async function criarCliente(
     .limit(1)
     .maybeSingle();
 
-  if (ultimoError) throw ultimoError;
+  if (ultimoError) {
+    console.error("[clientes] falha ao consultar a última ordem", ultimoError);
+    return {
+      erro: "Não foi possível criar o cliente. Tente novamente.",
+      values: valoresDigitados(formData),
+    };
+  }
 
   const caminhoLogo = `clientes/${crypto.randomUUID()}.${extensao}`;
   const { error: uploadError } = await supabase.storage
@@ -160,8 +166,11 @@ export async function atualizarCliente(
   _previousState: CadastroClienteState,
   formData: FormData,
 ): Promise<CadastroClienteState> {
+  const idValido = idSchema.safeParse(formData.get("id"));
+
+  if (!idValido.success) return { erro: "Cliente inválido." };
+
   const result = atualizarClienteSchema.safeParse({
-    id: formData.get("id"),
     nome: formData.get("nome"),
     logo: logoDoFormulario(formData),
     status: formData.get("status"),
@@ -178,10 +187,20 @@ export async function atualizarCliente(
   const { data: cliente, error: clienteError } = await supabase
     .from("clientes")
     .select("id,caminho_logo")
-    .eq("id", result.data.id)
+    .eq("id", idValido.data)
     .maybeSingle();
 
-  if (clienteError) throw clienteError;
+  if (clienteError) {
+    console.error(
+      "[clientes] falha ao buscar cliente para atualizar",
+      clienteError,
+    );
+    return {
+      erro: "Não foi possível atualizar o cliente. Tente novamente.",
+      values: valoresDigitados(formData),
+    };
+  }
+
   if (!cliente) return { erro: "Cliente não encontrado." };
 
   let caminhoLogo = cliente.caminho_logo;
@@ -244,10 +263,7 @@ export async function excluirCliente(
   _previousState: CadastroClienteState,
   formData: FormData,
 ): Promise<CadastroClienteState> {
-  const id = z
-    .string()
-    .min(1, "Cliente inválido.")
-    .safeParse(formData.get("id"));
+  const id = idSchema.safeParse(formData.get("id"));
 
   if (!id.success) {
     return { erro: "Cliente inválido." };
@@ -260,7 +276,14 @@ export async function excluirCliente(
     .eq("id", id.data)
     .maybeSingle();
 
-  if (clienteError) throw clienteError;
+  if (clienteError) {
+    console.error(
+      "[clientes] falha ao buscar cliente para excluir",
+      clienteError,
+    );
+    return { erro: "Não foi possível excluir o cliente. Tente novamente." };
+  }
+
   if (!cliente) return { erro: "Cliente não encontrado." };
 
   const { error: deleteError } = await supabase
@@ -268,7 +291,17 @@ export async function excluirCliente(
     .delete()
     .eq("id", cliente.id);
 
-  if (deleteError) throw deleteError;
+  if (deleteError) {
+    // 23503: há projetos (conteudos) vinculados, com on delete restrict.
+    if (deleteError.code === "23503") {
+      return {
+        erro: "Este cliente tem projetos vinculados. Exclua ou mova os projetos antes de excluir o cliente.",
+      };
+    }
+
+    console.error("[clientes] falha ao excluir cliente", deleteError);
+    return { erro: "Não foi possível excluir o cliente. Tente novamente." };
+  }
 
   await supabase.storage.from(bucket).remove([cliente.caminho_logo]);
   revalidatePath("/");

@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { getLanding } from "@/lib/landing/get-landing";
 import { site } from "@/lib/site";
 import "./globals.css";
+import { Providers } from "./providers";
 
 const displayFont = localFont({
   src: [
@@ -100,7 +101,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             }
           </style>
         </noscript>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

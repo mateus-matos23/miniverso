@@ -4,6 +4,17 @@ import type { Database } from "@/utils/supabase/database";
 
 const bucket = "miniverso";
 
+/**
+ * Validade das URLs assinadas de logos e mídias (7 dias).
+ *
+ * As páginas públicas usam `revalidate = 300` (ISR): o HTML é reaproveitado
+ * e regenerado a cada 5 min, quando recebe tráfego. Ao regenerar, as URLs são
+ * assinadas de novo. Com 2 h de validade, uma página sem visitas por mais de
+ * 2 h era servida com URLs já expiradas. Com 7 dias, isso só aconteceria
+ * após uma semana sem nenhum acesso.
+ */
+const URL_ASSINADA_VALIDADE_SEGUNDOS = 60 * 60 * 24 * 7;
+
 export type PublicCliente = {
   id: string;
   nome: string;
@@ -48,7 +59,7 @@ export async function getPublishedClientes(): Promise<
       .from(bucket)
       .createSignedUrls(
         data.map((cliente) => cliente.caminho_logo),
-        60 * 60 * 2,
+        URL_ASSINADA_VALIDADE_SEGUNDOS,
       );
 
     if (urlError) throw urlError;

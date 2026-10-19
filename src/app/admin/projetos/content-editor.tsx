@@ -46,6 +46,11 @@ const videoTypes = ["video/mp4", "video/webm"];
 
 type Media = { url: string; kind: "image" | "video"; name: string };
 
+/** Monta o aria-describedby ignorando ids ausentes, para não apontar para elementos que não existem. */
+function descreverPor(...ids: (string | false | null | undefined)[]) {
+  return ids.filter(Boolean).join(" ") || undefined;
+}
+
 function validateMedia(file: File): string | null {
   if (imageTypes.includes(file.type)) {
     return file.size > IMAGE_MAX ? "A imagem deve ter no máximo 10 MB." : null;
@@ -161,7 +166,10 @@ export default function ContentEditor({
           <Field data-invalid={Boolean(erros.titulo) || undefined}>
             <FieldLabel htmlFor={`${id}-title`}>Título</FieldLabel>
             <Input
-              aria-describedby={`${id}-title-count`}
+              aria-describedby={descreverPor(
+                `${id}-title-count`,
+                erros.titulo && `${id}-title-error`,
+              )}
               aria-invalid={Boolean(erros.titulo) || undefined}
               id={`${id}-title`}
               maxLength={TITLE_MAX}
@@ -180,7 +188,10 @@ export default function ContentEditor({
           <Field data-invalid={Boolean(erros.slug) || undefined}>
             <FieldLabel htmlFor={`${id}-slug`}>Endereço (slug)</FieldLabel>
             <Input
-              aria-describedby={`${id}-slug-help`}
+              aria-describedby={descreverPor(
+                `${id}-slug-help`,
+                erros.slug && `${id}-slug-error`,
+              )}
               aria-invalid={Boolean(erros.slug) || undefined}
               id={`${id}-slug`}
               maxLength={120}
@@ -211,6 +222,9 @@ export default function ContentEditor({
                 placeholder="Selecione"
               >
                 <SelectTrigger
+                  aria-describedby={descreverPor(
+                    erros.clienteId && `${id}-cliente-error`,
+                  )}
                   aria-invalid={Boolean(erros.clienteId) || undefined}
                   id={`${id}-cliente`}
                   type="button"
@@ -225,7 +239,9 @@ export default function ContentEditor({
                   ))}
                 </SelectContent>
               </Select>
-              <FieldError>{erros.clienteId}</FieldError>
+              <FieldError id={`${id}-cliente-error`}>
+                {erros.clienteId}
+              </FieldError>
             </Field>
 
             <Field data-invalid={Boolean(erros.categoria) || undefined}>
@@ -233,6 +249,9 @@ export default function ContentEditor({
                 Categoria (opcional)
               </FieldLabel>
               <Input
+                aria-describedby={descreverPor(
+                  erros.categoria && `${id}-categoria-error`,
+                )}
                 aria-invalid={Boolean(erros.categoria) || undefined}
                 defaultValue={
                   state.values?.categoria ?? conteudo?.categoria ?? undefined
@@ -244,14 +263,19 @@ export default function ContentEditor({
                 placeholder="Ex.: Realidade virtual"
                 type="text"
               />
-              <FieldError>{erros.categoria}</FieldError>
+              <FieldError id={`${id}-categoria-error`}>
+                {erros.categoria}
+              </FieldError>
             </Field>
           </div>
 
           <Field data-invalid={Boolean(erros.descricao) || undefined}>
             <FieldLabel htmlFor={`${id}-description`}>Descrição</FieldLabel>
             <Textarea
-              aria-describedby={`${id}-description-count`}
+              aria-describedby={descreverPor(
+                `${id}-description-count`,
+                erros.descricao && `${id}-description-error`,
+              )}
               aria-invalid={Boolean(erros.descricao) || undefined}
               className="min-h-36"
               id={`${id}-description`}
@@ -265,7 +289,9 @@ export default function ContentEditor({
             <FieldDescription id={`${id}-description-count`}>
               {description.length}/{DESCRIPTION_MAX} caracteres
             </FieldDescription>
-            <FieldError>{erros.descricao}</FieldError>
+            <FieldError id={`${id}-description-error`}>
+              {erros.descricao}
+            </FieldError>
           </Field>
 
           <Field data-invalid={mediaError || erros.midia ? true : undefined}>
@@ -297,9 +323,9 @@ export default function ContentEditor({
             </label>
             <input
               accept={[...imageTypes, ...videoTypes].join(",")}
-              aria-describedby={
-                mediaError || erros.midia ? `${id}-media-error` : undefined
-              }
+              aria-describedby={descreverPor(
+                (mediaError || erros.midia) && `${id}-media-error`,
+              )}
               aria-invalid={mediaError || erros.midia ? true : undefined}
               className="sr-only"
               id={`${id}-media`}
@@ -323,6 +349,9 @@ export default function ContentEditor({
                 name="status"
               >
                 <SelectTrigger
+                  aria-describedby={descreverPor(
+                    erros.status && `${id}-status-error`,
+                  )}
                   aria-invalid={Boolean(erros.status) || undefined}
                   id={`${id}-status`}
                   type="button"
@@ -334,12 +363,15 @@ export default function ContentEditor({
                   <SelectItem id="published">Publicado</SelectItem>
                 </SelectContent>
               </Select>
-              <FieldError>{erros.status}</FieldError>
+              <FieldError id={`${id}-status-error`}>{erros.status}</FieldError>
             </Field>
 
             <Field data-invalid={Boolean(erros.ordem) || undefined}>
               <FieldLabel htmlFor={`${id}-ordem`}>Ordem de exibição</FieldLabel>
               <Input
+                aria-describedby={descreverPor(
+                  erros.ordem && `${id}-ordem-error`,
+                )}
                 aria-invalid={Boolean(erros.ordem) || undefined}
                 defaultValue={state.values?.ordem ?? conteudo?.ordem ?? 0}
                 id={`${id}-ordem`}
@@ -349,7 +381,7 @@ export default function ContentEditor({
                 step="1"
                 type="number"
               />
-              <FieldError>{erros.ordem}</FieldError>
+              <FieldError id={`${id}-ordem-error`}>{erros.ordem}</FieldError>
             </Field>
           </div>
         </FieldGroup>

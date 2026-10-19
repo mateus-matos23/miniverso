@@ -10,7 +10,7 @@ const TAMANHO_MAXIMO_MENSAGEM = 2000;
 const estadoInicial: EstadoContato = {};
 
 const estiloCampo =
-  "w-full rounded-md border border-brand-line bg-brand-white px-4 py-3 text-base text-brand-violet placeholder:text-brand-ink/60 transition-colors focus-visible:border-brand-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan aria-[invalid=true]:border-red-700";
+  "w-full rounded-md border border-input bg-brand-white px-4 py-3 text-base text-brand-violet placeholder:text-brand-ink/60 transition-colors focus-visible:border-brand-cyan focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-cyan aria-[invalid=true]:border-red-700";
 
 const opcoesInteresse = [
   { valor: "implantacao", rotulo: "Implantar na minha escola" },
