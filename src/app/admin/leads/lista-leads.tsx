@@ -1,14 +1,11 @@
 import Link from "next/link";
 
+import { formatarDataHora, formatarRelativo } from "@/lib/formatar";
 import { cn } from "@/lib/utils";
 import type { LeadRow } from "@/utils/supabase/database";
 
 import { type FiltrosLeads, hrefLeads } from "./filtros";
-import {
-  formatarDataAbsoluta,
-  formatarDataRelativa,
-  rotulosInteresseLead,
-} from "./rotulos";
+import { rotulosInteresseLead } from "./rotulos";
 import { StatusLeadBadge } from "./status-lead-badge";
 
 export type LeadResumo = Pick<
@@ -61,9 +58,9 @@ export function ListaLeads({
                   <time
                     className="shrink-0 text-xs text-muted-foreground tabular-nums"
                     dateTime={lead.criado_em}
-                    title={formatarDataAbsoluta(lead.criado_em)}
+                    title={formatarDataHora(lead.criado_em)}
                   >
-                    {formatarDataRelativa(lead.criado_em)}
+                    {formatarRelativo(lead.criado_em)}
                   </time>
                 </span>
                 <span className="truncate text-sm text-muted-foreground">

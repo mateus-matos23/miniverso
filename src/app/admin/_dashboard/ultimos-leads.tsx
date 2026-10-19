@@ -1,7 +1,8 @@
 import Link from "next/link";
 
+import { formatarRelativo } from "@/lib/formatar";
+
 import type { Resultado, UltimoLead } from "./dados";
-import { formatarTempoRelativo } from "./formatar";
 import { rotulosInteresse } from "./rotulos";
 import { AvisoBloco } from "./secao";
 
@@ -50,7 +51,7 @@ export function UltimosLeads({
             className="shrink-0 text-sm text-muted-foreground"
             dateTime={lead.criado_em}
           >
-            {formatarTempoRelativo(lead.criado_em, agora)}
+            {formatarRelativo(lead.criado_em, agora)}
           </time>
         </li>
       ))}

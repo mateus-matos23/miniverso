@@ -4,7 +4,6 @@ import { ImageIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState, useTransition } from "react";
 import { toast } from "sonner";
-
 import {
   atualizarAlt,
   excluirMidia,
@@ -18,14 +17,6 @@ import {
 } from "@/app/admin/midia/utils";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Empty,
   EmptyDescription,
   EmptyHeader,
@@ -33,7 +24,10 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Input } from "@/components/ui/input";
+import { FUSO } from "@/lib/formatar";
 import { cn } from "@/lib/utils";
+
+import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
 
 type Filtro = "todas" | TipoMidia;
 
@@ -47,6 +41,7 @@ const formatadorData = new Intl.DateTimeFormat("pt-BR", {
   day: "2-digit",
   month: "short",
   year: "numeric",
+  timeZone: FUSO,
 });
 
 export function BibliotecaMidias({ midias }: { midias: MidiaBiblioteca[] }) {
@@ -134,40 +129,16 @@ export function BibliotecaMidias({ midias }: { midias: MidiaBiblioteca[] }) {
         </ul>
       )}
 
-      <Dialog
-        isOpen={paraExcluir !== null}
-        onOpenChange={(aberto) => {
-          if (!aberto && !excluindo) fecharExclusao();
-        }}
-      >
-        <DialogHeader>
-          <DialogTitle>Excluir esta mídia?</DialogTitle>
-          <DialogDescription>
-            O arquivo será removido da biblioteca e não poderá ser recuperado.
-          </DialogDescription>
-        </DialogHeader>
-
-        {erroExclusao ? (
-          <p className="text-sm text-destructive" role="alert">
-            {erroExclusao}
-          </p>
-        ) : null}
-
-        <DialogFooter>
-          <DialogClose variant="outline" isDisabled={excluindo}>
-            Cancelar
-          </DialogClose>
-          <Button
-            type="button"
-            variant="destructive"
-            isDisabled={excluindo}
-            onClick={confirmarExclusao}
-          >
-            <Trash2Icon aria-hidden="true" />
-            {excluindo ? "Excluindo…" : "Excluir mídia"}
-          </Button>
-        </DialogFooter>
-      </Dialog>
+      <ConfirmarExclusaoDialog
+        acao={confirmarExclusao}
+        aberto={paraExcluir !== null}
+        descricao="O arquivo será removido da biblioteca e não poderá ser recuperado."
+        erro={erroExclusao}
+        onAbertoChange={fecharExclusao}
+        pendente={excluindo}
+        rotuloConfirmacao="Excluir mídia"
+        titulo="Excluir esta mídia?"
+      />
     </div>
   );
 }

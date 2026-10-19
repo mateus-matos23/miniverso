@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  CheckCircle2Icon,
   GripVerticalIcon,
   ImageOffIcon,
   MoreHorizontalIcon,
@@ -11,8 +10,7 @@ import {
   UsersIcon,
 } from "lucide-react";
 import Image from "next/image";
-import { useActionState, useOptimistic, useState, useTransition } from "react";
-import { DropIndicator, type Key, useDragAndDrop } from "react-aria-components";
+import { useActionState, useState } from "react";
 
 import {
   type CadastroClienteState,
@@ -23,9 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -43,7 +39,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { Spinner } from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -53,12 +48,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
+import { type Feedback, FeedbackBanner } from "../_componentes/feedback-banner";
+import { useListaReordenavel } from "../_componentes/use-lista-reordenavel";
 import { PageHeader } from "../page-header";
 import { StatusBadge } from "../status-badge";
 import ClienteForm from "./cliente-form";
 
+export type { Feedback };
 export type ClienteListItem = Cliente & { logoUrl: string | null };
-export type Feedback = "criado" | "atualizado" | "excluido";
 
 const feedbackMessages: Record<Feedback, string> = {
   criado:
@@ -69,33 +67,6 @@ const feedbackMessages: Record<Feedback, string> = {
 
 const initialState: CadastroClienteState = {};
 
-/**
- * Reposiciona as linhas arrastadas antes ou depois da linha de destino.
- * Devolve a mesma referência quando o arrasto não muda nada.
- */
-function moverItens(
-  itens: ClienteListItem[],
-  chaves: ReadonlySet<Key>,
-  alvo: Key,
-  posicao: "before" | "after" | "on",
-) {
-  if (posicao === "on" || chaves.has(alvo)) return itens;
-
-  const movidos = itens.filter((item) => chaves.has(item.id));
-  const restantes = itens.filter((item) => !chaves.has(item.id));
-  const indiceAlvo = restantes.findIndex((item) => item.id === alvo);
-
-  if (indiceAlvo === -1) return itens;
-
-  const indice = posicao === "after" ? indiceAlvo + 1 : indiceAlvo;
-
-  return [
-    ...restantes.slice(0, indice),
-    ...movidos,
-    ...restantes.slice(indice),
-  ];
-}
-
 export default function ClientesTable({
   clientes,
   feedback,
@@ -104,49 +75,12 @@ export default function ClientesTable({
   feedback?: Feedback;
 }) {
   const [createOpen, setCreateOpen] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
-  const [, startTransition] = useTransition();
-  // A ordem exibida muda na hora ao soltar o cliente. Se a action falhar, a ordem
-  // volta sozinha para a que veio do servidor, porque as props não mudaram.
-  const [ordemExibida, definirOrdemExibida] = useOptimistic(
-    clientes,
-    (_atual, proxima: ClienteListItem[]) => proxima,
-  );
-  const posicoes = new Map(
-    ordemExibida.map((cliente, indice) => [cliente.id, indice + 1]),
-  );
-
-  const { dragAndDropHooks } = useDragAndDrop<ClienteListItem>({
-    // Sem isDisabled ligado ao isPending: a transição começa no drop, antes do
-    // dragend, e desligar o DnD nesse meio deixava a linha presa em data-dragging.
-    getItems: (_chaves, itens) =>
-      itens.map((cliente) => ({ "text/plain": cliente.nome })),
-    renderDropIndicator: (target) => (
-      <DropIndicator
-        className="bg-transparent data-drop-target:bg-brand-cyan [&>td]:h-0.5 [&>td]:p-0"
-        target={target}
-      />
-    ),
-    onReorder(e) {
-      const proxima = moverItens(
-        ordemExibida,
-        e.keys,
-        e.target.key,
-        e.target.dropPosition,
-      );
-
-      if (proxima === ordemExibida) return;
-
-      setErro(null);
-      startTransition(async () => {
-        definirOrdemExibida(proxima);
-        const resultado = await reordenarClientes(
-          proxima.map((cliente) => cliente.id),
-        );
-        if (resultado.erro) setErro(resultado.erro);
-      });
-    },
-  });
+  const { ordemExibida, posicoes, dragAndDropHooks, erro } =
+    useListaReordenavel<ClienteListItem>({
+      itens: clientes,
+      rotulo: (cliente) => cliente.nome,
+      reordenar: reordenarClientes,
+    });
 
   const createButton = (
     <Button onPress={() => setCreateOpen(true)}>
@@ -163,14 +97,7 @@ export default function ClientesTable({
         title="Clientes"
       />
 
-      <div aria-live="polite" className="empty:hidden">
-        {feedback ? (
-          <span className="mt-6 flex items-center gap-3 rounded-md border border-success/30 bg-success/5 px-4 py-3 text-sm font-medium text-success">
-            <CheckCircle2Icon aria-hidden="true" className="size-4 shrink-0" />
-            {feedbackMessages[feedback]}
-          </span>
-        ) : null}
-      </div>
+      <FeedbackBanner feedback={feedback} mensagens={feedbackMessages} />
 
       {erro ? (
         <p
@@ -362,45 +289,17 @@ function ClienteActions({ cliente }: { cliente: ClienteListItem }) {
         <ClienteForm cliente={cliente} />
       </Dialog>
 
-      <Dialog
-        isDismissable={false}
-        isOpen={dialog === "delete"}
-        onOpenChange={(isOpen) => setDialog(isOpen ? "delete" : null)}
-        role="alertdialog"
-        showCloseButton={false}
+      <ConfirmarExclusaoDialog
+        acao={deleteAction}
+        aberto={dialog === "delete"}
+        descricao="O cliente e o logo enviado serão apagados e sairão da landing. Essa ação não pode ser desfeita."
+        erro={deleteState.erro}
+        onAbertoChange={(aberto) => setDialog(aberto ? "delete" : null)}
+        pendente={deleting}
+        titulo={`Excluir “${cliente.nome}” permanentemente?`}
       >
-        <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">
-            Excluir “{cliente.nome}” permanentemente?
-          </DialogTitle>
-          <DialogDescription>
-            O cliente e o logo enviado serão apagados e sairão da landing. Essa
-            ação não pode ser desfeita.
-          </DialogDescription>
-        </DialogHeader>
-        <form action={deleteAction} className="flex flex-col gap-4">
-          <input name="id" type="hidden" value={cliente.id} />
-          {deleteState.erro ? (
-            <p
-              className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
-              role="alert"
-            >
-              {deleteState.erro}
-            </p>
-          ) : null}
-          <DialogFooter>
-            <DialogClose autoFocus>Cancelar</DialogClose>
-            <Button
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              isDisabled={deleting}
-              type="submit"
-            >
-              {deleting ? <Spinner data-icon="inline-start" /> : null}
-              {deleting ? "Excluindo…" : "Excluir permanentemente"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </Dialog>
+        <input name="id" type="hidden" value={cliente.id} />
+      </ConfirmarExclusaoDialog>
     </>
   );
 }

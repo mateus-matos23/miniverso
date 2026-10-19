@@ -11,6 +11,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { FieldError, FieldLegend, FieldSet } from "@/components/ui/field";
+import { mesmaOrdem, moverItens } from "@/lib/reordenar";
 import { cn } from "@/lib/utils";
 import {
   AlcaArrasto,
@@ -108,19 +109,14 @@ export function CampoLista<T>({
     alvo: Key,
     posicao: "before" | "after",
   ) {
-    const selecionadas = new Set(movidas);
-    const restantes = pares.filter(({ chave }) => !selecionadas.has(chave));
-    const sequencia = pares.filter(({ chave }) => selecionadas.has(chave));
-    const indiceAlvo = restantes.findIndex(({ chave }) => chave === alvo);
-    if (indiceAlvo === -1) return;
-
-    const destino = posicao === "before" ? indiceAlvo : indiceAlvo + 1;
-    const proximos = [
-      ...restantes.slice(0, destino),
-      ...sequencia,
-      ...restantes.slice(destino),
-    ];
-    if (proximos.every((par, i) => par === pares[i])) return;
+    const proximos = moverItens(
+      pares,
+      ({ chave }) => chave,
+      new Set(movidas),
+      alvo,
+      posicao,
+    );
+    if (mesmaOrdem(pares, proximos)) return;
 
     setIds(proximos.map(({ chave }) => chave));
     onChange(proximos.map(({ item }) => item));

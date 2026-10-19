@@ -10,21 +10,12 @@ import {
 import { useRouter } from "next/navigation";
 import { type ReactNode, useState, useTransition } from "react";
 import { toast } from "sonner";
-
 import {
   atualizarStatusLead,
   excluirLead,
   salvarNotasLead,
 } from "@/app/admin/leads/actions";
 import { Button, LinkButton } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -34,11 +25,13 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { formatarDataHora } from "@/lib/formatar";
 import { cn } from "@/lib/utils";
 import type { LeadRow } from "@/utils/supabase/database";
 
+import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
+
 import {
-  formatarDataAbsoluta,
   rotulosInteresseLead,
   rotulosStatusLead,
   STATUS_LEAD,
@@ -177,12 +170,12 @@ export function DetalheLead({
         </Campo>
         <Campo rotulo="Recebido em">
           <time dateTime={lead.criado_em}>
-            {formatarDataAbsoluta(lead.criado_em)}
+            {formatarDataHora(lead.criado_em)}
           </time>
         </Campo>
         <Campo rotulo="Atualizado em">
           <time dateTime={lead.atualizado_em}>
-            {formatarDataAbsoluta(lead.atualizado_em)}
+            {formatarDataHora(lead.atualizado_em)}
           </time>
         </Campo>
         <div className="flex flex-col gap-2">
@@ -263,44 +256,24 @@ export function DetalheLead({
 
       <div className="flex justify-end border-t border-border pt-6">
         <Button
-          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           isDisabled={isPending}
           onPress={() => setExcluirAberto(true)}
           size="sm"
+          variant="destructive-solid"
         >
           <Trash2Icon data-icon="inline-start" />
           Excluir lead
         </Button>
       </div>
 
-      <Dialog
-        isDismissable={false}
-        isOpen={excluirAberto}
-        onOpenChange={setExcluirAberto}
-        role="alertdialog"
-        showCloseButton={false}
-      >
-        <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">
-            Excluir o lead de “{lead.nome}”?
-          </DialogTitle>
-          <DialogDescription>
-            O contato, a mensagem e as notas serão apagados. Essa ação não pode
-            ser desfeita.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <DialogClose autoFocus>Cancelar</DialogClose>
-          <Button
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            isDisabled={isPending}
-            onPress={excluir}
-          >
-            {isPending ? <Spinner data-icon="inline-start" /> : null}
-            {isPending ? "Excluindo…" : "Excluir permanentemente"}
-          </Button>
-        </DialogFooter>
-      </Dialog>
+      <ConfirmarExclusaoDialog
+        acao={excluir}
+        aberto={excluirAberto}
+        descricao="O contato, a mensagem e as notas serão apagados. Essa ação não pode ser desfeita."
+        onAbertoChange={setExcluirAberto}
+        pendente={isPending}
+        titulo={`Excluir o lead de “${lead.nome}”?`}
+      />
     </article>
   );
 }

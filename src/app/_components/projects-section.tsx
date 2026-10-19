@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/reveal";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
+import { buttonVariants } from "@/components/ui/button-variants";
 import {
   Empty,
   EmptyContent,
@@ -17,6 +18,7 @@ import {
   getPublishedConteudos,
   type PublicConteudo,
 } from "@/lib/public-content";
+import { cn } from "@/lib/utils";
 import { CtaLink } from "./cta-link";
 import { SectionIndex } from "./section-index";
 import { superficies } from "./superficie";
@@ -97,7 +99,10 @@ function EstadoVazio({ dados }: { dados: DadosSecao<"projetos"> }) {
         <EmptyContent>
           <CtaLink
             cta={dados.vazioCta}
-            className="inline-flex h-11 items-center justify-center rounded-md bg-brand-blue px-5 font-semibold text-brand-white transition-colors hover:bg-brand-violet"
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "h-11 px-5 hover:bg-brand-violet",
+            )}
             dataCta="projetos-vazio"
           />
         </EmptyContent>

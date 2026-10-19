@@ -1,5 +1,6 @@
+import { formatarDiaMes } from "@/lib/formatar";
 import type { Resultado } from "./dados";
-import { formatarCompacto, formatarDiaMes, formatarInteiro } from "./formatar";
+import { formatarCompacto, formatarInteiro } from "./formatar";
 import type { DiaMetrica, Metricas } from "./schemas";
 import { AvisoBloco } from "./secao";
 

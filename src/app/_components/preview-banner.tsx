@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 
 /** Barra fixa no rodapé da viewport, visível só na pré-visualização do rascunho. */
 export function PreviewBanner() {
@@ -9,7 +11,10 @@ export function PreviewBanner() {
       </p>
       {/* target="_top" sai do iframe do editor quando a pré-visualização está embutida. */}
       <Link
-        className="inline-flex h-10 items-center rounded-md bg-brand-black px-4 text-sm font-semibold text-brand-white transition-colors hover:bg-brand-violet focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-black"
+        className={cn(
+          buttonVariants({ variant: "default" }),
+          "bg-brand-black text-brand-white hover:bg-brand-violet focus-visible:outline-brand-black",
+        )}
         href="/admin/pagina"
         target="_top"
       >

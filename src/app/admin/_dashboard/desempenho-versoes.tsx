@@ -1,7 +1,9 @@
 import { TriangleAlertIcon } from "lucide-react";
 
+import { formatarData } from "@/lib/formatar";
+
 import type { Resultado } from "./dados";
-import { formatarDataCurta, formatarInteiro } from "./formatar";
+import { formatarInteiro } from "./formatar";
 import type { VersaoVitalsLinha } from "./schemas";
 import { AvisoBloco } from "./secao";
 import {
@@ -107,7 +109,7 @@ export function DesempenhoVersoes({
                 <th className="px-4 py-3 align-top font-normal" scope="row">
                   <span className="font-medium text-brand-black">
                     {versao.publicadoEm
-                      ? formatarDataCurta(versao.publicadoEm)
+                      ? formatarData(versao.publicadoEm)
                       : "Data desconhecida"}
                   </span>
                   <span className="block text-xs text-muted-foreground">

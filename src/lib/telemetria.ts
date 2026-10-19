@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { envServidor } from "@/config/env.server";
+import { diaNoFuso } from "@/lib/formatar";
 
 /**
  * Helpers da telemetria anônima. Só para o servidor (Route Handlers e Server
@@ -8,22 +9,6 @@ import { envServidor } from "@/config/env.server";
  */
 
 type LeitorDeCabecalhos = { get(nome: string): string | null };
-
-/** Data do dia no fuso de Fortaleza, no formato YYYY-MM-DD. */
-function diaEmFortaleza(agora: Date): string {
-  const partes = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Fortaleza",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(agora);
-
-  const ano = partes.find((p) => p.type === "year")?.value;
-  const mes = partes.find((p) => p.type === "month")?.value;
-  const dia = partes.find((p) => p.type === "day")?.value;
-
-  return `${ano}-${mes}-${dia}`;
-}
 
 /**
  * Hash diário do visitante: muda a cada dia e não identifica a pessoa.
@@ -40,7 +25,7 @@ export function hashVisitante({
 }): string {
   return createHash("sha256")
     .update(
-      `${ip}|${userAgent}|${diaEmFortaleza(agora)}|${envServidor.TELEMETRIA_SALT}`,
+      `${ip}|${userAgent}|${diaNoFuso(agora)}|${envServidor.TELEMETRIA_SALT}`,
     )
     .digest("hex");
 }

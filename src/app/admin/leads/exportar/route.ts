@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 
 import { requireAdmin } from "@/lib/auth";
+import { diaNoFuso, formatarDataHora } from "@/lib/formatar";
 
 import { filtroBuscaLeads, lerFiltrosLeads, statusDoFiltro } from "../filtros";
 import type { StatusLead } from "../rotulos";
@@ -21,22 +22,6 @@ const cabecalho = [
 ];
 
 const lote = 1000;
-
-const formatadorData = new Intl.DateTimeFormat("pt-BR", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-  timeZone: "America/Fortaleza",
-});
-
-const formatadorArquivo = new Intl.DateTimeFormat("en-CA", {
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-  timeZone: "America/Fortaleza",
-});
 
 /**
  * Célula CSV: valores que o Excel poderia executar como fórmula ganham "'"
@@ -86,7 +71,7 @@ export async function GET(request: NextRequest) {
     for (const lead of data ?? []) {
       linhas.push(
         linha([
-          formatadorData.format(new Date(lead.criado_em)),
+          formatarDataHora(lead.criado_em),
           lead.nome,
           lead.email,
           lead.escola,
@@ -104,7 +89,7 @@ export async function GET(request: NextRequest) {
     if ((data?.length ?? 0) < lote) break;
   }
 
-  const data = formatadorArquivo.format(new Date());
+  const data = diaNoFuso(new Date());
   // BOM UTF-8 para o Excel reconhecer os acentos; CRLF como no RFC 4180.
   const corpo = `\uFEFF${linhas.join("\r\n")}\r\n`;
 

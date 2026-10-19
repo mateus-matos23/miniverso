@@ -13,10 +13,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
+import { formatarDataHora, formatarHora } from "@/lib/formatar";
 import { cn } from "@/lib/utils";
 
 import { CampoTexto } from "./_fields/campo-texto";
-import { formatarDataHora, formatarHora } from "./formatar-data";
 
 export type StatusSalvamento =
   | { tipo: "salvo"; salvoEm: string | null }

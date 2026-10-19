@@ -1,5 +1,7 @@
+import { buttonVariants } from "@/components/ui/button-variants";
 import type { LinkNav } from "@/lib/landing/navegacao";
 import type { ConfigLanding } from "@/lib/landing/schema";
+import { cn } from "@/lib/utils";
 import { AvisoTopo } from "./aviso-topo";
 import { BrandMark } from "./brand-mark";
 import { MobileNav } from "./mobile-nav";
@@ -41,7 +43,10 @@ export function SiteHeader({ links, ctaRotulo, aviso }: SiteHeaderProps) {
             </ul>
           </nav>
           <a
-            className="hidden h-10 items-center rounded-md bg-brand-cyan px-4 text-[0.95rem] font-semibold text-brand-black transition-colors hover:bg-brand-white sm:inline-flex max-lg:ml-auto"
+            className={cn(
+              buttonVariants({ variant: "signal" }),
+              "hidden text-[0.95rem] sm:inline-flex max-lg:ml-auto",
+            )}
             href="/#contato"
           >
             {ctaRotulo}

@@ -8,8 +8,7 @@ import { restaurarVersao } from "@/app/admin/pagina/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-
-import { formatarDataHora } from "../formatar-data";
+import { formatarDataHora } from "@/lib/formatar";
 
 export type VersaoHistorico = {
   id: string;

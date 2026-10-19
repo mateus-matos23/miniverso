@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
+import { buttonVariants } from "@/components/ui/button-variants";
 import type { PropsSecao } from "@/lib/landing/navegacao";
 import type { MidiaRef } from "@/lib/landing/schema";
 import { cn } from "@/lib/utils";
@@ -83,12 +84,18 @@ export function HeroSection({ secao }: PropsSecao<"hero">) {
           <StaggerItem className="mt-10 flex flex-col gap-3 sm:flex-row">
             <CtaLink
               cta={dados.ctaPrimario}
-              className="inline-flex h-12 items-center justify-center rounded-md bg-brand-cyan px-6 font-semibold text-brand-black transition-colors hover:bg-brand-violet hover:text-brand-white surface-dark:hover:bg-brand-white surface-dark:hover:text-brand-black"
+              className={cn(
+                buttonVariants({ variant: "signal", size: "lg" }),
+                "px-6 hover:bg-brand-violet hover:text-brand-white surface-dark:hover:bg-brand-white surface-dark:hover:text-brand-black",
+              )}
               dataCta="hero-primario"
             />
             <CtaLink
               cta={dados.ctaSecundario}
-              className="inline-flex h-12 items-center justify-center rounded-md border border-brand-ink/40 px-6 font-semibold text-brand-violet transition-colors hover:border-brand-blue hover:text-brand-blue surface-dark:border-brand-mist/50 surface-dark:text-brand-white surface-dark:hover:border-brand-cyan surface-dark:hover:text-brand-cyan"
+              className={cn(
+                buttonVariants({ variant: "outline-dark", size: "lg" }),
+                "border-brand-ink/40 px-6 text-brand-violet hover:border-brand-blue hover:text-brand-blue surface-dark:border-brand-mist/50 surface-dark:text-brand-white surface-dark:hover:border-brand-cyan surface-dark:hover:text-brand-cyan",
+              )}
               dataCta="hero-secundario"
             />
           </StaggerItem>

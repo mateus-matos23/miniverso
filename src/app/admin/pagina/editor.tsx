@@ -15,6 +15,7 @@ import {
   secaoSchema,
   tiposSecao,
 } from "@/lib/landing/schema";
+import { mesmaOrdem, moverItens } from "@/lib/reordenar";
 import type { AncoraOpcao } from "./_fields/campo-cta";
 import { FormConfig } from "./_forms/config/form-config";
 import { FormSecao } from "./_forms/form-secao";
@@ -229,22 +230,15 @@ export function EditorLanding({
     alvo: Key,
     posicao: "before" | "after",
   ) {
-    const movidas = new Set(chaves);
-    if (movidas.has(alvo)) return;
-
-    const restantes = doc.secoes.filter((secao) => !movidas.has(secao.tipo));
-    const sequencia = doc.secoes.filter((secao) => movidas.has(secao.tipo));
-    const indiceAlvo = restantes.findIndex((secao) => secao.tipo === alvo);
-    if (indiceAlvo === -1) return;
-
-    const destino = posicao === "before" ? indiceAlvo : indiceAlvo + 1;
-    const secoes = [
-      ...restantes.slice(0, destino),
-      ...sequencia,
-      ...restantes.slice(destino),
-    ];
+    const secoes = moverItens(
+      doc.secoes,
+      (secao) => secao.tipo,
+      new Set(chaves),
+      alvo,
+      posicao,
+    );
     // Soltar no mesmo lugar não muda nada: não dispara o salvamento.
-    if (secoes.every((secao, indice) => secao === doc.secoes[indice])) return;
+    if (mesmaOrdem(doc.secoes, secoes)) return;
 
     alterar({ ...doc, secoes });
   }

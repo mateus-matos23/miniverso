@@ -18,7 +18,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { logout } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import logoWhite from "../../../public/brand/logo-horizontal-white.webp";
 
@@ -174,7 +174,7 @@ export function AdminTopbar({
           src={logoWhite}
         />
       </Link>
-      <DialogTrigger isOpen={isOpen} onOpenChange={setOpen}>
+      <SheetTrigger isOpen={isOpen} onOpenChange={setOpen}>
         <Button
           aria-label="Abrir navegação"
           className="text-brand-white hover:bg-white/10 hover:text-brand-white"
@@ -183,13 +183,14 @@ export function AdminTopbar({
         >
           <MenuIcon />
         </Button>
-        <Dialog
-          className="top-0 right-auto left-0 flex h-dvh max-w-[min(18rem,100%)] translate-x-0 translate-y-0 flex-col rounded-none bg-brand-black p-4 pt-5 text-brand-white ring-0 sm:max-w-[18rem] data-entering:slide-in-from-left data-entering:zoom-in-100 data-exiting:slide-out-to-left data-exiting:zoom-out-100 [&_[data-slot=dialog-close]]:bg-white/10 [&_[data-slot=dialog-close]]:text-brand-white"
+        <SheetContent
+          className="max-w-[min(18rem,100%)] bg-brand-black p-4 pt-5 text-brand-white sm:max-w-[18rem] [&_[data-slot=sheet-close]]:bg-white/10 [&_[data-slot=sheet-close]]:text-brand-white"
           data-surface="dark"
+          side="left"
         >
-          <DialogTitle className="flex h-9 items-center px-3 text-label font-semibold uppercase text-brand-mist">
+          <SheetTitle className="flex h-9 items-center px-3 text-label font-semibold uppercase text-brand-mist">
             Navegação
-          </DialogTitle>
+          </SheetTitle>
           <nav aria-label="Administração" className="flex-1">
             <NavList
               leadsNovos={leadsNovos}
@@ -197,8 +198,8 @@ export function AdminTopbar({
             />
           </nav>
           <AccountBlock user={user} />
-        </Dialog>
-      </DialogTrigger>
+        </SheetContent>
+      </SheetTrigger>
     </header>
   );
 }
