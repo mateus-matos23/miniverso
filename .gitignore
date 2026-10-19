@@ -40,7 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.serena
-.impeccable
 docs/manual_de_marca.pdf
 .agents/skills/ui-ux-pro-max/scripts/__pycache__/
+.playwright-mcp/
