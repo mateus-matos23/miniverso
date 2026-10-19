@@ -1,7 +1,10 @@
 import type { MetadataRoute } from "next";
+import { getPublishedConteudoSlugs } from "@/lib/public-content";
 import { site } from "@/lib/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const projetos = await getPublishedConteudoSlugs();
+
   return [
     {
       url: site.url,
@@ -9,5 +12,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    ...projetos.map((projeto) => ({
+      url: `${site.url}/projetos/${projeto.slug}`,
+      lastModified: projeto.atualizadoEm,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
   ];
 }
