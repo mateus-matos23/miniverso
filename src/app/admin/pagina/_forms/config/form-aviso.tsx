@@ -1,9 +1,8 @@
 "use client";
 
-import { CheckIcon } from "lucide-react";
-import { Checkbox, Switch } from "react-aria-components";
-
-import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Switch } from "@/components/ui/switch";
 import { CampoCta } from "../../_fields/campo-cta";
 import { CampoTexto } from "../../_fields/campo-texto";
 import type { FormConfigProps } from "./tipos";
@@ -22,20 +21,14 @@ export function FormConfigAviso({
 
   return (
     <>
-      <Switch
-        id={`${id}-ativo`}
-        isSelected={valor.ativo}
-        onChange={(ativo) => onChange({ ...valor, ativo })}
-        className="group flex cursor-pointer items-center gap-3 text-sm font-medium outline-none"
-      >
-        <span
-          aria-hidden="true"
-          className="flex h-6 w-11 shrink-0 items-center rounded-full bg-input p-0.5 transition-colors group-data-selected:bg-brand-blue group-data-focus-visible:ring-3 group-data-focus-visible:ring-ring/50"
-        >
-          <span className="size-5 rounded-full bg-background shadow-sm transition-transform group-data-selected:translate-x-5" />
-        </span>
-        Mostrar aviso
-      </Switch>
+      <Field orientation="horizontal">
+        <Switch
+          id={`${id}-ativo`}
+          isSelected={valor.ativo}
+          onChange={(ativo) => onChange({ ...valor, ativo })}
+        />
+        <FieldLabel htmlFor={`${id}-ativo`}>Mostrar aviso</FieldLabel>
+      </Field>
       <CampoTexto
         id={`${id}-texto`}
         rotulo="Texto do aviso"
@@ -44,32 +37,17 @@ export function FormConfigAviso({
         onChange={(texto) => onChange({ ...valor, texto })}
         erro={erros.texto}
       />
-      <div className="flex flex-col gap-4">
-        <Checkbox
-          id={`${id}-tem-link`}
-          isSelected={temLink}
-          onChange={(marcado) =>
-            onChange({ ...valor, link: marcado ? LINK_PADRAO : null })
-          }
-          className="group flex cursor-pointer items-center gap-3 text-sm font-medium outline-none"
-        >
-          {({ isSelected }) => (
-            <>
-              <span
-                aria-hidden="true"
-                className={cn(
-                  "flex size-5 shrink-0 items-center justify-center rounded-sm border transition-colors group-data-focus-visible:ring-3 group-data-focus-visible:ring-ring/50",
-                  isSelected
-                    ? "border-brand-violet bg-brand-violet text-brand-white"
-                    : "border-input",
-                )}
-              >
-                {isSelected ? <CheckIcon className="size-3.5" /> : null}
-              </span>
-              Adicionar link
-            </>
-          )}
-        </Checkbox>
+      <FieldGroup className="gap-4">
+        <Field orientation="horizontal">
+          <Checkbox
+            id={`${id}-tem-link`}
+            isSelected={temLink}
+            onChange={(marcado) =>
+              onChange({ ...valor, link: marcado ? LINK_PADRAO : null })
+            }
+          />
+          <FieldLabel htmlFor={`${id}-tem-link`}>Adicionar link</FieldLabel>
+        </Field>
         {valor.link ? (
           <CampoCta
             id={`${id}-link`}
@@ -83,7 +61,7 @@ export function FormConfigAviso({
             }}
           />
         ) : null}
-      </div>
+      </FieldGroup>
     </>
   );
 }

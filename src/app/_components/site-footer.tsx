@@ -54,9 +54,13 @@ export function SiteFooter({ links, config }: SiteFooterProps) {
             ))}
           </ul>
         </nav>
-        <p className="text-sm">
-          © {new Date().getFullYear()} {site.name} · {config.contato.cidade},{" "}
-          {config.contato.uf}
+        <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          <span>
+            © {new Date().getFullYear()} {site.name}
+          </span>
+          <span>
+            {config.contato.cidade}, {config.contato.uf}
+          </span>
         </p>
       </div>
     </footer>

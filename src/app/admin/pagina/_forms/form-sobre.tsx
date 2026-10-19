@@ -1,5 +1,6 @@
 "use client";
 
+import { CabecalhoSecao } from "../_fields/cabecalho-secao";
 import { CampoLista } from "../_fields/campo-lista";
 import { CampoTexto } from "../_fields/campo-texto";
 import type { FormSecaoProps } from "./tipos";
@@ -12,21 +13,12 @@ export function FormSobre({
 }: FormSecaoProps<"sobre">) {
   return (
     <>
-      <CampoTexto
-        id={`${id}-rotulo`}
-        rotulo="Rótulo"
-        max={40}
-        valor={dados.rotulo}
-        onChange={(rotulo) => onChange({ ...dados, rotulo })}
-        erro={erros.rotulo}
-      />
-      <CampoTexto
-        id={`${id}-titulo`}
-        rotulo="Título"
-        max={120}
-        valor={dados.titulo}
-        onChange={(titulo) => onChange({ ...dados, titulo })}
-        erro={erros.titulo}
+      <CabecalhoSecao
+        id={id}
+        dados={dados}
+        onChange={onChange}
+        erros={erros}
+        maxTitulo={120}
       />
       <CampoLista
         id={`${id}-paragrafos`}

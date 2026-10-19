@@ -16,6 +16,7 @@ import {
   salvarNotasLead,
 } from "@/app/admin/leads/actions";
 import { Button, LinkButton } from "@/components/ui/button";
+import { FieldLabel } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -224,12 +225,12 @@ export function DetalheLead({
       </section>
 
       <section className="flex flex-col gap-3">
-        <label
-          className="text-sm font-semibold text-brand-violet"
+        <FieldLabel
+          className="font-semibold text-brand-violet"
           htmlFor={`notas-${lead.id}`}
         >
           Notas internas
-        </label>
+        </FieldLabel>
         <Textarea
           id={`notas-${lead.id}`}
           maxLength={limiteNotas}

@@ -7,8 +7,10 @@ import {
   useActionState,
   useEffect,
   useId,
+  useRef,
   useState,
 } from "react";
+import { FileTrigger } from "react-aria-components";
 
 import {
   atualizarConteudo,
@@ -35,6 +37,7 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { sincronizarArquivoFormulario } from "@/lib/arquivo-formulario";
 import { slugify } from "@/lib/slug";
 
 const initialState: CadastroConteudoState = {};
@@ -98,6 +101,8 @@ export default function ContentEditor({
   const [description, setDescription] = useState(conteudo?.descricao ?? "");
   const [media, setMedia] = useState<Media | null>(null);
   const [mediaError, setMediaError] = useState<string | null>(null);
+  // Input escondido que leva o arquivo escolhido pelo FileTrigger para o FormData.
+  const midiaInputRef = useRef<HTMLInputElement>(null);
   // Mídia já salva: aparece até o usuário escolher um arquivo novo.
   const midiaAtual: Media | null = conteudo?.midiaUrl
     ? {
@@ -121,23 +126,25 @@ export default function ContentEditor({
     };
   }, [media]);
 
-  function handleMediaChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.currentTarget.files?.[0];
+  function handleMediaChange(files: FileList | null) {
+    const file = files?.[0];
     setMediaError(null);
 
     if (!file) {
+      sincronizarArquivoFormulario(midiaInputRef.current, null);
       setMedia(null);
       return;
     }
 
     const error = validateMedia(file);
     if (error) {
-      event.currentTarget.value = "";
+      sincronizarArquivoFormulario(midiaInputRef.current, null);
       setMedia(null);
       setMediaError(error);
       return;
     }
 
+    sincronizarArquivoFormulario(midiaInputRef.current, files);
     setMedia({
       url: URL.createObjectURL(file),
       kind: file.type.startsWith("video/") ? "video" : "image",
@@ -213,8 +220,9 @@ export default function ContentEditor({
 
           <div className="grid gap-6 sm:grid-cols-2">
             <Field data-invalid={Boolean(erros.clienteId) || undefined}>
-              <FieldLabel htmlFor={`${id}-cliente`}>Cliente</FieldLabel>
+              <FieldLabel id={`${id}-cliente-rotulo`}>Cliente</FieldLabel>
               <Select
+                aria-labelledby={`${id}-cliente-rotulo`}
                 className="w-full"
                 defaultSelectedKey={
                   state.values?.clienteId || conteudo?.clienteId || undefined
@@ -296,42 +304,51 @@ export default function ContentEditor({
           </Field>
 
           <Field data-invalid={mediaError || erros.midia ? true : undefined}>
-            <FieldLabel htmlFor={`${id}-media`}>Imagem ou vídeo</FieldLabel>
-            <label
-              className="flex cursor-pointer items-center gap-4 rounded-md border border-dashed border-input bg-muted/40 p-4 transition-colors hover:border-brand-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring"
-              htmlFor={`${id}-media`}
+            <FieldLabel id={`${id}-media-rotulo`}>Imagem ou vídeo</FieldLabel>
+            <FileTrigger
+              acceptedFileTypes={[...imageTypes, ...videoTypes]}
+              onSelect={handleMediaChange}
             >
-              <ImagePlusIcon
-                aria-hidden="true"
-                className="size-5 shrink-0 text-brand-blue"
-              />
-              <span className="min-w-0 flex-1 text-sm">
-                <span className="block truncate font-semibold text-brand-violet">
-                  {media
-                    ? media.name
-                    : conteudo
-                      ? "Trocar mídia (opcional)"
-                      : "Selecionar arquivo"}
+              <Button
+                aria-describedby={descreverPor(
+                  `${id}-media-texto`,
+                  (mediaError || erros.midia) && `${id}-media-error`,
+                )}
+                aria-labelledby={`${id}-media-rotulo`}
+                className="h-auto w-full justify-start gap-4 rounded-md border-dashed border-input bg-muted/40 p-4 text-left font-normal whitespace-normal hover:border-brand-blue"
+                variant="outline"
+              >
+                <ImagePlusIcon
+                  aria-hidden="true"
+                  className="size-5 text-brand-blue"
+                />
+                <span
+                  id={`${id}-media-texto`}
+                  className="min-w-0 flex-1 text-sm"
+                >
+                  <span className="block truncate font-semibold text-brand-violet">
+                    {media
+                      ? media.name
+                      : conteudo
+                        ? "Trocar mídia (opcional)"
+                        : "Selecionar arquivo"}
+                  </span>
+                  <span className="text-muted-foreground">
+                    {conteudo && !media
+                      ? "Sem novo arquivo, a mídia atual é mantida. "
+                      : null}
+                    Imagens JPG, PNG ou WebP até 10 MB. Vídeos MP4 ou WebM até
+                    50 MB.
+                  </span>
                 </span>
-                <span className="text-muted-foreground">
-                  {conteudo && !media
-                    ? "Sem novo arquivo, a mídia atual é mantida. "
-                    : null}
-                  Imagens JPG, PNG ou WebP até 10 MB. Vídeos MP4 ou WebM até 50
-                  MB.
-                </span>
-              </span>
-            </label>
+              </Button>
+            </FileTrigger>
+            {/* Recebe o arquivo do FileTrigger para o FormData; a validação real é no servidor. */}
             <input
+              ref={midiaInputRef}
               accept={[...imageTypes, ...videoTypes].join(",")}
-              aria-describedby={descreverPor(
-                (mediaError || erros.midia) && `${id}-media-error`,
-              )}
-              aria-invalid={mediaError || erros.midia ? true : undefined}
-              className="sr-only"
-              id={`${id}-media`}
+              hidden
               name="midia"
-              onChange={handleMediaChange}
               type="file"
             />
             <FieldError id={`${id}-media-error`}>
@@ -341,8 +358,9 @@ export default function ContentEditor({
 
           <div className="grid gap-6 sm:grid-cols-2">
             <Field data-invalid={Boolean(erros.status) || undefined}>
-              <FieldLabel htmlFor={`${id}-status`}>Status</FieldLabel>
+              <FieldLabel id={`${id}-status-rotulo`}>Status</FieldLabel>
               <Select
+                aria-labelledby={`${id}-status-rotulo`}
                 className="w-full"
                 defaultSelectedKey={
                   state.values?.status || conteudo?.status || "draft"
@@ -412,7 +430,7 @@ export default function ContentEditor({
             Pré-visualização
           </h2>
           <Badge className="h-6 px-2 font-semibold" variant="secondary">
-            Rascunho — ainda não publicado
+            Rascunho, ainda não publicado
           </Badge>
         </div>
         <article className="overflow-hidden rounded-lg border border-border bg-brand-white">

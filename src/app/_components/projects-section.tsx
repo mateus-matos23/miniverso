@@ -1,4 +1,4 @@
-import { ArrowRightIcon, ScanLineIcon } from "lucide-react";
+import { ScanLineIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/reveal";
@@ -23,15 +23,7 @@ import { CtaLink } from "./cta-link";
 import { SectionIndex } from "./section-index";
 import { superficies } from "./superficie";
 
-function ProjectCard({
-  projeto,
-  index,
-}: {
-  projeto: PublicConteudo;
-  index: number;
-}) {
-  const numero = String(index + 1).padStart(2, "0");
-
+function ProjectCard({ projeto }: { projeto: PublicConteudo }) {
   return (
     <article className="flex h-full flex-col border-b border-r border-brand-line bg-brand-white">
       <div className="relative aspect-video overflow-hidden bg-brand-tint">
@@ -56,10 +48,11 @@ function ProjectCard({
         ) : null}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-6">
-        <p className="flex items-center gap-3 text-label font-semibold uppercase text-brand-ink">
-          <span className="text-brand-blue">/ {numero}</span>
-          {projeto.categoria ? <span>{projeto.categoria}</span> : null}
-        </p>
+        {projeto.categoria ? (
+          <p className="text-label font-semibold uppercase text-brand-ink">
+            {projeto.categoria}
+          </p>
+        ) : null}
         <h3 className="font-display text-3xl font-bold leading-none text-brand-violet">
           {projeto.titulo}
         </h3>
@@ -70,11 +63,11 @@ function ProjectCard({
           </p>
         ) : null}
         <Link
-          className="mt-auto inline-flex h-11 items-center gap-2 self-start font-semibold text-brand-blue transition-colors hover:text-brand-violet"
+          aria-label={`Ver projeto: ${projeto.titulo}`}
+          className="mt-auto inline-flex h-11 items-center self-start font-semibold text-brand-blue transition-colors hover:text-brand-violet"
           href={`/projetos/${projeto.slug}`}
         >
           Ver projeto
-          <ArrowRightIcon aria-hidden="true" className="size-4" />
         </Link>
       </div>
     </article>
@@ -161,9 +154,9 @@ export async function ProjectsSection({ secao }: PropsSecao<"projetos">) {
             className="mt-12 grid border-l border-t border-brand-line sm:grid-cols-2 xl:grid-cols-3"
             interval={0.08}
           >
-            {result.items.map((projeto, index) => (
+            {result.items.map((projeto) => (
               <StaggerItem as="li" key={projeto.id}>
-                <ProjectCard index={index} projeto={projeto} />
+                <ProjectCard projeto={projeto} />
               </StaggerItem>
             ))}
           </Stagger>

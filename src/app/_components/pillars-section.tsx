@@ -49,9 +49,6 @@ export function PillarsSection({ secao }: PropsSecao<"pilares">) {
             >
               <details className="details-smooth group">
                 <summary className="flex min-h-20 cursor-pointer list-none items-center gap-5 py-5 [&::-webkit-details-marker]:hidden">
-                  <span className="w-8 shrink-0 text-label font-semibold text-brand-blue surface-dark:text-brand-cyan">
-                    {String(indice + 1).padStart(2, "0")}
-                  </span>
                   <span className="flex-1 font-display text-display-md font-bold text-brand-violet transition-colors group-hover:text-brand-blue surface-dark:text-brand-white surface-dark:group-hover:text-brand-cyan">
                     {pilar.titulo}
                   </span>
@@ -61,7 +58,7 @@ export function PillarsSection({ secao }: PropsSecao<"pilares">) {
                     strokeWidth={1.5}
                   />
                 </summary>
-                <p className="max-w-[46ch] pb-7 pl-13 text-lg text-brand-ink surface-dark:text-brand-mist">
+                <p className="max-w-[46ch] pb-7 text-lg text-brand-ink surface-dark:text-brand-mist">
                   {pilar.descricao}
                 </p>
               </details>

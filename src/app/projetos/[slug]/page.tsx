@@ -1,4 +1,3 @@
-import { ArrowLeftIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -74,10 +73,9 @@ export default async function ProjetoPage({ params }: Props) {
         <article>
           <header className="mx-auto max-w-page px-5 pt-12 sm:px-8 lg:px-12 lg:pt-20">
             <Link
-              className="inline-flex h-10 items-center gap-2 text-sm font-semibold text-brand-blue transition-colors hover:text-brand-violet"
+              className="inline-flex h-10 items-center text-sm font-semibold text-brand-blue transition-colors hover:text-brand-violet"
               href="/#projetos"
             >
-              <ArrowLeftIcon aria-hidden="true" className="size-4" />
               Todos os projetos
             </Link>
             {projeto ? (
@@ -146,10 +144,14 @@ export default async function ProjetoPage({ params }: Props) {
               </div>
             </>
           ) : (
-            <p className="mx-auto mt-12 max-w-page px-5 pb-24 text-lg text-brand-ink sm:px-8 lg:px-12">
-              Não foi possível carregar este projeto agora. Tente novamente em
-              instantes.
-            </p>
+            <div className="mx-auto mt-10 max-w-page px-5 pb-24 sm:px-8 lg:px-12">
+              <h1 className="max-w-[18ch] font-display text-display-md font-bold text-brand-violet">
+                Não foi possível carregar este projeto
+              </h1>
+              <p className="mt-4 text-lg text-brand-ink">
+                Tente novamente em instantes.
+              </p>
+            </div>
           )}
         </article>
       </main>

@@ -95,8 +95,7 @@ async function ClientsList({ titulo }: { titulo: string }) {
     return (
       <p className="mx-auto max-w-page px-5 sm:px-8 lg:px-12">
         <span className="block border-l-2 border-brand-line py-2 pl-5 text-lg text-brand-ink surface-dark:border-white/20 surface-dark:text-brand-mist">
-          Os clientes aparecem aqui assim que forem publicados pela equipe da
-          Miniverso.
+          Nenhum cliente para mostrar no momento.
         </span>
       </p>
     );

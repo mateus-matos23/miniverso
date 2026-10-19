@@ -2,6 +2,7 @@
 
 import { ImageIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
+import { GridList, GridListItem } from "react-aria-components";
 
 import { listarMidias, type MidiaBiblioteca } from "@/app/admin/midia/actions";
 import { EnviarMidia } from "@/app/admin/midia/enviar-midia";
@@ -175,26 +176,37 @@ export function SeletorMidia({
                       Nenhuma {nomeTipo} na biblioteca ainda.
                     </p>
                   ) : (
-                    <ul className="grid max-h-[50svh] grid-cols-2 gap-3 overflow-y-auto sm:grid-cols-3">
-                      {midias.map((midia) => (
-                        <li key={midia.id}>
-                          <button
-                            type="button"
-                            aria-label={`Escolher ${rotuloTipoMidia[midia.tipo].toLowerCase()}${midia.alt ? `: ${midia.alt}` : " (sem texto alternativo)"}`}
-                            aria-pressed={valor?.id === midia.id}
-                            onClick={() => selecionar(midia)}
-                            className={cn(
-                              "w-full overflow-hidden rounded-md border-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                              valor?.id === midia.id
-                                ? "border-brand-blue"
-                                : "border-transparent hover:border-border",
-                            )}
+                    <GridList
+                      aria-label="Itens da biblioteca"
+                      className="grid max-h-[50svh] grid-cols-2 gap-3 overflow-y-auto sm:grid-cols-3"
+                      disallowEmptySelection
+                      layout="grid"
+                      onSelectionChange={(chaves) => {
+                        if (chaves === "all") return;
+                        const escolhida = midias.find(
+                          (midia) => midia.id === [...chaves][0],
+                        );
+                        if (escolhida) selecionar(escolhida);
+                      }}
+                      selectedKeys={valor ? [valor.id] : []}
+                      selectionBehavior="replace"
+                      selectionMode="single"
+                    >
+                      {midias.map((midia) => {
+                        const rotulo = `Escolher ${rotuloTipoMidia[midia.tipo].toLowerCase()}${midia.alt ? `: ${midia.alt}` : " (sem texto alternativo)"}`;
+                        return (
+                          <GridListItem
+                            key={midia.id}
+                            aria-label={rotulo}
+                            className="w-full cursor-pointer overflow-hidden rounded-md border-2 border-transparent text-left outline-none hover:border-border data-focus-visible:ring-2 data-focus-visible:ring-ring data-selected:border-brand-blue"
+                            id={midia.id}
+                            textValue={rotulo}
                           >
                             <MiniaturaMidia midia={midia} />
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
+                          </GridListItem>
+                        );
+                      })}
+                    </GridList>
                   )}
                 </div>
               </Dialog>
@@ -205,7 +217,7 @@ export function SeletorMidia({
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => onChange(null)}
+                onPress={() => onChange(null)}
               >
                 <Trash2Icon aria-hidden="true" />
                 Remover

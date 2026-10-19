@@ -1,5 +1,4 @@
 import {
-  ArrowUpRightIcon,
   AtSignIcon,
   type LucideIcon,
   MailIcon,
@@ -48,10 +47,6 @@ function ContactLink({
             {children}
           </span>
         </span>
-        <ArrowUpRightIcon
-          aria-hidden="true"
-          className="size-5 shrink-0 text-brand-ink transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand-blue surface-dark:text-brand-mist surface-dark:group-hover:text-brand-cyan"
-        />
         {external ? <span className="sr-only">(abre em nova aba)</span> : null}
       </a>
     </li>
@@ -72,6 +67,13 @@ export function ContactSection({
       data-surface={escura ? "dark" : undefined}
       id="contato"
     >
+      {/* O brilho branco do aurora cai sobre o início do título e o índice: escurece só o topo. */}
+      {aparencia.superficie === "aurora" ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[45%] bg-[linear-gradient(to_bottom,rgb(12_4_7/0.7),rgb(12_4_7/0))]"
+        />
+      ) : null}
       <div className="mx-auto grid max-w-page gap-14 px-5 py-24 sm:px-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20 lg:px-12 lg:py-32">
         <div>
           <SectionIndex

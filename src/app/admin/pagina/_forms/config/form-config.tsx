@@ -1,5 +1,7 @@
 "use client";
 
+import type { ComponentType } from "react";
+
 import type { ConfigLanding } from "@/lib/landing/schema";
 import type { AncoraOpcao } from "../../_fields/campo-cta";
 import type { GrupoConfig } from "../../selecao";
@@ -9,14 +11,23 @@ import { FormConfigCabecalho } from "./form-cabecalho";
 import { FormConfigContato } from "./form-contato";
 import { FormConfigRodape } from "./form-rodape";
 import { FormConfigSeo } from "./form-seo";
+import type { FormConfigProps } from "./tipos";
 
-type FormConfigProps = {
+type FormConfigRaiz = {
   id: string;
   grupo: GrupoConfig;
   config: ConfigLanding;
   onChange: (config: ConfigLanding) => void;
   erros: Erros;
   ancoras: AncoraOpcao[];
+};
+
+const formularios: { [G in GrupoConfig]: ComponentType<FormConfigProps<G>> } = {
+  contato: FormConfigContato,
+  seo: FormConfigSeo,
+  cabecalho: FormConfigCabecalho,
+  rodape: FormConfigRodape,
+  aviso: FormConfigAviso,
 };
 
 /**
@@ -30,57 +41,19 @@ export function FormConfig({
   onChange,
   erros,
   ancoras,
-}: FormConfigProps) {
-  switch (grupo) {
-    case "contato":
-      return (
-        <FormConfigContato
-          id={id}
-          valor={config.contato}
-          erros={erros}
-          ancoras={ancoras}
-          onChange={(contato) => onChange({ ...config, contato })}
-        />
-      );
-    case "seo":
-      return (
-        <FormConfigSeo
-          id={id}
-          valor={config.seo}
-          erros={erros}
-          ancoras={ancoras}
-          onChange={(seo) => onChange({ ...config, seo })}
-        />
-      );
-    case "cabecalho":
-      return (
-        <FormConfigCabecalho
-          id={id}
-          valor={config.cabecalho}
-          erros={erros}
-          ancoras={ancoras}
-          onChange={(cabecalho) => onChange({ ...config, cabecalho })}
-        />
-      );
-    case "rodape":
-      return (
-        <FormConfigRodape
-          id={id}
-          valor={config.rodape}
-          erros={erros}
-          ancoras={ancoras}
-          onChange={(rodape) => onChange({ ...config, rodape })}
-        />
-      );
-    case "aviso":
-      return (
-        <FormConfigAviso
-          id={id}
-          valor={config.aviso}
-          erros={erros}
-          ancoras={ancoras}
-          onChange={(aviso) => onChange({ ...config, aviso })}
-        />
-      );
-  }
+}: FormConfigRaiz) {
+  const Formulario = formularios[grupo] as ComponentType<
+    FormConfigProps<GrupoConfig>
+  >;
+  return (
+    <Formulario
+      id={id}
+      valor={config[grupo]}
+      erros={erros}
+      ancoras={ancoras}
+      onChange={(valor) =>
+        onChange({ ...config, [grupo]: valor } as ConfigLanding)
+      }
+    />
+  );
 }

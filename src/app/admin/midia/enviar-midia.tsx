@@ -3,7 +3,8 @@
 import { FileUpIcon, Trash2Icon, TriangleAlertIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { DropZone, FileTrigger } from "react-aria-components";
 import { toast } from "sonner";
 import { registrarMidia } from "@/app/admin/midia/actions";
 import {
@@ -53,7 +54,6 @@ export function EnviarMidia({
 }) {
   const uid = useId();
   const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
   const [arquivo, setArquivo] = useState<File | null>(null);
   const [erroArquivo, setErroArquivo] = useState<string>();
   const [alt, setAlt] = useState("");
@@ -101,13 +101,12 @@ export function EnviarMidia({
     tipo
       ? formatosPorTipo[tipo]
       : { ...formatosPorTipo.imagem, ...formatosPorTipo.video },
-  ).join(",");
+  );
 
   function limpar() {
     setArquivo(null);
     setAlt("");
     setErroAlt(undefined);
-    if (inputRef.current) inputRef.current.value = "";
   }
 
   function escolherArquivo(file: File | undefined) {
@@ -207,29 +206,34 @@ export function EnviarMidia({
 
   return (
     <form className="flex flex-col gap-4" onSubmit={enviar} noValidate>
-      <div className="flex flex-wrap items-center gap-3">
-        <input
-          ref={inputRef}
-          id={`${fieldId}-arquivo`}
-          className="sr-only"
-          type="file"
-          accept={aceitos}
-          disabled={ocupado}
-          aria-invalid={Boolean(erroArquivo) || undefined}
-          aria-describedby={erroArquivo ? `${fieldId}-arquivo-erro` : undefined}
-          onChange={(event) => escolherArquivo(event.currentTarget.files?.[0])}
-        />
-        <Button
-          type="button"
-          variant="outline"
-          isDisabled={ocupado}
-          onClick={() => inputRef.current?.click()}
+      <DropZone
+        aria-label="Área para soltar o arquivo"
+        className="flex flex-wrap items-center gap-3 rounded-md data-[drop-target]:bg-muted data-[drop-target]:ring-2 data-[drop-target]:ring-ring/40"
+        getDropOperation={() => (ocupado ? "cancel" : "copy")}
+        isDisabled={ocupado}
+        onDrop={async (event) => {
+          const item = event.items.find((item) => item.kind === "file");
+          if (item?.kind === "file") escolherArquivo(await item.getFile());
+        }}
+      >
+        <FileTrigger
+          acceptedFileTypes={aceitos}
+          onSelect={(files) => escolherArquivo(files?.[0])}
         >
-          <FileUpIcon aria-hidden="true" />
-          {tipo
-            ? `Escolher ${rotuloTipoMidia[tipo].toLowerCase()}`
-            : "Escolher arquivo"}
-        </Button>
+          <Button
+            type="button"
+            variant="outline"
+            isDisabled={ocupado}
+            aria-describedby={
+              erroArquivo ? `${fieldId}-arquivo-erro` : undefined
+            }
+          >
+            <FileUpIcon aria-hidden="true" />
+            {tipo
+              ? `Escolher ${rotuloTipoMidia[tipo].toLowerCase()}`
+              : "Escolher arquivo"}
+          </Button>
+        </FileTrigger>
         <p className="min-w-0 text-sm text-muted-foreground">
           {arquivo ? (
             <>
@@ -244,7 +248,7 @@ export function EnviarMidia({
             "Imagens: JPG, PNG, WebP ou AVIF, até 10 MB. Vídeos: MP4 ou WebM, até 50 MB."
           )}
         </p>
-      </div>
+      </DropZone>
 
       {erroArquivo ? (
         <p
@@ -298,7 +302,7 @@ export function EnviarMidia({
             {textoEtapa ?? "Enviar à biblioteca"}
           </Button>
           {!ocupado ? (
-            <Button type="button" variant="ghost" onClick={limpar}>
+            <Button type="button" variant="ghost" onPress={limpar}>
               <Trash2Icon aria-hidden="true" />
               Remover seleção
             </Button>

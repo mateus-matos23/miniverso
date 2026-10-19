@@ -2,6 +2,7 @@
 
 import { ImagePlus } from "lucide-react";
 import { useActionState, useRef, useState } from "react";
+import { FileTrigger } from "react-aria-components";
 
 import {
   atualizarCliente,
@@ -16,7 +17,6 @@ import {
   AttachmentDescription,
   AttachmentMedia,
   AttachmentTitle,
-  AttachmentTrigger,
 } from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
@@ -29,8 +29,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
+import { sincronizarArquivoFormulario } from "@/lib/arquivo-formulario";
 
 const initialState: CadastroClienteState = {};
+const TIPOS_LOGO = ["image/jpeg", "image/png", "image/webp"];
 
 function LogoField({
   fieldId,
@@ -44,6 +46,11 @@ function LogoField({
   const inputRef = useRef<HTMLInputElement>(null);
   const [logoName, setLogoName] = useState<string>();
   const hasError = Boolean(mensagem);
+
+  function escolherLogo(files: FileList | null) {
+    sincronizarArquivoFormulario(inputRef.current, files);
+    setLogoName(files?.[0]?.name);
+  }
 
   return (
     <>
@@ -65,23 +72,21 @@ function LogoField({
             PNG, JPG ou WebP, até 5 MB. Prefira fundo transparente.
           </AttachmentDescription>
         </AttachmentContent>
-        <AttachmentTrigger
-          type="button"
-          aria-label={logoName ? "Trocar logo" : "Selecionar logo"}
-          onClick={() => inputRef.current?.click()}
-        />
+        <FileTrigger acceptedFileTypes={TIPOS_LOGO} onSelect={escolherLogo}>
+          <Button
+            aria-label={logoName ? "Trocar logo" : "Selecionar logo"}
+            variant="ghost"
+            className="absolute inset-0 z-10 h-full w-full rounded-none p-0 outline-none hover:bg-transparent"
+          />
+        </FileTrigger>
       </Attachment>
-      <Input
+      {/* Recebe o arquivo do FileTrigger para o FormData; a validação real é no servidor. */}
+      <input
         ref={inputRef}
-        className="sr-only"
-        id={`${fieldId}-logo`}
+        hidden
         name="logo"
         type="file"
-        accept="image/jpeg,image/png,image/webp"
-        aria-invalid={hasError || undefined}
-        aria-describedby={hasError ? `${fieldId}-logo-error` : undefined}
-        onChange={(event) => setLogoName(event.currentTarget.files?.[0]?.name)}
-        required={required}
+        accept={TIPOS_LOGO.join(",")}
       />
     </>
   );
@@ -116,7 +121,7 @@ export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
       </Field>
 
       <Field data-invalid={Boolean(state.erros?.logo) || undefined}>
-        <FieldLabel htmlFor={`${fieldId}-logo`}>Logo</FieldLabel>
+        <FieldLabel>Logo</FieldLabel>
         <LogoField
           fieldId={fieldId}
           mensagem={state.erros?.logo}
@@ -128,8 +133,9 @@ export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
       </Field>
 
       <Field data-invalid={Boolean(state.erros?.status) || undefined}>
-        <FieldLabel htmlFor={`${fieldId}-status`}>Status</FieldLabel>
+        <FieldLabel id={`${fieldId}-status-rotulo`}>Status</FieldLabel>
         <Select
+          aria-labelledby={`${fieldId}-status-rotulo`}
           name="status"
           className="w-full"
           defaultSelectedKey={

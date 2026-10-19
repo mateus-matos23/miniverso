@@ -23,7 +23,14 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import {
+  FieldError,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { FUSO } from "@/lib/formatar";
 import { cn } from "@/lib/utils";
 
@@ -96,21 +103,29 @@ export function BibliotecaMidias({ midias }: { midias: MidiaBiblioteca[] }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <fieldset className="flex flex-wrap gap-2 border-0 p-0">
-        <legend className="sr-only">Filtrar por tipo</legend>
-        {filtros.map((item) => (
-          <Button
-            key={item.valor}
-            type="button"
-            size="sm"
-            variant={filtro === item.valor ? "default" : "outline"}
-            aria-pressed={filtro === item.valor}
-            onClick={() => setFiltro(item.valor)}
-          >
-            {item.rotulo}
-          </Button>
-        ))}
-      </fieldset>
+      <FieldSet>
+        <FieldLegend id="filtro-tipo-rotulo" className="sr-only">
+          Filtrar por tipo
+        </FieldLegend>
+        <ToggleGroup
+          aria-labelledby="filtro-tipo-rotulo"
+          selectionMode="single"
+          disallowEmptySelection
+          selectedKeys={[filtro]}
+          onSelectionChange={(chaves) => {
+            const [chave] = chaves;
+            if (chave) setFiltro(String(chave) as Filtro);
+          }}
+          variant="outline"
+          size="sm"
+        >
+          {filtros.map((item) => (
+            <ToggleGroupItem key={item.valor} id={item.valor}>
+              {item.rotulo}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </FieldSet>
 
       {visiveis.length === 0 ? (
         <p className="text-sm text-muted-foreground">
@@ -217,12 +232,12 @@ function CartaoMidia({
         ) : null}
 
         <form className="flex flex-col gap-2" onSubmit={salvarAlt}>
-          <label
+          <FieldLabel
             htmlFor={altId}
-            className="text-sm font-semibold text-brand-black"
+            className="font-semibold text-brand-black"
           >
             Texto alternativo
-          </label>
+          </FieldLabel>
           <div className="flex gap-2">
             <Input
               id={altId}
@@ -239,17 +254,11 @@ function CartaoMidia({
               variant="outline"
               isDisabled={!alterado || salvando}
             >
-              {salvando ? "Salvando…" : "Salvar"}
+              {salvando ? "Salvando…" : "Salvar texto alternativo"}
             </Button>
           </div>
           {erroAlt ? (
-            <p
-              id={`${altId}-erro`}
-              className="text-sm text-destructive"
-              role="alert"
-            >
-              {erroAlt}
-            </p>
+            <FieldError id={`${altId}-erro`}>{erroAlt}</FieldError>
           ) : null}
         </form>
 

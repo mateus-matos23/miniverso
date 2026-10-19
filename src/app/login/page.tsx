@@ -34,10 +34,7 @@ export default async function LoginPage() {
             priority
             src={logoColor}
           />
-          <p className="mt-10 text-label font-semibold uppercase text-brand-blue lg:mt-0">
-            Painel administrativo
-          </p>
-          <h1 className="mt-3 font-display text-display-md font-bold text-brand-violet">
+          <h1 className="mt-10 font-display lg:mt-0 text-display-md font-bold text-brand-violet">
             Entrar no painel
           </h1>
           <p className="mt-3 text-muted-foreground">

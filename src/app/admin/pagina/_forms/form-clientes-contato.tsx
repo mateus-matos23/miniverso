@@ -1,6 +1,6 @@
 "use client";
 
-import { CampoTexto } from "../_fields/campo-texto";
+import { CabecalhoSecao } from "../_fields/cabecalho-secao";
 import type { FormSecaoProps } from "./tipos";
 
 export function FormClientes({
@@ -10,24 +10,13 @@ export function FormClientes({
   erros,
 }: FormSecaoProps<"clientes">) {
   return (
-    <>
-      <CampoTexto
-        id={`${id}-rotulo`}
-        rotulo="Rótulo"
-        max={40}
-        valor={dados.rotulo}
-        onChange={(rotulo) => onChange({ ...dados, rotulo })}
-        erro={erros.rotulo}
-      />
-      <CampoTexto
-        id={`${id}-titulo`}
-        rotulo="Título"
-        max={90}
-        valor={dados.titulo}
-        onChange={(titulo) => onChange({ ...dados, titulo })}
-        erro={erros.titulo}
-      />
-    </>
+    <CabecalhoSecao
+      id={id}
+      dados={dados}
+      onChange={onChange}
+      erros={erros}
+      maxTitulo={90}
+    />
   );
 }
 
@@ -38,32 +27,13 @@ export function FormContato({
   erros,
 }: FormSecaoProps<"contato">) {
   return (
-    <>
-      <CampoTexto
-        id={`${id}-rotulo`}
-        rotulo="Rótulo"
-        max={40}
-        valor={dados.rotulo}
-        onChange={(rotulo) => onChange({ ...dados, rotulo })}
-        erro={erros.rotulo}
-      />
-      <CampoTexto
-        id={`${id}-titulo`}
-        rotulo="Título"
-        max={90}
-        valor={dados.titulo}
-        onChange={(titulo) => onChange({ ...dados, titulo })}
-        erro={erros.titulo}
-      />
-      <CampoTexto
-        id={`${id}-intro`}
-        rotulo="Introdução"
-        max={300}
-        multilinha
-        valor={dados.intro}
-        onChange={(intro) => onChange({ ...dados, intro })}
-        erro={erros.intro}
-      />
-    </>
+    <CabecalhoSecao
+      id={id}
+      dados={dados}
+      onChange={onChange}
+      erros={erros}
+      maxTitulo={90}
+      campoIntro={{ chave: "intro", rotulo: "Introdução", max: 300 }}
+    />
   );
 }

@@ -1,13 +1,10 @@
 "use client";
 
-import { Radio, RadioGroup } from "react-aria-components";
-
 import { SeletorMidia } from "@/app/admin/midia/seletor-midia";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { type Secao, visuaisHero } from "@/lib/landing/schema";
-import { cn } from "@/lib/utils";
+import { CabecalhoSecao } from "../_fields/cabecalho-secao";
 import { CampoCta } from "../_fields/campo-cta";
-import { CampoTexto } from "../_fields/campo-texto";
+import { CampoEscolha } from "../_fields/campo-escolha";
 import type { FormSecaoProps } from "./tipos";
 
 type AparenciaHero = Extract<Secao, { tipo: "hero" }>["aparencia"];
@@ -44,36 +41,17 @@ export function FormHero({
 
   return (
     <>
-      <Field data-invalid={Boolean(erros["aparencia.visual"]) || undefined}>
-        <FieldLabel id={`${id}-visual-rotulo`}>Visual</FieldLabel>
-        <RadioGroup
-          aria-labelledby={`${id}-visual-rotulo`}
-          className="flex flex-wrap gap-2"
-          value={aparencia.visual}
-          onChange={(chave) => trocarVisual(chave as VisualHero)}
-        >
-          {visuaisHero.map((chave) => (
-            <Radio
-              key={chave}
-              value={chave}
-              className={({ isFocusVisible, isSelected }) =>
-                cn(
-                  "flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors",
-                  isSelected
-                    ? "border-ring ring-3 ring-ring/30"
-                    : "border-input",
-                  isFocusVisible && "ring-3 ring-ring/50",
-                )
-              }
-            >
-              {rotulosVisual[chave]}
-            </Radio>
-          ))}
-        </RadioGroup>
-        {erros["aparencia.visual"] ? (
-          <FieldError>{erros["aparencia.visual"]}</FieldError>
-        ) : null}
-      </Field>
+      <CampoEscolha
+        id={`${id}-visual`}
+        rotulo="Visual"
+        valor={aparencia.visual}
+        onChange={trocarVisual}
+        erro={erros["aparencia.visual"]}
+        opcoes={visuaisHero.map((chave) => ({
+          valor: chave,
+          rotulo: rotulosVisual[chave],
+        }))}
+      />
       {aparencia.visual === "ilustracao" ? null : (
         <SeletorMidia
           id={`${id}-midia`}
@@ -91,30 +69,13 @@ export function FormHero({
           erro={erros["aparencia.midia"]}
         />
       )}
-      <CampoTexto
-        id={`${id}-rotulo`}
-        rotulo="Rótulo"
-        max={40}
-        valor={dados.rotulo}
-        onChange={(rotulo) => onChange({ ...dados, rotulo })}
-        erro={erros.rotulo}
-      />
-      <CampoTexto
-        id={`${id}-titulo`}
-        rotulo="Título"
-        max={90}
-        valor={dados.titulo}
-        onChange={(titulo) => onChange({ ...dados, titulo })}
-        erro={erros.titulo}
-      />
-      <CampoTexto
-        id={`${id}-subtitulo`}
-        rotulo="Subtítulo"
-        max={300}
-        multilinha
-        valor={dados.subtitulo}
-        onChange={(subtitulo) => onChange({ ...dados, subtitulo })}
-        erro={erros.subtitulo}
+      <CabecalhoSecao
+        id={id}
+        dados={dados}
+        onChange={onChange}
+        erros={erros}
+        maxTitulo={90}
+        campoIntro={{ chave: "subtitulo", rotulo: "Subtítulo", max: 300 }}
       />
       <CampoCta
         id={`${id}-cta-primario`}

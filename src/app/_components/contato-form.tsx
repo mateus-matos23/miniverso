@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle2Icon } from "lucide-react";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { type EstadoContato, enviarContato } from "@/app/actions/contato";
 import { INTERESSES, ROTULOS_INTERESSE } from "@/lib/leads";
 import { cn } from "@/lib/utils";
@@ -43,7 +43,7 @@ function Campo({
   return (
     <div className="flex flex-col gap-2">
       <label
-        className="flex items-baseline gap-2 text-label font-semibold uppercase text-brand-ink surface-dark:text-brand-mist"
+        className="flex items-baseline gap-2 text-sm font-semibold text-brand-ink surface-dark:text-brand-mist"
         htmlFor={id}
       >
         {rotulo}
@@ -83,6 +83,7 @@ export function ContatoForm() {
     pagina: "",
   });
   const [tamanhoMensagem, setTamanhoMensagem] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
 
   // UTMs e página vêm da URL atual, então só existem no client.
   useEffect(() => {
@@ -100,6 +101,15 @@ export function ContatoForm() {
     setTamanhoMensagem(state.values?.mensagem?.length ?? 0);
   }, [state]);
 
+  // Após erros de validação, leva o foco ao primeiro campo inválido.
+  useEffect(() => {
+    if (!state.erros) return;
+    const primeiroInvalido = formRef.current?.querySelector<HTMLElement>(
+      '[aria-invalid="true"]',
+    );
+    primeiroInvalido?.focus();
+  }, [state]);
+
   if (state.ok) {
     return (
       <div
@@ -111,7 +121,8 @@ export function ContatoForm() {
           className="mt-0.5 size-6 shrink-0 text-brand-blue"
         />
         <p className="text-lg font-medium">
-          Mensagem enviada. Respondemos em até 2 dias úteis.
+          Recebemos sua mensagem. A equipe da Miniverso vai responder pelo
+          e-mail informado.
         </p>
       </div>
     );
@@ -121,7 +132,12 @@ export function ContatoForm() {
   const valores = state.values ?? {};
 
   return (
-    <form action={formAction} className="flex flex-col gap-6" noValidate>
+    <form
+      action={formAction}
+      className="flex flex-col gap-6"
+      noValidate
+      ref={formRef}
+    >
       {state.erro ? (
         <p
           className="rounded-md border border-destructive bg-brand-white p-4 text-sm font-medium text-destructive"
