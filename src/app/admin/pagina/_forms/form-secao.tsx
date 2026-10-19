@@ -7,6 +7,8 @@ import type { Secao, Superficie, TipoSecao } from "@/lib/landing/schema";
 import type { AncoraOpcao } from "../_fields/campo-cta";
 import { CampoSuperficie } from "../_fields/campo-superficie";
 import { FormClientes, FormContato } from "./form-clientes-contato";
+import { FormContadores } from "./form-contadores";
+import { FormDepoimentos } from "./form-depoimentos";
 import { FormHero } from "./form-hero";
 import { FormPilares } from "./form-pilares";
 import { FormProcesso } from "./form-processo";
@@ -28,8 +30,10 @@ type TipoSimples = Exclude<TipoSecao, "hero">;
 const formularios: { [T in TipoSimples]: ComponentType<FormSecaoProps<T>> } = {
   sobre: FormSobre,
   pilares: FormPilares,
+  contadores: FormContadores,
   projetos: FormProjetos,
   processo: FormProcesso,
+  depoimentos: FormDepoimentos,
   clientes: FormClientes,
   contato: FormContato,
 };

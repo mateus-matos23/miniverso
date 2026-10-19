@@ -91,6 +91,21 @@ export const landingPadrao: LandingDocumento = {
       },
     },
     {
+      // Oculta por padrão: os números abaixo são só um modelo para o admin preencher.
+      tipo: "contadores",
+      visivel: false,
+      aparencia: { superficie: "tint" },
+      dados: {
+        rotulo: "Números",
+        titulo: "A Miniverso em números",
+        itens: [
+          { titulo: "Escolas atendidas", numero: 0 },
+          { titulo: "Alunos impactados", numero: 0 },
+          { titulo: "Projetos entregues", numero: 0 },
+        ],
+      },
+    },
+    {
       tipo: "projetos",
       visivel: true,
       aparencia: { superficie: "white" },
@@ -130,6 +145,23 @@ export const landingPadrao: LandingDocumento = {
             titulo: "Lançamento e suporte",
             descricao:
               "Você recebe a implantação da experiência e o acompanhamento da aplicação com o público. Participa levando dúvidas ao suporte, que continua depois da entrega.",
+          },
+        ],
+      },
+    },
+    {
+      // Oculta por padrão: o texto abaixo é só um modelo para o admin preencher.
+      tipo: "depoimentos",
+      visivel: false,
+      aparencia: { superficie: "white" },
+      dados: {
+        rotulo: "Depoimentos",
+        titulo: "Quem já viveu a experiência",
+        itens: [
+          {
+            nome: "Nome da pessoa",
+            cargo: "Cargo, escola ou instituição",
+            fala: "Escreva aqui o depoimento.",
           },
         ],
       },

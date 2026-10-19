@@ -48,10 +48,17 @@ export function parseLanding(input: unknown): LandingDocumento {
     }
   }
 
-  for (const padrao of landingPadrao.secoes) {
-    if (!tiposUsados.has(padrao.tipo)) {
-      secoes.push(padrao);
-    }
+  // Tipo que falta (ex.: seção criada depois da última publicação) entra logo
+  // após o tipo que o antecede no padrão, em vez de cair no fim da página.
+  for (const [posicao, padrao] of landingPadrao.secoes.entries()) {
+    if (tiposUsados.has(padrao.tipo)) continue;
+
+    const anterior = landingPadrao.secoes
+      .slice(0, posicao)
+      .reverse()
+      .map((outra) => secoes.findIndex((secao) => secao.tipo === outra.tipo))
+      .find((indice) => indice !== -1);
+    secoes.splice(anterior === undefined ? 0 : anterior + 1, 0, padrao);
   }
 
   const configBruta = ehRegistro(bruto.config) ? bruto.config : {};

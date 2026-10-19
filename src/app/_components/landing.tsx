@@ -1,4 +1,5 @@
 import { MotionProvider } from "@/components/motion/motion-provider";
+import { ScrollProgress } from "@/components/motion/scroll-progress";
 import {
   derivarLinksNav,
   derivarSecoes,
@@ -9,6 +10,7 @@ import { site } from "@/lib/site";
 import { AboutSection } from "./about-section";
 import { ClientsSection } from "./clients-section";
 import { ContactSection } from "./contact-section";
+import { CountersSection } from "./counters-section";
 import { HeroSection } from "./hero-section";
 import { PillarsSection } from "./pillars-section";
 import { PreviewBanner } from "./preview-banner";
@@ -18,6 +20,7 @@ import { ScrollToTop } from "./scroll-to-top";
 import { SiteFooter } from "./site-footer";
 import { SiteHeader } from "./site-header";
 import { Telemetria } from "./telemetria";
+import { TestimonialsSection } from "./testimonials-section";
 
 function jsonLdOrganizacao(doc: LandingDocumento) {
   const { contato, seo } = doc.config;
@@ -58,10 +61,14 @@ function renderizarSecao(
       return <AboutSection key={secao.tipo} secao={secao} />;
     case "pilares":
       return <PillarsSection key={secao.tipo} secao={secao} />;
+    case "contadores":
+      return <CountersSection key={secao.tipo} secao={secao} />;
     case "projetos":
       return <ProjectsSection key={secao.tipo} secao={secao} />;
     case "processo":
       return <ProcessSection key={secao.tipo} secao={secao} />;
+    case "depoimentos":
+      return <TestimonialsSection key={secao.tipo} secao={secao} />;
     case "clientes":
       return <ClientsSection key={secao.tipo} secao={secao} />;
     case "contato":
@@ -89,6 +96,7 @@ export function Landing({
 
   return (
     <MotionProvider>
+      <ScrollProgress />
       <SiteHeader
         aviso={doc.config.aviso}
         ctaRotulo={doc.config.cabecalho.ctaRotulo}

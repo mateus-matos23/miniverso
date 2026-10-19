@@ -22,8 +22,10 @@ export const tiposSecao = {
   hero: { nome: "Hero", ancora: null },
   sobre: { nome: "Sobre", ancora: "sobre" },
   pilares: { nome: "Pilares", ancora: "pilares" },
+  contadores: { nome: "Números", ancora: "numeros" },
   projetos: { nome: "Projetos", ancora: "projetos" },
   processo: { nome: "Processo", ancora: "processo" },
+  depoimentos: { nome: "Depoimentos", ancora: "depoimentos" },
   clientes: { nome: "Clientes", ancora: "clientes" },
   contato: { nome: "Contato", ancora: "contato" },
 } as const satisfies Record<string, { nome: string; ancora: string | null }>;
@@ -122,6 +124,39 @@ const pilaresDados = z.object({
     .max(8, "Use no máximo 8 pilares."),
 });
 
+const contadoresDados = z.object({
+  rotulo: texto("O rótulo", 40),
+  titulo: texto("O título", 120),
+  itens: z
+    .array(
+      z.object({
+        titulo: texto("O título do número", 60),
+        numero: z
+          .number({ error: "Informe o número." })
+          .int("O número deve ser inteiro.")
+          .min(0, "O número não pode ser negativo.")
+          .max(999_999_999, "O número é grande demais."),
+      }),
+    )
+    .min(1, "Informe pelo menos um número.")
+    .max(4, "Use no máximo 4 números."),
+});
+
+const depoimentosDados = z.object({
+  rotulo: texto("O rótulo", 40),
+  titulo: texto("O título", 120),
+  itens: z
+    .array(
+      z.object({
+        nome: texto("O nome", 80),
+        cargo: texto("O cargo", 120),
+        fala: texto("A fala", 500),
+      }),
+    )
+    .min(1, "Informe pelo menos um depoimento.")
+    .max(6, "Use no máximo 6 depoimentos."),
+});
+
 const projetosDados = z.object({
   rotulo: texto("O rótulo", 40),
   titulo: texto("O título", 90),
@@ -208,8 +243,10 @@ export const secaoSchema = z.discriminatedUnion("tipo", [
   heroSecao,
   secao("sobre", sobreDados),
   secao("pilares", pilaresDados),
+  secao("contadores", contadoresDados),
   secao("projetos", projetosDados),
   secao("processo", processoDados),
+  secao("depoimentos", depoimentosDados),
   secao("clientes", clientesDados),
   secao("contato", contatoDados),
 ]);
