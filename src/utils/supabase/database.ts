@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.17";
   };
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json;
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+        };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
   public: {
     Tables: {
       clientes: {
@@ -24,6 +49,7 @@ export type Database = {
           ordem: number;
           status: string;
         };
+        ComputedFields: never;
         Insert: {
           atualizado_em?: string;
           caminho_logo: string;
@@ -48,23 +74,28 @@ export type Database = {
         Row: {
           atualizado_em: string;
           caminho_midia: string;
+          categoria: string | null;
           cliente_id: string;
           criado_em: string;
           descricao: string;
           id: string;
           ordem: number;
+          slug: string;
           status: string;
           tipo_midia: string;
           titulo: string;
         };
+        ComputedFields: never;
         Insert: {
           atualizado_em?: string;
           caminho_midia: string;
+          categoria?: string | null;
           cliente_id: string;
           criado_em?: string;
           descricao: string;
           id?: string;
           ordem?: number;
+          slug: string;
           status?: string;
           tipo_midia: string;
           titulo: string;
@@ -72,11 +103,13 @@ export type Database = {
         Update: {
           atualizado_em?: string;
           caminho_midia?: string;
+          categoria?: string | null;
           cliente_id?: string;
           criado_em?: string;
           descricao?: string;
           id?: string;
           ordem?: number;
+          slug?: string;
           status?: string;
           tipo_midia?: string;
           titulo?: string;
@@ -91,12 +124,291 @@ export type Database = {
           },
         ];
       };
+      eventos: {
+        Row: {
+          alvo: string | null;
+          caminho: string;
+          criado_em: string;
+          dispositivo: string;
+          id: number;
+          referrer_host: string | null;
+          tipo: string;
+          utm_campaign: string | null;
+          utm_medium: string | null;
+          utm_source: string | null;
+          visitante_hash: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          alvo?: string | null;
+          caminho: string;
+          criado_em?: string;
+          dispositivo: string;
+          id?: never;
+          referrer_host?: string | null;
+          tipo: string;
+          utm_campaign?: string | null;
+          utm_medium?: string | null;
+          utm_source?: string | null;
+          visitante_hash: string;
+        };
+        Update: {
+          alvo?: string | null;
+          caminho?: string;
+          criado_em?: string;
+          dispositivo?: string;
+          id?: never;
+          referrer_host?: string | null;
+          tipo?: string;
+          utm_campaign?: string | null;
+          utm_medium?: string | null;
+          utm_source?: string | null;
+          visitante_hash?: string;
+        };
+        Relationships: [];
+      };
+      landing_versoes: {
+        Row: {
+          atualizado_em: string;
+          conteudo: NonNullable<Json>;
+          criado_em: string;
+          id: string;
+          nota: string | null;
+          publicado_em: string | null;
+          status: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          atualizado_em?: string;
+          conteudo: NonNullable<Json>;
+          criado_em?: string;
+          id?: string;
+          nota?: string | null;
+          publicado_em?: string | null;
+          status?: string;
+        };
+        Update: {
+          atualizado_em?: string;
+          conteudo?: NonNullable<Json>;
+          criado_em?: string;
+          id?: string;
+          nota?: string | null;
+          publicado_em?: string | null;
+          status?: string;
+        };
+        Relationships: [];
+      };
+      leads: {
+        Row: {
+          atualizado_em: string;
+          cargo: string | null;
+          criado_em: string;
+          email: string;
+          escola: string | null;
+          id: string;
+          interesse: string;
+          ip_hash: string;
+          mensagem: string;
+          nome: string;
+          notas: string;
+          pagina: string | null;
+          status: string;
+          utm_campaign: string | null;
+          utm_medium: string | null;
+          utm_source: string | null;
+        };
+        ComputedFields: never;
+        Insert: {
+          atualizado_em?: string;
+          cargo?: string | null;
+          criado_em?: string;
+          email: string;
+          escola?: string | null;
+          id?: string;
+          interesse: string;
+          ip_hash: string;
+          mensagem: string;
+          nome: string;
+          notas?: string;
+          pagina?: string | null;
+          status?: string;
+          utm_campaign?: string | null;
+          utm_medium?: string | null;
+          utm_source?: string | null;
+        };
+        Update: {
+          atualizado_em?: string;
+          cargo?: string | null;
+          criado_em?: string;
+          email?: string;
+          escola?: string | null;
+          id?: string;
+          interesse?: string;
+          ip_hash?: string;
+          mensagem?: string;
+          nome?: string;
+          notas?: string;
+          pagina?: string | null;
+          status?: string;
+          utm_campaign?: string | null;
+          utm_medium?: string | null;
+          utm_source?: string | null;
+        };
+        Relationships: [];
+      };
+      midias: {
+        Row: {
+          alt: string;
+          altura: number | null;
+          atualizado_em: string;
+          caminho: string;
+          criado_em: string;
+          id: string;
+          largura: number | null;
+          mime: string;
+          tamanho: number;
+          tipo: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          alt?: string;
+          altura?: number | null;
+          atualizado_em?: string;
+          caminho: string;
+          criado_em?: string;
+          id?: string;
+          largura?: number | null;
+          mime: string;
+          tamanho: number;
+          tipo: string;
+        };
+        Update: {
+          alt?: string;
+          altura?: number | null;
+          atualizado_em?: string;
+          caminho?: string;
+          criado_em?: string;
+          id?: string;
+          largura?: number | null;
+          mime?: string;
+          tamanho?: number;
+          tipo?: string;
+        };
+        Relationships: [];
+      };
+      web_vitals: {
+        Row: {
+          caminho: string;
+          criado_em: string;
+          dispositivo: string;
+          id: number;
+          metrica: string;
+          navegacao: string | null;
+          rating: string;
+          valor: number;
+          versao_id: string | null;
+          visitante_hash: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          caminho: string;
+          criado_em?: string;
+          dispositivo: string;
+          id?: never;
+          metrica: string;
+          navegacao?: string | null;
+          rating: string;
+          valor: number;
+          versao_id?: string | null;
+          visitante_hash: string;
+        };
+        Update: {
+          caminho?: string;
+          criado_em?: string;
+          dispositivo?: string;
+          id?: never;
+          metrica?: string;
+          navegacao?: string | null;
+          rating?: string;
+          valor?: number;
+          versao_id?: string | null;
+          visitante_hash?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "web_vitals_versao_id_fkey";
+            columns: ["versao_id"];
+            isOneToOne: false;
+            referencedRelation: "landing_versoes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      descartar_rascunho_landing: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
+      metricas_resumo: {
+        Args: { p_fim: string; p_inicio: string };
+        Returns: Json;
+      };
+      publicar_landing: { Args: { p_nota?: string }; Returns: string };
+      registrar_lead: {
+        Args: {
+          p_cargo: string;
+          p_email: string;
+          p_escola: string;
+          p_interesse: string;
+          p_ip_hash: string;
+          p_mensagem: string;
+          p_nome: string;
+          p_pagina: string;
+          p_utm_campaign: string;
+          p_utm_medium: string;
+          p_utm_source: string;
+        };
+        Returns: string;
+      };
+      registrar_telemetria: {
+        Args: {
+          p_dispositivo: string;
+          p_eventos: Json;
+          p_visitante_hash: string;
+          p_vitals: Json;
+        };
+        Returns: undefined;
+      };
+      reordenar_clientes: { Args: { p_ids: string[] }; Returns: undefined };
+      reordenar_conteudos: { Args: { p_ids: string[] }; Returns: undefined };
+      restaurar_versao_landing: { Args: { p_id: string }; Returns: string };
+      salvar_rascunho_landing: { Args: { p_conteudo: Json }; Returns: string };
+      web_vitals_por_versao: {
+        Args: { p_inicio: string };
+        Returns: {
+          amostras: number;
+          dispositivo: string;
+          metrica: string;
+          nota: string;
+          p75: number;
+          publicado_em: string;
+          versao_id: string;
+        }[];
+      };
+      web_vitals_resumo: {
+        Args: { p_fim: string; p_inicio: string };
+        Returns: {
+          amostras: number;
+          dispositivo: string;
+          metrica: string;
+          p75: number;
+          pct_bom: number;
+        }[];
+      };
     };
     Enums: {
       [_ in never]: never;
@@ -238,3 +550,16 @@ export type ClienteRow = Tables<"clientes">;
 // status é text no banco, por isso o union é manual.
 export type ClienteStatus = "draft" | "published";
 export type ConteudoRow = Tables<"conteudos">;
+// categoria é opcional; slug é único e usado nas URLs /projetos/[slug].
+export type LandingVersaoRow =
+  Database["public"]["Tables"]["landing_versoes"]["Row"];
+
+// Mídias da biblioteca (bucket público `site`). A URL pública é montada em src/lib/midia.ts.
+export type MidiaRow = Database["public"]["Tables"]["midias"]["Row"];
+
+// Leads do formulario de contato. Insercao somente pela funcao registrar_lead.
+export type LeadRow = Database["public"]["Tables"]["leads"]["Row"];
+// Eventos anonimos (pageview, cta_click e lead). Leitura somente pelo admin.
+export type EventoRow = Database["public"]["Tables"]["eventos"]["Row"];
+// Web Vitals anonimos. Leitura somente pelo admin.
+export type WebVitalRow = Database["public"]["Tables"]["web_vitals"]["Row"];
