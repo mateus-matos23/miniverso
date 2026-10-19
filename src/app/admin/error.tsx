@@ -4,6 +4,7 @@ import { TriangleAlertIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 
+import { Alert } from "@/components/ui/alert";
 import { Button, buttonVariants } from "@/components/ui/button";
 
 import { AdminPage, PageHeader } from "./page-header";
@@ -34,9 +35,9 @@ export default function AdminError({
         title="Não foi possível carregar"
       />
 
-      <div
-        className="mt-8 flex flex-col items-start gap-5 rounded-lg border border-destructive/30 bg-destructive/5 p-6 sm:p-8"
-        role="alert"
+      <Alert
+        className="mt-8 flex flex-col items-start gap-5 rounded-lg p-6 sm:p-8"
+        variant="destructive"
       >
         <TriangleAlertIcon
           aria-hidden="true"
@@ -60,7 +61,7 @@ export default function AdminError({
             Ir para a Visão geral
           </Link>
         </div>
-      </div>
+      </Alert>
     </AdminPage>
   );
 }

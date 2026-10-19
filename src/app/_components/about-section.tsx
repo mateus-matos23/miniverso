@@ -16,7 +16,7 @@ export function AboutSection({ secao }: PropsSecao<"sobre">) {
       data-surface={escura ? "dark" : undefined}
       id="sobre"
     >
-      <div className="mx-auto max-w-[90rem] px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+      <div className="mx-auto max-w-page px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
         <SectionIndex number={secao.numero}>{dados.rotulo}</SectionIndex>
         <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20">
           <Reveal>

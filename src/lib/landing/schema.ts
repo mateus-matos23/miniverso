@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { env } from "@/config/env";
+
 /** Superfícies de fundo que uma seção pode assumir (ver DESIGN.md). */
 export const superficies = [
   "black",
@@ -37,7 +39,8 @@ function texto(campo: string, max: number) {
     .max(max, `${campo} deve ter no máximo ${max} caracteres.`);
 }
 
-const DESTINO_VALIDO = /^(#|\/|https:\/\/|mailto:|tel:)/;
+// `/` isolado é caminho interno; `//host` e `/\host` são protocolo-relativo (saem do site).
+const DESTINO_VALIDO = /^(#|\/(?![/\\])|https:\/\/|mailto:|tel:)/;
 
 export const ctaSchema = z.object({
   rotulo: texto("O rótulo do botão", 40),
@@ -51,13 +54,20 @@ export const ctaSchema = z.object({
 
 export type Cta = z.infer<typeof ctaSchema>;
 
+/** Prefixo das URLs públicas do bucket `site` (ver `urlPublicaMidia` em `@/lib/midia`). */
+const PREFIXO_MIDIA_PUBLICA = `${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/site/`;
+
 /**
  * Referência a um item da biblioteca de mídia (tabela `midias`, bucket
  * público `site`). A URL pública vai junto para a landing renderizar sem join.
  */
 export const midiaRefSchema = z.object({
   id: z.uuid({ error: "Mídia inválida." }),
-  url: z.url({ protocol: /^https?$/, error: "URL da mídia inválida." }),
+  url: z
+    .url({ protocol: /^https?$/, error: "URL da mídia inválida." })
+    .refine((url) => url.startsWith(PREFIXO_MIDIA_PUBLICA), {
+      message: "A mídia precisa vir da biblioteca do site.",
+    }),
   tipo: z.enum(["imagem", "video"], { error: "Tipo de mídia inválido." }),
   alt: z
     .string({ error: "Informe o texto alternativo." })

@@ -128,7 +128,7 @@ export async function ProjectsSection({ secao }: PropsSecao<"projetos">) {
       data-surface={escura ? "dark" : undefined}
       id="projetos"
     >
-      <div className="mx-auto max-w-[90rem] px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+      <div className="mx-auto max-w-page px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
         <SectionIndex number={secao.numero}>{dados.rotulo}</SectionIndex>
         <div
           className={

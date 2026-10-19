@@ -25,6 +25,7 @@ import {
   excluirConteudo,
   reordenarConteudos,
 } from "@/app/admin/projetos/actions";
+import { Alert } from "@/components/ui/alert";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -116,12 +117,9 @@ export default function ProjetosTabela({
       <FeedbackBanner feedback={feedback} mensagens={feedbackMessages} />
 
       {erro ? (
-        <p
-          className="mt-6 rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
-          role="alert"
-        >
+        <Alert className="mt-6" variant="destructive">
           {erro}
-        </p>
+        </Alert>
       ) : null}
 
       <div className="mt-8">
@@ -363,7 +361,14 @@ function ProjetoAcoes({
               Editar
             </DropdownMenuItem>
             <DropdownMenuItem
-              onAction={() => onAcao(() => alternarStatusConteudo(projeto.id))}
+              onAction={() =>
+                onAcao(() =>
+                  alternarStatusConteudo(
+                    projeto.id,
+                    publicado ? "draft" : "published",
+                  ),
+                )
+              }
             >
               {publicado ? (
                 <EyeOffIcon data-icon="inline-start" />

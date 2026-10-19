@@ -12,7 +12,7 @@ export default function PaginaInicialLoading() {
     <EsqueletoTela ampla>
       <EsqueletoCabecalho />
 
-      <div className="mt-8 grid gap-6 xl:grid-cols-[15rem_minmax(0,1fr)_minmax(0,26rem)] 2xl:grid-cols-[16rem_minmax(0,1fr)_minmax(0,30rem)]">
+      <div className="mt-8 grid gap-6 grid-editor">
         <aside className="flex flex-col gap-2">
           <EsqueletoLinhas quantidade={8} altura="h-10" />
         </aside>

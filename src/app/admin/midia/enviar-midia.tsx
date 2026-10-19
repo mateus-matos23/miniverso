@@ -16,6 +16,7 @@ import {
   rotuloTipoMidia,
   type TipoMidia,
 } from "@/app/admin/midia/utils";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -256,16 +257,13 @@ export function EnviarMidia({
       ) : null}
 
       {avisoPeso ? (
-        <p
-          className="flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning"
-          role="status"
-        >
+        <Alert role="status" variant="warning">
           <TriangleAlertIcon
             aria-hidden="true"
             className="mt-0.5 size-4 shrink-0"
           />
           {avisoPeso}
-        </p>
+        </Alert>
       ) : null}
 
       {tipoDoArquivo?.tipo === "imagem" ? (

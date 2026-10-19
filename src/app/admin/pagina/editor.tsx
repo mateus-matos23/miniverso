@@ -299,7 +299,7 @@ export function EditorLanding({
         onDescartar={descartar}
       />
 
-      <div className="grid gap-6 xl:grid-cols-[15rem_minmax(0,1fr)_minmax(0,26rem)] 2xl:grid-cols-[16rem_minmax(0,1fr)_minmax(0,30rem)]">
+      <div className="grid gap-6 grid-editor">
         <section aria-labelledby="titulo-lista" className="flex flex-col gap-3">
           <h2
             id="titulo-lista"

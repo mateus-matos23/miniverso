@@ -87,6 +87,7 @@ export async function registrarMidia(input: {
   altura?: number | null;
   alt: string;
 }): Promise<ResultadoMidia> {
+  const { supabase } = await requireAdmin();
   const result = registroSchema.safeParse(input);
 
   if (!result.success) {
@@ -96,7 +97,6 @@ export async function registrarMidia(input: {
     };
   }
 
-  const { supabase } = await requireAdmin();
   const { data, error } = await supabase
     .from("midias")
     .insert({
@@ -127,6 +127,7 @@ export async function atualizarAlt(
   id: string,
   alt: string,
 ): Promise<ResultadoSimples> {
+  const { supabase } = await requireAdmin();
   const idResult = idSchema.safeParse(id);
   const altResult = altSchema.safeParse(alt);
 
@@ -138,7 +139,6 @@ export async function atualizarAlt(
     };
   }
 
-  const { supabase } = await requireAdmin();
   const { data, error } = await supabase
     .from("midias")
     .update({ alt: altResult.data })
@@ -161,11 +161,11 @@ export async function atualizarAlt(
  * de alguma versão da landing (rascunho ou publicada), para não deixar link quebrado.
  */
 export async function excluirMidia(id: string): Promise<ResultadoSimples> {
+  const { supabase } = await requireAdmin();
   const idResult = idSchema.safeParse(id);
 
   if (!idResult.success) return { ok: false, erro: "Mídia inválida." };
 
-  const { supabase } = await requireAdmin();
   const { data: midia, error: midiaError } = await supabase
     .from("midias")
     .select("id,caminho")

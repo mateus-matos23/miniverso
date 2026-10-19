@@ -72,7 +72,7 @@ export default async function ProjetoPage({ params }: Props) {
         tabIndex={-1}
       >
         <article>
-          <header className="mx-auto max-w-[90rem] px-5 pt-12 sm:px-8 lg:px-12 lg:pt-20">
+          <header className="mx-auto max-w-page px-5 pt-12 sm:px-8 lg:px-12 lg:pt-20">
             <Link
               className="inline-flex h-10 items-center gap-2 text-sm font-semibold text-brand-blue transition-colors hover:text-brand-violet"
               href="/#projetos"
@@ -103,7 +103,7 @@ export default async function ProjetoPage({ params }: Props) {
           {projeto ? (
             <>
               {projeto.midiaUrl ? (
-                <div className="mx-auto mt-12 max-w-[90rem] px-5 sm:px-8 lg:px-12">
+                <div className="mx-auto mt-12 max-w-page px-5 sm:px-8 lg:px-12">
                   <div className="relative aspect-video overflow-hidden rounded-lg border border-brand-line bg-brand-tint">
                     {projeto.tipoMidia === "video" ? (
                       // biome-ignore lint/a11y/useMediaCaption: o cadastro não guarda legendas; o vídeo é apresentado pela equipe
@@ -128,7 +128,7 @@ export default async function ProjetoPage({ params }: Props) {
                 </div>
               ) : null}
 
-              <div className="mx-auto mt-12 grid max-w-[90rem] gap-10 px-5 pb-24 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.6fr)] lg:gap-20 lg:px-12 lg:pb-32">
+              <div className="mx-auto mt-12 grid max-w-page gap-10 px-5 pb-24 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.6fr)] lg:gap-20 lg:px-12 lg:pb-32">
                 <p className="max-w-[68ch] whitespace-pre-line text-lg text-brand-ink">
                   {projeto.descricao}
                 </p>
@@ -146,7 +146,7 @@ export default async function ProjetoPage({ params }: Props) {
               </div>
             </>
           ) : (
-            <p className="mx-auto mt-12 max-w-[90rem] px-5 pb-24 text-lg text-brand-ink sm:px-8 lg:px-12">
+            <p className="mx-auto mt-12 max-w-page px-5 pb-24 text-lg text-brand-ink sm:px-8 lg:px-12">
               Não foi possível carregar este projeto agora. Tente novamente em
               instantes.
             </p>

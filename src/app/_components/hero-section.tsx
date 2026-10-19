@@ -21,8 +21,8 @@ function MoldaMidia({ midia }: { midia: MidiaRef }) {
   return (
     <div
       className={cn(
-        "relative w-full overflow-hidden rounded-2xl bg-brand-violet/30 ring-1 ring-white/15",
-        !aspecto && "aspect-[4/5]",
+        "relative w-full overflow-hidden rounded-md bg-brand-violet/30 ring-1 ring-white/15",
+        !aspecto && "aspect-4/5",
       )}
       style={aspecto}
     >
@@ -62,16 +62,16 @@ export function HeroSection({ secao }: PropsSecao<"hero">) {
       {/* delineado do isotipo atravessando a primeira dobra */}
       <div
         aria-hidden="true"
-        className="mask-delineado absolute -right-[18%] top-[6%] -z-10 aspect-[1600/930] w-[min(110rem,160%)] bg-brand-blue/55 max-lg:top-auto max-lg:-bottom-[4%]"
+        className="mask-delineado absolute -right-[18%] -z-10 aspect-1600/930 w-[min(110rem,160%)] bg-brand-blue/55 top-auto -bottom-[4%] lg:top-[6%] lg:bottom-auto"
       />
-      <div className="mx-auto grid max-w-[90rem] items-center gap-10 px-5 pb-16 pt-14 sm:px-8 lg:min-h-[calc(100svh-var(--header-height))] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 lg:px-12 lg:py-20">
+      <div className="mx-auto grid max-w-page items-center gap-10 px-5 pb-16 pt-14 sm:px-8 lg:min-h-[calc(100svh-var(--header-height))] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 lg:px-12 lg:py-20">
         <Stagger className="max-w-[46rem]" interval={0.1} trigger="mount">
           <StaggerItem>
             <SectionIndex number={secao.numero}>{dados.rotulo}</SectionIndex>
           </StaggerItem>
           {/* fora do stagger: é o LCP, precisa pintar já no HTML do servidor */}
           <h1
-            className="mt-8 font-display text-[clamp(3.25rem,7vw,7.25rem)] leading-[0.88] font-bold text-brand-violet surface-dark:text-brand-white"
+            className="mt-8 font-display text-display-lg font-bold text-brand-violet surface-dark:text-brand-white"
             id="hero-title"
           >
             {dados.titulo}

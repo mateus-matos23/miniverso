@@ -13,7 +13,7 @@ export function AdminPage({
     <div
       className={cn(
         "mx-auto w-full px-5 py-10 sm:px-8 lg:px-12 lg:py-14",
-        ampla ? "max-w-[100rem]" : "max-w-[72rem]",
+        ampla ? "max-w-admin-wide" : "max-w-admin",
       )}
     >
       {children}

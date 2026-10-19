@@ -9,6 +9,7 @@ import {
   type Cliente,
   criarCliente,
 } from "@/app/admin/clientes/actions";
+import { Alert } from "@/components/ui/alert";
 import {
   Attachment,
   AttachmentContent,
@@ -155,14 +156,7 @@ export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
         </FieldError>
       </Field>
 
-      {state.erro ? (
-        <p
-          className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
-          role="alert"
-        >
-          {state.erro}
-        </p>
-      ) : null}
+      {state.erro ? <Alert variant="destructive">{state.erro}</Alert> : null}
 
       <div className="flex justify-end border-t border-border pt-5">
         <Button type="submit" isDisabled={pending}>

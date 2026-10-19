@@ -61,6 +61,9 @@ const atualizarConteudoSchema = z.object({
   midia: midiaSchema.optional(),
 });
 const idSchema = z.uuid({ error: "Projeto inválido." });
+const statusConteudoSchema = z.enum(["draft", "published"], {
+  error: "Selecione um status válido.",
+});
 const idsSchema = z.array(idSchema);
 
 const campos = [
@@ -169,6 +172,7 @@ export async function criarConteudo(
   _previousState: CadastroConteudoState,
   formData: FormData,
 ): Promise<CadastroConteudoState> {
+  const { supabase } = await requireAdmin();
   const result = conteudoSchema.safeParse({
     titulo: formData.get("titulo"),
     slug: formData.get("slug"),
@@ -200,8 +204,6 @@ export async function criarConteudo(
   if (!extensao) {
     return { erro: "Formato de mídia não suportado." };
   }
-
-  const { supabase } = await requireAdmin();
 
   const existeCliente = await clienteExiste(supabase, dados.clienteId);
 
@@ -264,6 +266,7 @@ export async function atualizarConteudo(
   _previousState: CadastroConteudoState,
   formData: FormData,
 ): Promise<CadastroConteudoState> {
+  const { supabase } = await requireAdmin();
   const idValido = idSchema.safeParse(formData.get("id"));
 
   if (!idValido.success) return { erro: "Projeto inválido." };
@@ -298,8 +301,6 @@ export async function atualizarConteudo(
   if (midia && !extensao) {
     return { erro: "Formato de mídia não suportado." };
   }
-
-  const { supabase } = await requireAdmin();
 
   const { data: atual, error: atualError } = await supabase
     .from("conteudos")
@@ -399,39 +400,35 @@ export async function atualizarConteudo(
 
 export async function alternarStatusConteudo(
   id: string,
+  statusAlvo: string,
 ): Promise<AcaoConteudoState> {
+  const { supabase } = await requireAdmin();
   const idValido = idSchema.safeParse(id);
 
   if (!idValido.success) return { erro: "Projeto inválido." };
 
-  const { supabase } = await requireAdmin();
-  const { data: atual, error: atualError } = await supabase
-    .from("conteudos")
-    .select("id,slug,status")
-    .eq("id", idValido.data)
-    .maybeSingle();
+  // O cliente informa o status desejado (e não "inverter o atual"), para que dois cliques
+  // com a tela defasada não revertam um ao outro.
+  const statusValido = statusConteudoSchema.safeParse(statusAlvo);
 
-  if (atualError) {
-    console.error(
-      "[projetos] falha ao buscar projeto para alterar status",
-      atualError,
-    );
-    return { erro: "Não foi possível alterar o status. Tente novamente." };
+  if (!statusValido.success) {
+    return { erro: statusValido.error.issues[0].message };
   }
 
-  if (!atual) return { erro: "Projeto não encontrado." };
-
-  const novoStatus = atual.status === "published" ? "draft" : "published";
-  const { error: updateError } = await supabase
+  const { data: atualizado, error: updateError } = await supabase
     .from("conteudos")
-    .update({ status: novoStatus })
-    .eq("id", atual.id);
+    .update({ status: statusValido.data })
+    .eq("id", idValido.data)
+    .select("slug")
+    .maybeSingle();
 
   if (updateError) {
     return { erro: "Não foi possível alterar o status. Tente novamente." };
   }
 
-  revalidarConteudo(atual.slug);
+  if (!atualizado) return { erro: "Projeto não encontrado." };
+
+  revalidarConteudo(atualizado.slug);
   return {};
 }
 
@@ -442,11 +439,11 @@ export async function alternarStatusConteudo(
 export async function reordenarConteudos(
   ids: string[],
 ): Promise<AcaoConteudoState> {
+  const { supabase } = await requireAdmin();
   const idsValidos = idsSchema.safeParse(ids);
 
   if (!idsValidos.success) return { erro: "Ordem inválida." };
 
-  const { supabase } = await requireAdmin();
   const { error } = await supabase.rpc("reordenar_conteudos", {
     p_ids: idsValidos.data,
   });
@@ -470,13 +467,13 @@ export async function excluirConteudo(
   _previousState: CadastroConteudoState,
   formData: FormData,
 ): Promise<CadastroConteudoState> {
+  const { supabase } = await requireAdmin();
   const id = idSchema.safeParse(formData.get("id"));
 
   if (!id.success) {
     return { erro: "Projeto inválido." };
   }
 
-  const { supabase } = await requireAdmin();
   const { data: conteudo, error: conteudoError } = await supabase
     .from("conteudos")
     .select("id,slug,caminho_midia")

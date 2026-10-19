@@ -97,6 +97,7 @@ export async function criarCliente(
   _previousState: CadastroClienteState,
   formData: FormData,
 ): Promise<CadastroClienteState> {
+  const { supabase } = await requireAdmin();
   const result = clienteSchema.safeParse({
     nome: formData.get("nome"),
     logo: logoDoFormulario(formData),
@@ -110,27 +111,10 @@ export async function criarCliente(
     };
   }
 
-  const { supabase } = await requireAdmin();
   const extensao = extensaoDoLogo(result.data.logo.type);
 
   if (!extensao) {
     return { erro: "Formato de logo não suportado." };
-  }
-
-  // Novo cliente entra no fim da lista: ordem = maior ordem atual + 1
-  const { data: ultimo, error: ultimoError } = await supabase
-    .from("clientes")
-    .select("ordem")
-    .order("ordem", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (ultimoError) {
-    console.error("[clientes] falha ao consultar a última ordem", ultimoError);
-    return {
-      erro: "Não foi possível criar o cliente. Tente novamente.",
-      values: valoresDigitados(formData),
-    };
   }
 
   const caminhoLogo = `clientes/${crypto.randomUUID()}.${extensao}`;
@@ -149,7 +133,6 @@ export async function criarCliente(
     nome: result.data.nome,
     caminho_logo: caminhoLogo,
     status: result.data.status,
-    ordem: (ultimo?.ordem ?? -1) + 1,
   });
 
   if (insertError) {
@@ -170,6 +153,7 @@ export async function atualizarCliente(
   _previousState: CadastroClienteState,
   formData: FormData,
 ): Promise<CadastroClienteState> {
+  const { supabase } = await requireAdmin();
   const idValido = idSchema.safeParse(formData.get("id"));
 
   if (!idValido.success) return { erro: "Cliente inválido." };
@@ -187,7 +171,6 @@ export async function atualizarCliente(
     };
   }
 
-  const { supabase } = await requireAdmin();
   const { data: cliente, error: clienteError } = await supabase
     .from("clientes")
     .select("id,caminho_logo")
@@ -265,13 +248,13 @@ export async function excluirCliente(
   _previousState: CadastroClienteState,
   formData: FormData,
 ): Promise<CadastroClienteState> {
+  const { supabase } = await requireAdmin();
   const id = idSchema.safeParse(formData.get("id"));
 
   if (!id.success) {
     return { erro: "Cliente inválido." };
   }
 
-  const { supabase } = await requireAdmin();
   const { data: cliente, error: clienteError } = await supabase
     .from("clientes")
     .select("id,caminho_logo")
@@ -314,11 +297,11 @@ export async function excluirCliente(
 export async function reordenarClientes(
   ids: string[],
 ): Promise<AcaoClienteState> {
+  const { supabase } = await requireAdmin();
   const idsValidos = idsSchema.safeParse(ids);
 
   if (!idsValidos.success) return { erro: "Ordem inválida." };
 
-  const { supabase } = await requireAdmin();
   const { error } = await supabase.rpc("reordenar_clientes", {
     p_ids: idsValidos.data,
   });

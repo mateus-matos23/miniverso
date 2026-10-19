@@ -26,7 +26,7 @@ export function SiteHeader({ links, ctaRotulo, aviso }: SiteHeaderProps) {
         >
           Pular para o conteúdo
         </a>
-        <div className="mx-auto flex h-(--header-height) max-w-[90rem] items-center gap-6 px-5 sm:px-8 lg:px-12">
+        <div className="mx-auto flex h-(--header-height) max-w-page items-center gap-6 px-5 sm:px-8 lg:px-12">
           <BrandMark priority />
           <nav aria-label="Principal" className="ml-auto hidden lg:block">
             <ul className="flex items-center gap-1">
@@ -45,7 +45,7 @@ export function SiteHeader({ links, ctaRotulo, aviso }: SiteHeaderProps) {
           <a
             className={cn(
               buttonVariants({ variant: "signal" }),
-              "hidden text-[0.95rem] sm:inline-flex max-lg:ml-auto",
+              "hidden text-[0.95rem] sm:inline-flex ml-auto lg:ml-0",
             )}
             href="/#contato"
           >

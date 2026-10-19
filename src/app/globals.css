@@ -35,6 +35,11 @@
   --text-label--line-height: 1.4;
   --text-label--letter-spacing: 0.12em;
 
+  /* Larguras máximas: landing (--container-page) e telas do admin */
+  --container-page: 90rem;
+  --container-admin: 72rem;
+  --container-admin-wide: 100rem;
+
   --animate-detector-pulse: detector-pulse 3.6s cubic-bezier(0.2, 0.6, 0.3, 1)
     infinite;
 
@@ -178,6 +183,17 @@
 
   &[open]::details-content {
     block-size: auto;
+  }
+}
+
+/* Grade do editor do admin: lista, campos e prévia (xl e 2xl, como as colunas de 15/16rem) */
+@utility grid-editor {
+  @variant xl {
+    grid-template-columns: 15rem minmax(0, 1fr) minmax(0, 26rem);
+  }
+
+  @variant 2xl {
+    grid-template-columns: 16rem minmax(0, 1fr) minmax(0, 30rem);
   }
 }
 

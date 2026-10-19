@@ -15,6 +15,7 @@ import {
   type CadastroConteudoState,
   criarConteudo,
 } from "@/app/admin/projetos/actions";
+import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -388,12 +389,7 @@ export default function ContentEditor({
 
         <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6">
           {state.erro ? (
-            <p
-              className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
-              role="alert"
-            >
-              {state.erro}
-            </p>
+            <Alert variant="destructive">{state.erro}</Alert>
           ) : null}
           <div className="flex justify-end">
             <Button isDisabled={pending} type="submit">

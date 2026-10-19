@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -56,14 +57,7 @@ export function ConfirmarExclusaoDialog({
       </DialogHeader>
       <form action={acao} className="flex flex-col gap-4">
         {children}
-        {erro ? (
-          <p
-            className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
-            role="alert"
-          >
-            {erro}
-          </p>
-        ) : null}
+        {erro ? <Alert variant="destructive">{erro}</Alert> : null}
         <DialogFooter>
           <DialogClose autoFocus isDisabled={pendente}>
             Cancelar

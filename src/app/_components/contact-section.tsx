@@ -72,7 +72,7 @@ export function ContactSection({
       data-surface={escura ? "dark" : undefined}
       id="contato"
     >
-      <div className="mx-auto grid max-w-[90rem] gap-14 px-5 py-24 sm:px-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20 lg:px-12 lg:py-32">
+      <div className="mx-auto grid max-w-page gap-14 px-5 py-24 sm:px-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20 lg:px-12 lg:py-32">
         <div>
           <SectionIndex
             className="surface-dark:text-brand-white surface-dark:[&>span:first-child]:text-brand-white"

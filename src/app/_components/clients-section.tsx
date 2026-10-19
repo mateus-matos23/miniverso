@@ -82,7 +82,7 @@ async function ClientsList({ titulo }: { titulo: string }) {
 
   if (result.status === "error") {
     return (
-      <p className="mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-12">
+      <p className="mx-auto max-w-page px-5 sm:px-8 lg:px-12">
         <span className="block border-l-2 border-brand-blue py-2 pl-5 text-lg text-brand-ink surface-dark:text-brand-mist">
           Não foi possível carregar a lista de clientes agora. Os contatos
           abaixo continuam disponíveis.
@@ -93,7 +93,7 @@ async function ClientsList({ titulo }: { titulo: string }) {
 
   if (result.items.length === 0) {
     return (
-      <p className="mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-12">
+      <p className="mx-auto max-w-page px-5 sm:px-8 lg:px-12">
         <span className="block border-l-2 border-brand-line py-2 pl-5 text-lg text-brand-ink surface-dark:border-white/20 surface-dark:text-brand-mist">
           Os clientes aparecem aqui assim que forem publicados pela equipe da
           Miniverso.
@@ -152,7 +152,7 @@ export function ClientsSection({ secao }: PropsSecao<"clientes">) {
       id="clientes"
     >
       <div className="py-24 lg:py-32">
-        <div className="mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-page px-5 sm:px-8 lg:px-12">
           <SectionIndex number={secao.numero}>{dados.rotulo}</SectionIndex>
           <Reveal>
             <h2

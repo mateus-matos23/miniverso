@@ -16,7 +16,7 @@ export function ProcessSection({ secao }: PropsSecao<"processo">) {
       data-surface={escura ? "dark" : undefined}
       id="processo"
     >
-      <div className="mx-auto max-w-[90rem] px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
+      <div className="mx-auto max-w-page px-5 py-24 sm:px-8 lg:px-12 lg:py-32">
         <SectionIndex
           className="surface-dark:text-brand-white surface-dark:[&>span:first-child]:text-brand-white"
           number={secao.numero}

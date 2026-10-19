@@ -32,6 +32,7 @@ function formatarCaminho(path: PropertyKey[]): string {
 export async function salvarRascunho(
   doc: unknown,
 ): Promise<SalvarRascunhoResult> {
+  const { supabase } = await requireAdmin();
   const resultado = landingSchema.safeParse(doc);
 
   if (!resultado.success) {
@@ -45,7 +46,6 @@ export async function salvarRascunho(
     };
   }
 
-  const { supabase } = await requireAdmin();
   const { error } = await supabase.rpc("salvar_rascunho_landing", {
     p_conteudo: resultado.data as unknown as Json,
   });
@@ -64,6 +64,7 @@ export async function salvarRascunho(
 }
 
 export async function publicar(nota?: string): Promise<AcaoLandingResult> {
+  const { supabase } = await requireAdmin();
   const notaValidada = notaSchema.safeParse(nota);
 
   if (!notaValidada.success) {
@@ -73,7 +74,6 @@ export async function publicar(nota?: string): Promise<AcaoLandingResult> {
     };
   }
 
-  const { supabase } = await requireAdmin();
   const { error } = await supabase.rpc("publicar_landing", {
     p_nota: notaValidada.data || undefined,
   });
@@ -100,13 +100,13 @@ export async function descartarRascunho(): Promise<AcaoLandingResult> {
 }
 
 export async function restaurarVersao(id: string): Promise<AcaoLandingResult> {
+  const { supabase } = await requireAdmin();
   const idValidado = idSchema.safeParse(id);
 
   if (!idValidado.success) {
     return { ok: false, erro: "Versão inválida." };
   }
 
-  const { supabase } = await requireAdmin();
   const { error } = await supabase.rpc("restaurar_versao_landing", {
     p_id: idValidado.data,
   });

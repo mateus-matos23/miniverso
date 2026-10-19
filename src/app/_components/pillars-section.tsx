@@ -21,7 +21,7 @@ export function PillarsSection({ secao }: PropsSecao<"pilares">) {
         aria-hidden="true"
         className="absolute inset-x-0 top-0 h-px bg-brand-cyan/50"
       />
-      <div className="mx-auto grid max-w-[90rem] gap-12 px-5 py-24 sm:px-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20 lg:px-12 lg:py-32">
+      <div className="mx-auto grid max-w-page gap-12 px-5 py-24 sm:px-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20 lg:px-12 lg:py-32">
         <div>
           <SectionIndex number={secao.numero}>{dados.rotulo}</SectionIndex>
           <Reveal>

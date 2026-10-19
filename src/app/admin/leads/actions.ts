@@ -24,6 +24,7 @@ export async function atualizarStatusLead(
   id: string,
   status: string,
 ): Promise<AcaoLeadState> {
+  const { supabase } = await requireAdmin();
   const idValido = idSchema.safeParse(id);
   const statusValido = statusSchema.safeParse(status);
 
@@ -32,7 +33,6 @@ export async function atualizarStatusLead(
     return { erro: statusValido.error.issues[0].message };
   }
 
-  const { supabase } = await requireAdmin();
   const { error } = await supabase
     .from("leads")
     .update({ status: statusValido.data })
@@ -49,6 +49,7 @@ export async function salvarNotasLead(
   id: string,
   notas: string,
 ): Promise<AcaoLeadState> {
+  const { supabase } = await requireAdmin();
   const idValido = idSchema.safeParse(id);
   const notasValidas = notasSchema.safeParse(notas);
 
@@ -57,7 +58,6 @@ export async function salvarNotasLead(
     return { erro: notasValidas.error.issues[0].message };
   }
 
-  const { supabase } = await requireAdmin();
   const { error } = await supabase
     .from("leads")
     .update({ notas: notasValidas.data })
@@ -71,11 +71,11 @@ export async function salvarNotasLead(
 }
 
 export async function excluirLead(id: string): Promise<AcaoLeadState> {
+  const { supabase } = await requireAdmin();
   const idValido = idSchema.safeParse(id);
 
   if (!idValido.success) return { erro: idValido.error.issues[0].message };
 
-  const { supabase } = await requireAdmin();
   const { error } = await supabase
     .from("leads")
     .delete()

@@ -135,7 +135,7 @@ export function DetalheLead({
         </h2>
         <div className="flex flex-wrap gap-2">
           <LinkButton
-            href={`mailto:${lead.email}?subject=${encodeURIComponent("Contato Miniverso")}`}
+            href={`mailto:${encodeURIComponent(lead.email)}?subject=${encodeURIComponent("Contato Miniverso")}`}
             size="sm"
           >
             <MailIcon data-icon="inline-start" />

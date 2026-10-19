@@ -1,9 +1,14 @@
+import "server-only";
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 import { createClient } from "@/utils/supabase/server";
 
-export async function requireAdmin() {
+// `cache` do React deduplica a leitura das claims dentro de uma mesma renderização.
+// Fora de render (Server Actions, Route Handlers) cada chamada executa de novo.
+export const requireAdmin = cache(async () => {
   const supabase = createClient(await cookies());
   const { data, error } = await supabase.auth.getClaims();
   const claims = data?.claims;
@@ -21,9 +26,9 @@ export async function requireAdmin() {
   };
 
   return { supabase, user };
-}
+});
 
-export async function redirectIfAdmin() {
+export const redirectIfAdmin = cache(async () => {
   const supabase = createClient(await cookies());
   const { data } = await supabase.auth.getClaims();
   const claims = data?.claims;
@@ -31,4 +36,4 @@ export async function redirectIfAdmin() {
   if (claims && claims.app_metadata?.role === "admin") {
     redirect("/admin");
   }
-}
+});

@@ -18,6 +18,7 @@ import {
   excluirCliente,
   reordenarClientes,
 } from "@/app/admin/clientes/actions";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -100,12 +101,9 @@ export default function ClientesTable({
       <FeedbackBanner feedback={feedback} mensagens={feedbackMessages} />
 
       {erro ? (
-        <p
-          className="mt-6 rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
-          role="alert"
-        >
+        <Alert className="mt-6" variant="destructive">
           {erro}
-        </p>
+        </Alert>
       ) : null}
 
       <Dialog isOpen={createOpen} onOpenChange={setCreateOpen}>

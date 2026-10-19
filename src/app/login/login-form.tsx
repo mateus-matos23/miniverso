@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 
 import { type LoginState, login } from "@/app/actions/auth";
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -22,12 +23,9 @@ export default function LoginForm() {
     <form action={formAction} className="mt-8" noValidate>
       <FieldGroup className="gap-5">
         {state.erro ? (
-          <p
-            className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm font-medium text-destructive"
-            role="alert"
-          >
+          <Alert className="font-medium" variant="destructive">
             {state.erro}
-          </p>
+          </Alert>
         ) : null}
 
         <Field data-invalid={Boolean(state.erros?.email) || undefined}>

@@ -38,7 +38,7 @@ export function SiteFooter({ links, config }: SiteFooterProps) {
   return (
     <footer className="bg-brand-black text-brand-mist" data-surface="dark">
       <ServicesMarquee services={config.rodape.servicos} />
-      <div className="mx-auto flex max-w-[90rem] flex-col gap-8 px-5 py-12 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-12">
+      <div className="mx-auto flex max-w-page flex-col gap-8 px-5 py-12 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-12">
         <BrandMark href="#conteudo" />
         <nav aria-label="Rodapé">
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
