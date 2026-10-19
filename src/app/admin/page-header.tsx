@@ -1,8 +1,21 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
-export function AdminPage({ children }: { children: ReactNode }) {
+export function AdminPage({
+  children,
+  ampla = false,
+}: {
+  children: ReactNode;
+  /** Telas de edição com várias colunas (ex.: editor da página inicial). */
+  ampla?: boolean;
+}) {
   return (
-    <div className="mx-auto w-full max-w-[72rem] px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
+    <div
+      className={cn(
+        "mx-auto w-full px-5 py-10 sm:px-8 lg:px-12 lg:py-14",
+        ampla ? "max-w-[100rem]" : "max-w-[72rem]",
+      )}
+    >
       {children}
     </div>
   );
