@@ -1,15 +1,48 @@
+import type { LinkNav } from "@/lib/landing/navegacao";
+import type { ConfigLanding } from "@/lib/landing/schema";
 import { site } from "@/lib/site";
 import { BrandMark } from "./brand-mark";
-import { navLinks } from "./nav-links";
 
-export function SiteFooter() {
+/** Faixa contínua com os serviços; duas cópias para o loop não ter emenda. */
+function ServicesMarquee({ services }: { services: string[] }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="overflow-hidden border-b border-white/10 py-6"
+    >
+      <div className="flex w-max animate-marquee motion-reduce:animate-none">
+        {[0, 1].map((copy) => (
+          <ul className="flex shrink-0" key={copy}>
+            {services.map((service) => (
+              <li
+                className="flex items-center gap-8 pr-8 font-display text-display-md font-bold whitespace-nowrap text-brand-white/90"
+                key={service}
+              >
+                {service}
+                <span className="size-2 rounded-full bg-brand-cyan" />
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+type SiteFooterProps = {
+  links: LinkNav[];
+  config: ConfigLanding;
+};
+
+export function SiteFooter({ links, config }: SiteFooterProps) {
   return (
     <footer className="bg-brand-black text-brand-mist" data-surface="dark">
+      <ServicesMarquee services={config.rodape.servicos} />
       <div className="mx-auto flex max-w-[90rem] flex-col gap-8 px-5 py-12 sm:px-8 lg:flex-row lg:items-center lg:justify-between lg:px-12">
         <BrandMark href="#conteudo" />
         <nav aria-label="Rodapé">
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <li key={link.href}>
                 <a
                   className="inline-flex h-10 items-center transition-colors hover:text-brand-white"
@@ -22,8 +55,8 @@ export function SiteFooter() {
           </ul>
         </nav>
         <p className="text-sm">
-          © {new Date().getFullYear()} {site.name} · {site.contact.city},{" "}
-          {site.contact.regionCode}
+          © {new Date().getFullYear()} {site.name} · {config.contato.cidade},{" "}
+          {config.contato.uf}
         </p>
       </div>
     </footer>

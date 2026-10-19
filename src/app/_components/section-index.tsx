@@ -1,3 +1,4 @@
+import { IndexLine } from "@/components/motion/index-line";
 import { cn } from "@/lib/utils";
 
 /** Índice de capítulo do percurso do visitante: "/ 02  Sobre". */
@@ -20,7 +21,7 @@ export function SectionIndex({
       <span className="text-brand-blue surface-dark:text-brand-cyan">
         / {number}
       </span>
-      <span aria-hidden="true" className="h-px w-8 bg-current opacity-40" />
+      <IndexLine className="h-px w-8 bg-current opacity-40" />
       <span>{children}</span>
     </p>
   );

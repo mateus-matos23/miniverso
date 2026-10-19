@@ -4,9 +4,14 @@ import { MenuIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { navLinks } from "./nav-links";
+import type { LinkNav } from "@/lib/landing/navegacao";
 
-export function MobileNav() {
+type MobileNavProps = {
+  links: LinkNav[];
+  ctaRotulo: string;
+};
+
+export function MobileNav({ links, ctaRotulo }: MobileNavProps) {
   const [isOpen, setOpen] = useState(false);
 
   return (
@@ -28,7 +33,7 @@ export function MobileNav() {
         </DialogTitle>
         <nav aria-label="Principal">
           <ul className="flex flex-col border-t border-white/15">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <li className="border-b border-white/15" key={link.href}>
                 <a
                   className="flex min-h-14 items-center font-display text-4xl font-bold leading-none text-brand-white transition-colors hover:text-brand-cyan"
@@ -44,10 +49,10 @@ export function MobileNav() {
         {/* biome-ignore lint/a11y/useValidAnchor: link real de âncora; onClick só fecha o menu */}
         <a
           className="inline-flex h-12 items-center justify-center rounded-md bg-brand-cyan px-5 font-semibold text-brand-black"
-          href="#contato"
+          href="/#contato"
           onClick={() => setOpen(false)}
         >
-          Fale com a gente
+          {ctaRotulo}
         </a>
       </Dialog>
     </DialogTrigger>
