@@ -13,6 +13,7 @@ const loginSchema = z.object({
 
 export type LoginState = {
   erro?: string;
+  values?: { email?: string };
   erros?: {
     email?: string;
     password?: string;
@@ -39,7 +40,7 @@ export async function login(
       }
     }
 
-    return { erros };
+    return { erros, values: { email: String(formData.get("email") ?? "") } };
   }
 
   const supabase = createClient(await cookies());
@@ -47,7 +48,10 @@ export async function login(
 
   if (error || !data.user || data.user.app_metadata?.role !== "admin") {
     await supabase.auth.signOut();
-    return { erro: "E-mail ou senha inválidos." };
+    return {
+      erro: "E-mail ou senha inválidos. Confira os dados e tente novamente.",
+      values: { email: result.data.email },
+    };
   }
 
   redirect("/admin");

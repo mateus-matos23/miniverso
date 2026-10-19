@@ -1,42 +1,58 @@
 import Image from "next/image";
 import { redirectIfAdmin } from "@/lib/auth";
-import logo from "../../../public/miniverso.png";
+import logoColor from "../../../public/brand/logo-horizontal-color.webp";
+import logoWhite from "../../../public/brand/logo-vertical-white.webp";
 import LoginForm from "./login-form";
 
 export default async function LoginPage() {
   await redirectIfAdmin();
 
   return (
-    <main className="grid min-h-screen place-items-center bg-brand-violet px-5 py-10 text-brand-black">
-      <section className="w-full max-w-[28rem] rounded-[.8rem] bg-brand-white p-8 shadow-2xl shadow-black/20 max-[560px]:p-6">
-        <div className="mb-10 flex items-center gap-3">
+    <main className="grid min-h-svh bg-brand-white lg:grid-cols-[minmax(0,1.1fr)_minmax(28rem,0.9fr)]">
+      <aside
+        aria-hidden="true"
+        className="relative isolate hidden overflow-hidden bg-brand-aurora p-12 text-brand-white lg:flex lg:flex-col lg:justify-between"
+        data-surface="dark"
+      >
+        <div className="mask-delineado absolute -right-[30%] bottom-[-8%] -z-10 aspect-[1600/930] w-[140%] bg-brand-white/25" />
+        <Image
+          alt=""
+          className="h-24 w-auto self-start"
+          priority
+          src={logoWhite}
+        />
+        <p className="max-w-[12ch] font-display text-display-lg font-bold">
+          Cada conteúdo publicado abre um novo mundo.
+        </p>
+      </aside>
+
+      <div className="flex flex-col justify-center px-5 py-12 sm:px-12">
+        <div className="mx-auto w-full max-w-[26rem]">
           <Image
-            className="size-12 rounded-[.7rem]"
-            src={logo}
             alt="Miniverso"
+            className="h-8 w-auto lg:hidden"
+            priority
+            src={logoColor}
           />
-          <div>
-            <p className="font-bold tracking-[.02em] text-brand-violet">
-              miniverso
-            </p>
-            <p className="text-[.68rem] font-medium uppercase tracking-[.08em] text-[#7b8498]">
-              painel administrativo
-            </p>
-          </div>
+          <p className="mt-10 text-label font-semibold uppercase text-brand-blue lg:mt-0">
+            Painel administrativo
+          </p>
+          <h1 className="mt-3 font-display text-display-md font-bold text-brand-violet">
+            Entrar no painel
+          </h1>
+          <p className="mt-3 text-muted-foreground">
+            Use as credenciais de administrador para gerenciar o conteúdo da
+            landing page.
+          </p>
+          <LoginForm />
+          <a
+            className="mt-10 inline-flex h-10 items-center text-sm font-medium text-brand-blue underline-offset-4 hover:underline"
+            href="/"
+          >
+            Voltar para o site
+          </a>
         </div>
-
-        <p className="mb-3 text-[.68rem] font-bold uppercase tracking-[.14em] text-brand-blue">
-          Acesso restrito
-        </p>
-        <h1 className="font-display text-[clamp(2.4rem,8vw,3.6rem)] leading-[.92] tracking-[-.08em] text-brand-violet">
-          Entrar no painel.
-        </h1>
-        <p className="mt-4 text-[.9rem] leading-relaxed text-[#6f7890]">
-          Use as credenciais do administrador para continuar.
-        </p>
-
-        <LoginForm />
-      </section>
+      </div>
     </main>
   );
 }
