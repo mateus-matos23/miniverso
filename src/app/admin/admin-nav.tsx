@@ -3,9 +3,13 @@
 import {
   ExternalLinkIcon,
   FolderKanbanIcon,
+  ImagesIcon,
+  InboxIcon,
   LayoutDashboardIcon,
   LogOutIcon,
   MenuIcon,
+  PanelsTopLeftIcon,
+  SettingsIcon,
   UsersIcon,
 } from "lucide-react";
 import Image from "next/image";
@@ -26,17 +30,28 @@ const items = [
     exact: true,
   },
   {
-    href: "/admin/conteudos/novo",
-    label: "Conteúdos",
-    icon: FolderKanbanIcon,
-    match: "/admin/conteudos",
+    href: "/admin/pagina",
+    label: "Página inicial",
+    icon: PanelsTopLeftIcon,
+    match: "/admin/pagina",
   },
+  { href: "/admin/leads", label: "Leads", icon: InboxIcon, contador: true },
+  { href: "/admin/projetos", label: "Projetos", icon: FolderKanbanIcon },
   { href: "/admin/clientes", label: "Clientes", icon: UsersIcon },
+  { href: "/admin/midia", label: "Mídia", icon: ImagesIcon },
+  // Configurações vivem no documento da landing; a rota só abre o painel certo.
+  { href: "/admin/configuracoes", label: "Configurações", icon: SettingsIcon },
 ] as const;
 
 type User = { name: string; email: string };
 
-function NavList({ onNavigate }: { onNavigate?: () => void }) {
+function NavList({
+  leadsNovos,
+  onNavigate,
+}: {
+  leadsNovos: number;
+  onNavigate?: () => void;
+}) {
   const pathname = usePathname();
 
   return (
@@ -61,6 +76,14 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
             >
               <Icon aria-hidden="true" className="size-4.5" />
               {item.label}
+              {"contador" in item && leadsNovos > 0 ? (
+                <span className="ml-auto rounded-full bg-brand-cyan px-2 py-0.5 text-xs font-semibold text-brand-black tabular-nums">
+                  {leadsNovos}
+                  <span className="sr-only">
+                    {leadsNovos === 1 ? " lead novo" : " leads novos"}
+                  </span>
+                </span>
+              ) : null}
             </Link>
           </li>
         );
@@ -101,7 +124,13 @@ function AccountBlock({ user }: { user: User }) {
   );
 }
 
-export function AdminSidebar({ user }: { user: User }) {
+export function AdminSidebar({
+  user,
+  leadsNovos,
+}: {
+  user: User;
+  leadsNovos: number;
+}) {
   return (
     <aside
       className="sticky top-0 hidden h-svh w-64 shrink-0 flex-col gap-10 bg-brand-black px-4 py-6 lg:flex"
@@ -116,14 +145,20 @@ export function AdminSidebar({ user }: { user: User }) {
         />
       </Link>
       <nav aria-label="Administração" className="flex-1">
-        <NavList />
+        <NavList leadsNovos={leadsNovos} />
       </nav>
       <AccountBlock user={user} />
     </aside>
   );
 }
 
-export function AdminTopbar({ user }: { user: User }) {
+export function AdminTopbar({
+  user,
+  leadsNovos,
+}: {
+  user: User;
+  leadsNovos: number;
+}) {
   const [isOpen, setOpen] = useState(false);
 
   return (
@@ -156,7 +191,10 @@ export function AdminTopbar({ user }: { user: User }) {
             Navegação
           </DialogTitle>
           <nav aria-label="Administração" className="flex-1">
-            <NavList onNavigate={() => setOpen(false)} />
+            <NavList
+              leadsNovos={leadsNovos}
+              onNavigate={() => setOpen(false)}
+            />
           </nav>
           <AccountBlock user={user} />
         </Dialog>
