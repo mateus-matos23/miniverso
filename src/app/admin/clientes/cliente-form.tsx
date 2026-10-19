@@ -27,11 +27,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 
 const initialState: CadastroClienteState = {};
-
-const inputClassName =
-  "min-h-11 w-full rounded-[.45rem] border border-[#d6dce8] bg-white px-3 text-[.85rem] text-brand-black outline-none transition-colors placeholder:text-[#9ca6b9] focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15";
 
 function LogoField({
   fieldId,
@@ -51,7 +49,7 @@ function LogoField({
       <Attachment
         className="w-full"
         state={hasError ? "error" : logoName ? "done" : "idle"}
-        aria-invalid={hasError}
+        aria-invalid={hasError || undefined}
         aria-describedby={hasError ? `${fieldId}-logo-error` : undefined}
       >
         <AttachmentMedia>
@@ -63,7 +61,7 @@ function LogoField({
               (required ? "Selecione a logo" : "Selecione uma nova logo")}
           </AttachmentTitle>
           <AttachmentDescription>
-            PNG, JPG ou WebP. Tamanho máximo: 5 MB.
+            PNG, JPG ou WebP, até 5 MB. Prefira fundo transparente.
           </AttachmentDescription>
         </AttachmentContent>
         <AttachmentTrigger
@@ -79,7 +77,7 @@ function LogoField({
         name="logo"
         type="file"
         accept="image/jpeg,image/png,image/webp"
-        aria-invalid={hasError}
+        aria-invalid={hasError || undefined}
         aria-describedby={hasError ? `${fieldId}-logo-error` : undefined}
         onChange={(event) => setLogoName(event.currentTarget.files?.[0]?.name)}
         required={required}
@@ -95,75 +93,54 @@ export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
 
   return (
     <form
-      className="grid gap-6"
+      className="flex flex-col gap-6"
       action={formAction}
       encType="multipart/form-data"
     >
       {cliente ? <Input type="hidden" name="id" value={cliente.id} /> : null}
-      <Field className="gap-[.45rem]">
-        <FieldLabel
-          className="text-[.76rem] font-bold text-brand-violet"
-          htmlFor={`${fieldId}-nome`}
-        >
-          Nome do cliente
-        </FieldLabel>
+      <Field data-invalid={Boolean(state.erros?.nome) || undefined}>
+        <FieldLabel htmlFor={`${fieldId}-nome`}>Nome do cliente</FieldLabel>
         <Input
-          className={inputClassName}
           id={`${fieldId}-nome`}
           name="nome"
           type="text"
           autoComplete="organization"
           placeholder="Ex.: Escola Horizonte"
-          defaultValue={cliente?.nome}
+          defaultValue={state.values?.nome ?? cliente?.nome}
           aria-invalid={Boolean(state.erros?.nome)}
           aria-describedby={
             state.erros?.nome ? `${fieldId}-nome-error` : undefined
           }
           required
         />
-        <FieldError
-          className="text-[.72rem] text-[#bd3d45]"
-          id={`${fieldId}-nome-error`}
-        >
+        <FieldError id={`${fieldId}-nome-error`}>
           {state.erros?.nome}
         </FieldError>
       </Field>
 
-      <Field className="gap-[.45rem]">
-        <FieldLabel
-          className="text-[.76rem] font-bold text-brand-violet"
-          htmlFor={`${fieldId}-logo`}
-        >
-          Logo
-        </FieldLabel>
+      <Field data-invalid={Boolean(state.erros?.logo) || undefined}>
+        <FieldLabel htmlFor={`${fieldId}-logo`}>Logo</FieldLabel>
         <LogoField
           fieldId={fieldId}
           mensagem={state.erros?.logo}
           required={!cliente}
         />
-        <FieldError
-          className="text-[.72rem] text-[#bd3d45]"
-          id={`${fieldId}-logo-error`}
-        >
+        <FieldError id={`${fieldId}-logo-error`}>
           {state.erros?.logo}
         </FieldError>
       </Field>
 
-      <div className="grid grid-cols-2 gap-4 max-[560px]:grid-cols-1">
-        <Field className="gap-[.45rem]">
-          <FieldLabel
-            className="text-[.76rem] font-bold text-brand-violet"
-            htmlFor={`${fieldId}-status`}
-          >
-            Status
-          </FieldLabel>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field data-invalid={Boolean(state.erros?.status) || undefined}>
+          <FieldLabel htmlFor={`${fieldId}-status`}>Status</FieldLabel>
           <Select
             name="status"
             className="w-full"
-            defaultSelectedKey={cliente?.status ?? "draft"}
+            defaultSelectedKey={
+              state.values?.status || cliente?.status || "draft"
+            }
           >
             <SelectTrigger
-              className={inputClassName}
               id={`${fieldId}-status`}
               type="button"
               aria-invalid={Boolean(state.erros?.status)}
@@ -178,39 +155,29 @@ export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
               <SelectItem id="published">Publicado</SelectItem>
             </SelectContent>
           </Select>
-          <FieldError
-            className="text-[.72rem] text-[#bd3d45]"
-            id={`${fieldId}-status-error`}
-          >
+          <FieldError id={`${fieldId}-status-error`}>
             {state.erros?.status}
           </FieldError>
         </Field>
 
-        <Field className="gap-[.45rem]">
-          <FieldLabel
-            className="text-[.76rem] font-bold text-brand-violet"
-            htmlFor={`${fieldId}-ordem`}
-          >
+        <Field data-invalid={Boolean(state.erros?.ordem) || undefined}>
+          <FieldLabel htmlFor={`${fieldId}-ordem`}>
             Ordem de exibição
           </FieldLabel>
           <Input
-            className={inputClassName}
             id={`${fieldId}-ordem`}
             name="ordem"
             type="number"
             min="0"
             step="1"
-            defaultValue={cliente?.ordem ?? 0}
+            defaultValue={state.values?.ordem ?? cliente?.ordem ?? 0}
             aria-invalid={Boolean(state.erros?.ordem)}
             aria-describedby={
               state.erros?.ordem ? `${fieldId}-ordem-error` : undefined
             }
             required
           />
-          <FieldError
-            className="text-[.72rem] text-[#bd3d45]"
-            id={`${fieldId}-ordem-error`}
-          >
+          <FieldError id={`${fieldId}-ordem-error`}>
             {state.erros?.ordem}
           </FieldError>
         </Field>
@@ -218,21 +185,18 @@ export default function ClienteForm({ cliente }: { cliente?: Cliente }) {
 
       {state.erro ? (
         <p
-          className="rounded-[.45rem] bg-[#fff0f0] px-3 py-2 text-[.75rem] text-[#bd3d45]"
+          className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive"
           role="alert"
         >
           {state.erro}
         </p>
       ) : null}
 
-      <div className="flex justify-end border-t border-[#eef0f5] pt-5">
-        <Button
-          className="inline-flex min-h-11 items-center justify-center rounded-[.55rem] border border-brand-blue bg-brand-blue px-5 text-[.78rem] font-bold text-brand-white transition-transform hover:-translate-y-0.5 hover:bg-[#1039a9] disabled:cursor-wait disabled:opacity-60"
-          type="submit"
-          isDisabled={pending}
-        >
+      <div className="flex justify-end border-t border-border pt-5">
+        <Button type="submit" isDisabled={pending}>
+          {pending ? <Spinner data-icon="inline-start" /> : null}
           {pending
-            ? "Salvando..."
+            ? "Salvando…"
             : cliente
               ? "Salvar alterações"
               : "Cadastrar cliente"}

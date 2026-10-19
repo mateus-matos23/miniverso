@@ -39,10 +39,24 @@ const atualizarClienteSchema = z.object({
   logo: logoSchema.optional(),
 });
 
-export type Cliente = ClienteRow;
+/** Colunas que as telas do admin realmente carregam. */
+export type Cliente = Pick<
+  ClienteRow,
+  "id" | "nome" | "caminho_logo" | "status" | "ordem"
+>;
+
+function valoresDigitados(formData: FormData) {
+  return {
+    nome: String(formData.get("nome") ?? ""),
+    status: String(formData.get("status") ?? ""),
+    ordem: String(formData.get("ordem") ?? ""),
+  };
+}
 
 export type CadastroClienteState = {
   erro?: string;
+  /** Valores digitados, devolvidos em caso de erro para não limpar o formulário. */
+  values?: { nome?: string; status?: string; ordem?: string };
   erros?: {
     nome?: string;
     logo?: string;
@@ -94,7 +108,10 @@ export async function criarCliente(
   });
 
   if (!result.success) {
-    return { erros: formatarErros(result.error) };
+    return {
+      erros: formatarErros(result.error),
+      values: valoresDigitados(formData),
+    };
   }
 
   const { supabase } = await requireAdmin();
@@ -133,9 +150,10 @@ export async function criarCliente(
     return { erro: "Não foi possível criar o cliente. Tente novamente." };
   }
 
+  revalidatePath("/");
   revalidatePath("/admin");
   revalidatePath("/admin/clientes");
-  redirect("/admin/clientes");
+  redirect("/admin/clientes?feedback=criado");
 }
 
 export async function atualizarCliente(
@@ -151,7 +169,10 @@ export async function atualizarCliente(
   });
 
   if (!result.success) {
-    return { erros: formatarErros(result.error) };
+    return {
+      erros: formatarErros(result.error),
+      values: valoresDigitados(formData),
+    };
   }
 
   const { supabase } = await requireAdmin();
@@ -159,8 +180,7 @@ export async function atualizarCliente(
     .from("clientes")
     .select("id,caminho_logo")
     .eq("id", result.data.id)
-    .returns<Pick<Cliente, "id" | "caminho_logo">>()
-    .maybeSingle<Pick<Cliente, "id" | "caminho_logo">>();
+    .maybeSingle();
 
   if (clienteError) throw clienteError;
   if (!cliente) return { erro: "Cliente não encontrado." };
@@ -216,9 +236,10 @@ export async function atualizarCliente(
     await supabase.storage.from(bucket).remove([cliente.caminho_logo]);
   }
 
+  revalidatePath("/");
   revalidatePath("/admin");
   revalidatePath("/admin/clientes");
-  redirect("/admin/clientes");
+  redirect("/admin/clientes?feedback=atualizado");
 }
 
 export async function excluirCliente(
@@ -239,8 +260,7 @@ export async function excluirCliente(
     .from("clientes")
     .select("id,caminho_logo")
     .eq("id", id.data)
-    .returns<Pick<Cliente, "id" | "caminho_logo">>()
-    .maybeSingle<Pick<Cliente, "id" | "caminho_logo">>();
+    .maybeSingle();
 
   if (clienteError) throw clienteError;
   if (!cliente) return { erro: "Cliente não encontrado." };
@@ -253,7 +273,8 @@ export async function excluirCliente(
   if (deleteError) throw deleteError;
 
   await supabase.storage.from(bucket).remove([cliente.caminho_logo]);
+  revalidatePath("/");
   revalidatePath("/admin");
   revalidatePath("/admin/clientes");
-  redirect("/admin/clientes");
+  redirect("/admin/clientes?feedback=excluido");
 }

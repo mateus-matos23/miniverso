@@ -1,182 +1,217 @@
 "use client";
 
-import { ImagePlus, Save, Send } from "lucide-react";
+import { ImagePlusIcon, InfoIcon } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { type ChangeEvent, useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useId, useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+const TITLE_MAX = 90;
+const DESCRIPTION_MAX = 400;
+const IMAGE_MAX = 10 * 1024 * 1024;
+const VIDEO_MAX = 50 * 1024 * 1024;
 const imageTypes = ["image/jpeg", "image/png", "image/webp"];
 const videoTypes = ["video/mp4", "video/webm"];
 
+type Media = { url: string; kind: "image" | "video"; name: string };
+
+function validateMedia(file: File): string | null {
+  if (imageTypes.includes(file.type)) {
+    return file.size > IMAGE_MAX ? "A imagem deve ter no máximo 10 MB." : null;
+  }
+  if (videoTypes.includes(file.type)) {
+    return file.size > VIDEO_MAX ? "O vídeo deve ter no máximo 50 MB." : null;
+  }
+  return "Formato não aceito. Envie JPG, PNG, WebP, MP4 ou WebM.";
+}
+
 export default function ContentEditor() {
-  const [title, setTitle] = useState("Uma nova experiência começa aqui.");
-  const [description, setDescription] = useState(
-    "Compartilhe como a realidade virtual pode abrir espaço para aprender, criar e se desenvolver.",
-  );
-  const [mediaUrl, setMediaUrl] = useState<string | null>(null);
-  const [mediaKind, setMediaKind] = useState<"image" | "video" | null>(null);
+  const id = useId();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [media, setMedia] = useState<Media | null>(null);
+  const [mediaError, setMediaError] = useState<string | null>(null);
 
   useEffect(() => {
     return () => {
-      if (mediaUrl) URL.revokeObjectURL(mediaUrl);
+      if (media) URL.revokeObjectURL(media.url);
     };
-  }, [mediaUrl]);
+  }, [media]);
 
   function handleMediaChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.currentTarget.files?.[0];
+    setMediaError(null);
 
     if (!file) {
-      setMediaUrl(null);
-      setMediaKind(null);
+      setMedia(null);
       return;
     }
 
-    setMediaUrl(URL.createObjectURL(file));
-    setMediaKind(file.type.startsWith("video/") ? "video" : "image");
+    const error = validateMedia(file);
+    if (error) {
+      event.currentTarget.value = "";
+      setMedia(null);
+      setMediaError(error);
+      return;
+    }
+
+    setMedia({
+      url: URL.createObjectURL(file),
+      kind: file.type.startsWith("video/") ? "video" : "image",
+      name: file.name,
+    });
   }
 
   return (
-    <form
-      className="mt-12 grid grid-cols-[minmax(0,1fr)_minmax(300px,.8fr)] gap-5 max-[850px]:grid-cols-1"
-      onSubmit={(event) => event.preventDefault()}
-    >
-      <section
-        className="rounded-[.7rem] border border-[#e1e5ef] bg-white p-6"
-        aria-labelledby="editor-fields-title"
+    <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.85fr)]">
+      <form
+        aria-labelledby={`${id}-form-title`}
+        className="rounded-lg border border-border bg-card p-6"
+        onSubmit={(event) => event.preventDefault()}
       >
         <h2
-          className="mb-6 font-display text-[1.8rem] leading-none tracking-[-.04em] text-brand-violet"
-          id="editor-fields-title"
+          className="text-lg font-semibold text-brand-violet"
+          id={`${id}-form-title`}
         >
           Dados do conteúdo
         </h2>
-        <div className="mb-5 grid gap-[.45rem]">
-          <label
-            className="text-[.76rem] font-bold text-brand-violet"
-            htmlFor="content-title"
-          >
-            Título
-          </label>
-          <input
-            className="min-h-11 w-full rounded-[.45rem] border border-[#d6dce8] bg-white px-3 text-[.85rem] text-brand-black outline-none transition-colors placeholder:text-[#9ca6b9] focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15"
-            id="content-title"
-            type="text"
-            value={title}
-            onChange={(event) => setTitle(event.currentTarget.value)}
-            placeholder="Ex.: Aprender também é explorar"
-          />
-        </div>
-        <div className="mb-5 grid gap-[.45rem]">
-          <label
-            className="text-[.76rem] font-bold text-brand-violet"
-            htmlFor="content-description"
-          >
-            Descrição
-          </label>
-          <textarea
-            className="min-h-36 w-full resize-y rounded-[.45rem] border border-[#d6dce8] bg-white px-3 py-3 text-[.85rem] leading-relaxed text-brand-black outline-none transition-colors placeholder:text-[#9ca6b9] focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15"
-            id="content-description"
-            value={description}
-            onChange={(event) => setDescription(event.currentTarget.value)}
-            placeholder="Conte um pouco sobre esta experiência..."
-          />
-        </div>
-        <div className="mb-5 grid gap-[.45rem]">
-          <label
-            className="text-[.76rem] font-bold text-brand-violet"
-            htmlFor="content-media"
-          >
-            Imagem ou vídeo
-          </label>
-          <div className="grid grid-cols-[auto_1fr] items-center gap-3 rounded-[.55rem] border border-dashed border-[#bfc8d8] bg-[#fafbfe] p-4 text-[#58647c]">
-            <ImagePlus size={18} aria-hidden="true" />
-            <input
-              className="min-w-0 text-[.78rem] file:mr-3 file:rounded-[.35rem] file:border-0 file:bg-brand-blue file:px-3 file:py-2 file:font-bold file:text-brand-white"
-              id="content-media"
-              type="file"
-              accept={[...imageTypes, ...videoTypes].join(",")}
-              onChange={handleMediaChange}
+        <FieldGroup className="mt-6 gap-6">
+          <Field>
+            <FieldLabel htmlFor={`${id}-title`}>Título</FieldLabel>
+            <Input
+              aria-describedby={`${id}-title-count`}
+              id={`${id}-title`}
+              maxLength={TITLE_MAX}
+              onChange={(event) => setTitle(event.currentTarget.value)}
+              placeholder="Ex.: Aprender também é explorar"
+              value={title}
             />
-            <span className="col-span-2 text-[.7rem] text-[#7b8498]">
-              Imagens até 10 MB · vídeos até 100 MB · JPG, PNG, WebP, MP4 ou
-              WebM
-            </span>
+            <FieldDescription id={`${id}-title-count`}>
+              {title.length}/{TITLE_MAX} caracteres
+            </FieldDescription>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor={`${id}-description`}>Descrição</FieldLabel>
+            <Textarea
+              aria-describedby={`${id}-description-count`}
+              className="min-h-36"
+              id={`${id}-description`}
+              maxLength={DESCRIPTION_MAX}
+              onChange={(event) => setDescription(event.currentTarget.value)}
+              placeholder="Conte o que acontece nesta experiência."
+              value={description}
+            />
+            <FieldDescription id={`${id}-description-count`}>
+              {description.length}/{DESCRIPTION_MAX} caracteres
+            </FieldDescription>
+          </Field>
+
+          <Field data-invalid={mediaError ? true : undefined}>
+            <FieldLabel htmlFor={`${id}-media`}>Imagem ou vídeo</FieldLabel>
+            <label
+              className="flex cursor-pointer items-center gap-4 rounded-md border border-dashed border-input bg-muted/40 p-4 transition-colors hover:border-brand-blue has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring"
+              htmlFor={`${id}-media`}
+            >
+              <ImagePlusIcon
+                aria-hidden="true"
+                className="size-5 shrink-0 text-brand-blue"
+              />
+              <span className="min-w-0 flex-1 text-sm">
+                <span className="block truncate font-semibold text-brand-violet">
+                  {media ? media.name : "Selecionar arquivo"}
+                </span>
+                <span className="text-muted-foreground">
+                  Imagens JPG, PNG ou WebP até 10 MB. Vídeos MP4 ou WebM até 50
+                  MB.
+                </span>
+              </span>
+            </label>
+            <input
+              accept={[...imageTypes, ...videoTypes].join(",")}
+              aria-describedby={mediaError ? `${id}-media-error` : undefined}
+              aria-invalid={mediaError ? true : undefined}
+              className="sr-only"
+              id={`${id}-media`}
+              onChange={handleMediaChange}
+              type="file"
+            />
+            <FieldError id={`${id}-media-error`}>{mediaError}</FieldError>
+          </Field>
+        </FieldGroup>
+
+        <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6">
+          <p className="flex items-start gap-2 text-sm text-muted-foreground">
+            <InfoIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0" />O
+            salvamento de conteúdos ainda está em desenvolvimento. Por enquanto,
+            use este editor para montar e revisar a apresentação.
+          </p>
+          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <Button isDisabled variant="outline">
+              Salvar rascunho
+            </Button>
+            <Button isDisabled>Publicar</Button>
           </div>
         </div>
-        <div className="flex flex-wrap items-center justify-end gap-2 max-[560px]:flex-col-reverse max-[560px]:items-stretch">
-          <Link
-            className="inline-flex min-h-11 items-center justify-center gap-[.55rem] rounded-[.55rem] border border-[#d6dce8] bg-white px-4 text-[.78rem] font-bold text-brand-violet transition-transform hover:-translate-y-0.5 hover:bg-[#f1f4fa]"
-            href="/admin"
-          >
-            Cancelar
-          </Link>
-          <button
-            className="inline-flex min-h-11 items-center justify-center gap-[.55rem] rounded-[.55rem] border border-[#d6dce8] bg-white px-4 text-[.78rem] font-bold text-brand-violet transition-transform hover:-translate-y-0.5 hover:bg-[#f1f4fa]"
-            type="button"
-          >
-            <Save size={15} aria-hidden="true" />
-            Salvar rascunho
-          </button>
-          <button
-            className="inline-flex min-h-11 items-center justify-center gap-[.55rem] rounded-[.55rem] border border-brand-blue bg-brand-blue px-4 text-[.78rem] font-bold text-brand-white transition-transform hover:-translate-y-0.5 hover:bg-[#1039a9]"
-            type="button"
-          >
-            <Send size={15} aria-hidden="true" />
-            Publicar
-          </button>
-        </div>
-      </section>
+      </form>
 
-      <aside
-        className="rounded-[.7rem] border border-[#e1e5ef] bg-white p-6"
-        aria-labelledby="preview-title"
+      <section
+        aria-labelledby={`${id}-preview-title`}
+        className="flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start"
       >
-        <h2
-          className="mb-6 font-display text-[1.8rem] leading-none tracking-[-.04em] text-brand-violet"
-          id="preview-title"
-        >
-          Pré-visualização
-        </h2>
-        <div className="overflow-hidden rounded-[.55rem] border border-[#e1e5ef] bg-white">
-          <div className="grid aspect-video place-items-center overflow-hidden bg-[radial-gradient(circle_at_70%_30%,rgba(85,216,232,.35),transparent_35%),#192b69] text-center text-[.78rem] text-white/70">
-            {mediaUrl && mediaKind === "image" ? (
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2
+            className="text-lg font-semibold text-brand-violet"
+            id={`${id}-preview-title`}
+          >
+            Pré-visualização
+          </h2>
+          <Badge className="h-6 px-2 font-semibold" variant="secondary">
+            Rascunho — ainda não publicado
+          </Badge>
+        </div>
+        <article className="overflow-hidden rounded-lg border border-border bg-brand-white">
+          <div className="grid aspect-video place-items-center overflow-hidden bg-brand-aurora text-sm text-brand-mist">
+            {media?.kind === "image" ? (
               <Image
+                alt=""
                 className="size-full object-cover"
-                src={mediaUrl}
-                alt="Prévia do conteúdo"
-                width={900}
                 height={500}
+                src={media.url}
                 unoptimized
+                width={900}
               />
             ) : null}
-            {mediaUrl && mediaKind === "video" ? (
+            {media?.kind === "video" ? (
+              // biome-ignore lint/a11y/useMediaCaption: prévia local do arquivo enviado
               <video
                 className="size-full object-cover"
-                src={mediaUrl}
                 controls
-                aria-label="Prévia do vídeo"
-              >
-                <track
-                  kind="captions"
-                  src="data:text/vtt,WEBVTT"
-                  srcLang="pt-BR"
-                  label="Legendas"
-                />
-              </video>
+                src={media.url}
+              />
             ) : null}
-            {!mediaUrl ? "Sua mídia aparece aqui" : null}
+            {!media ? "A mídia aparece aqui" : null}
           </div>
-          <small className="mt-5 block px-5 text-[.68rem] font-bold uppercase tracking-[.1em] text-brand-blue">
-            Miniverso / experiência
-          </small>
-          <h3 className="px-5 pt-2 font-serif text-[1.5rem] italic leading-tight text-brand-violet">
-            {title || "Título do conteúdo"}
-          </h3>
-          <p className="px-5 pb-5 pt-2 text-[.85rem] leading-relaxed text-[#6f7890]">
-            {description || "Descrição do conteúdo"}
-          </p>
-        </div>
-      </aside>
-    </form>
+          <div className="p-6">
+            <h3 className="font-display text-4xl font-bold leading-none text-brand-violet">
+              {title || "Título do conteúdo"}
+            </h3>
+            <p className="mt-3 text-brand-ink">
+              {description || "A descrição aparece aqui, como na landing page."}
+            </p>
+          </div>
+        </article>
+      </section>
+    </div>
   );
 }
