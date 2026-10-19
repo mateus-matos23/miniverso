@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from "clsx";
-import { extendTailwindMerge } from "tailwind-merge";
+import { type ClassValue, clsx } from "cn";
+import { extendTailwindMerge } from "cn/config";
 
 // Tamanhos de texto definidos no @theme de globals.css. Sem isso o tailwind-merge
 // trata `text-label`/`text-display-*` como cor e descarta o tamanho quando há
