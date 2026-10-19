@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import type { ReactNode } from "react";
 
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { requireAdmin } from "@/lib/auth";
 
@@ -28,9 +30,16 @@ export default async function AdminLayout({
         : "Administrador",
     email: user.email ?? "Conta administrativa",
   };
+  // O estado da sidebar é gravado pelo cliente em um cookie; lemos aqui para evitar salto no carregamento.
+  const cookieStore = await cookies();
+  const sidebarState = cookieStore.get("sidebar_state")?.value;
 
   return (
-    <div className="flex min-h-svh bg-admin-canvas text-foreground">
+    <SidebarProvider
+      className="bg-sidebar text-foreground"
+      data-admin
+      defaultOpen={sidebarState !== "false"}
+    >
       <a
         className="sr-only z-50 bg-brand-cyan px-4 py-3 font-semibold text-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-3"
         href="#conteudo"
@@ -38,17 +47,15 @@ export default async function AdminLayout({
         Pular para o conteúdo
       </a>
       <AdminSidebar leadsNovos={leadsNovos} user={account} />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <AdminTopbar leadsNovos={leadsNovos} user={account} />
-        <main
-          className="min-w-0 flex-1 outline-none"
-          id="conteudo"
-          tabIndex={-1}
-        >
-          {children}
-        </main>
-      </div>
+      <SidebarInset
+        className="min-w-0 bg-admin-canvas outline-none md:peer-data-[variant=inset]:rounded-xl"
+        id="conteudo"
+        tabIndex={-1}
+      >
+        <AdminTopbar />
+        {children}
+      </SidebarInset>
       <Toaster position="bottom-right" />
-    </div>
+    </SidebarProvider>
   );
 }

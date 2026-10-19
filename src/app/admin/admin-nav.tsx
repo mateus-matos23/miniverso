@@ -1,13 +1,13 @@
 "use client";
 
 import {
+  ChevronsUpDownIcon,
   ExternalLinkIcon,
   FolderKanbanIcon,
   ImagesIcon,
   InboxIcon,
   LayoutDashboardIcon,
   LogOutIcon,
-  MenuIcon,
   PanelsTopLeftIcon,
   SettingsIcon,
   UsersIcon,
@@ -15,112 +15,197 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { startTransition } from "react";
 import { logout } from "@/app/actions/auth";
-import { Button } from "@/components/ui/button";
-import { SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import isotipo from "../../../public/brand/isotipo.webp";
 import logoWhite from "../../../public/brand/logo-horizontal-white.webp";
+import { AdminBreadcrumb } from "./admin-breadcrumb";
 
-const items = [
+type Item = {
+  href: string;
+  label: string;
+  icon: typeof LayoutDashboardIcon;
+  exact?: boolean;
+  contador?: boolean;
+};
+
+const grupos: { titulo: string; itens: Item[] }[] = [
   {
-    href: "/admin",
-    label: "Visão geral",
-    icon: LayoutDashboardIcon,
-    exact: true,
+    titulo: "Geral",
+    itens: [
+      {
+        href: "/admin",
+        label: "Visão geral",
+        icon: LayoutDashboardIcon,
+        exact: true,
+      },
+    ],
   },
   {
-    href: "/admin/pagina",
-    label: "Página inicial",
-    icon: PanelsTopLeftIcon,
-    match: "/admin/pagina",
+    titulo: "Conteúdo",
+    itens: [
+      {
+        href: "/admin/pagina",
+        label: "Página inicial",
+        icon: PanelsTopLeftIcon,
+      },
+      { href: "/admin/projetos", label: "Projetos", icon: FolderKanbanIcon },
+      { href: "/admin/clientes", label: "Clientes", icon: UsersIcon },
+      { href: "/admin/midia", label: "Mídia", icon: ImagesIcon },
+    ],
   },
-  { href: "/admin/leads", label: "Leads", icon: InboxIcon, contador: true },
-  { href: "/admin/projetos", label: "Projetos", icon: FolderKanbanIcon },
-  { href: "/admin/clientes", label: "Clientes", icon: UsersIcon },
-  { href: "/admin/midia", label: "Mídia", icon: ImagesIcon },
-  // Configurações vivem no documento da landing; a rota só abre o painel certo.
-  { href: "/admin/configuracoes", label: "Configurações", icon: SettingsIcon },
-] as const;
+  {
+    titulo: "Contatos",
+    itens: [
+      {
+        href: "/admin/leads",
+        label: "Leads",
+        icon: InboxIcon,
+        contador: true,
+      },
+    ],
+  },
+];
+
+const itemConfiguracoes: Item = {
+  href: "/admin/configuracoes",
+  label: "Configurações",
+  icon: SettingsIcon,
+};
 
 type User = { name: string; email: string };
 
-function NavList({
+function estaAtivo(pathname: string, item: Item) {
+  return item.exact ? pathname === item.href : pathname.startsWith(item.href);
+}
+
+function iniciais(nome: string) {
+  const partes = nome.trim().split(/\s+/).filter(Boolean);
+  const primeira = partes[0]?.[0] ?? "";
+  const ultima =
+    partes.length > 1 ? (partes[partes.length - 1]?.[0] ?? "") : "";
+  return (primeira + ultima).toUpperCase() || "A";
+}
+
+function NavItem({
+  item,
   leadsNovos,
-  onNavigate,
+  pathname,
 }: {
+  item: Item;
   leadsNovos: number;
-  onNavigate?: () => void;
+  pathname: string;
 }) {
-  const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
+  const ativo = estaAtivo(pathname, item);
+  const Icon = item.icon;
+  const mostrarContador = item.contador === true && leadsNovos > 0;
 
   return (
-    <ul className="flex flex-col gap-1">
-      {items.map((item) => {
-        const base = "match" in item ? item.match : item.href;
-        const active =
-          "exact" in item ? pathname === item.href : pathname.startsWith(base);
-        const Icon = item.icon;
-
-        return (
-          <li key={item.href}>
-            <Link
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "flex h-11 items-center gap-3 rounded-md px-3 font-medium text-brand-mist transition-colors hover:bg-white/8 hover:text-brand-white",
-                active &&
-                  "bg-white/10 text-brand-white shadow-[inset_2px_0_0_var(--color-brand-cyan)]",
-              )}
-              href={item.href}
-              onClick={onNavigate}
-            >
-              <Icon aria-hidden="true" className="size-4.5" />
-              {item.label}
-              {"contador" in item && leadsNovos > 0 ? (
-                <span className="ml-auto rounded-full bg-brand-cyan px-2 py-0.5 text-xs font-semibold text-brand-black tabular-nums">
-                  {leadsNovos}
-                  <span className="sr-only">
-                    {leadsNovos === 1 ? " lead novo" : " leads novos"}
-                  </span>
-                </span>
-              ) : null}
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        aria-current={ativo ? "page" : undefined}
+        className={cn(
+          "h-9 focus-visible:ring-sidebar-ring",
+          ativo && "shadow-[inset_2px_0_0_var(--color-brand-cyan)]",
+        )}
+        href={item.href}
+        isActive={ativo}
+        onPress={() => setOpenMobile(false)}
+        tooltip={item.label}
+      >
+        <Icon aria-hidden="true" className="size-4" />
+        <span>{item.label}</span>
+      </SidebarMenuButton>
+      {mostrarContador ? (
+        <SidebarMenuBadge className="rounded-full bg-sidebar-primary px-1.5 font-semibold text-sidebar-primary-foreground">
+          {leadsNovos}
+          <span className="sr-only">
+            {leadsNovos === 1 ? " lead novo" : " leads novos"}
+          </span>
+        </SidebarMenuBadge>
+      ) : null}
+    </SidebarMenuItem>
   );
 }
 
-function AccountBlock({ user }: { user: User }) {
+function AccountMenu({ user }: { user: User }) {
   return (
-    <div className="flex flex-col gap-3 border-t border-white/10 pt-5">
-      <div className="min-w-0">
-        <p className="truncate font-semibold text-brand-white">{user.name}</p>
-        <p className="truncate text-sm text-brand-mist">{user.email}</p>
-      </div>
-      <div className="flex flex-col gap-1">
-        <a
-          className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium text-brand-mist transition-colors hover:bg-white/8 hover:text-brand-white"
-          href="/"
-          rel="noreferrer"
-          target="_blank"
-        >
-          <ExternalLinkIcon aria-hidden="true" className="size-4" />
-          Ver site
-          <span className="sr-only">(abre em nova aba)</span>
-        </a>
-        <form action={logout}>
-          <button
-            className="flex h-10 w-full items-center gap-3 rounded-md px-3 text-sm font-medium text-brand-mist transition-colors hover:bg-white/8 hover:text-brand-white"
-            type="submit"
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenuTrigger>
+          <SidebarMenuButton size="lg" aria-label={`Conta de ${user.name}`}>
+            <Avatar className="size-8 shrink-0">
+              <AvatarFallback className="bg-white/10 text-xs font-semibold text-brand-white">
+                {iniciais(user.name)}
+              </AvatarFallback>
+            </Avatar>
+            <span className="grid min-w-0 flex-1 text-left leading-tight group-data-[collapsible=icon]:hidden">
+              <span className="truncate font-medium text-brand-white">
+                {user.name}
+              </span>
+              <span className="truncate text-xs">{user.email}</span>
+            </span>
+            <ChevronsUpDownIcon
+              aria-hidden="true"
+              className="ml-auto group-data-[collapsible=icon]:hidden"
+            />
+          </SidebarMenuButton>
+          <DropdownMenu
+            aria-label="Opções da conta"
+            className="w-56"
+            placement="end bottom"
           >
-            <LogOutIcon aria-hidden="true" className="size-4" />
-            Sair
-          </button>
-        </form>
-      </div>
-    </div>
+            <DropdownMenuItem
+              href="/"
+              rel="noreferrer"
+              target="_blank"
+              textValue="Ver site"
+            >
+              <ExternalLinkIcon aria-hidden="true" />
+              Ver site
+              <span className="sr-only">(abre em nova aba)</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onAction={() => {
+                startTransition(async () => {
+                  await logout();
+                });
+              }}
+              textValue="Sair"
+            >
+              <LogOutIcon aria-hidden="true" />
+              Sair
+            </DropdownMenuItem>
+          </DropdownMenu>
+        </DropdownMenuTrigger>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 }
 
@@ -131,75 +216,78 @@ export function AdminSidebar({
   user: User;
   leadsNovos: number;
 }) {
+  const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
+
   return (
-    <aside
-      className="sticky top-0 hidden h-svh w-64 shrink-0 flex-col gap-10 bg-brand-black px-4 py-6 lg:flex"
-      data-surface="dark"
-    >
-      <Link className="inline-flex px-3" href="/admin">
-        <Image
-          alt="Miniverso — painel"
-          className="h-7 w-auto"
-          preload
-          src={logoWhite}
-        />
-      </Link>
-      <nav aria-label="Administração" className="flex-1">
-        <NavList leadsNovos={leadsNovos} />
-      </nav>
-      <AccountBlock user={user} />
-    </aside>
+    <Sidebar collapsible="icon" data-surface="dark" variant="inset">
+      <SidebarHeader className="pt-4 md:pt-2">
+        <Link
+          className="flex h-9 items-center px-2 group-data-[collapsible=icon]:justify-center rounded-xl outline-hidden focus-visible:ring-3 focus-visible:ring-sidebar-ring"
+          href="/admin"
+          onClick={() => setOpenMobile(false)}
+        >
+          <Image
+            alt="Miniverso — painel"
+            className="h-7 w-auto group-data-[collapsible=icon]:hidden"
+            preload
+            src={logoWhite}
+          />
+          <Image
+            alt="Miniverso — painel"
+            className="hidden size-6 group-data-[collapsible=icon]:block"
+            src={isotipo}
+          />
+        </Link>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <nav aria-label="Administração" className="flex flex-col gap-2">
+          {grupos.map((grupo) => (
+            <SidebarGroup key={grupo.titulo}>
+              <SidebarGroupLabel className="text-label font-semibold uppercase text-sidebar-foreground">
+                {grupo.titulo}
+              </SidebarGroupLabel>
+              <SidebarMenu>
+                {grupo.itens.map((item) => (
+                  <NavItem
+                    key={item.href}
+                    item={item}
+                    leadsNovos={leadsNovos}
+                    pathname={pathname}
+                  />
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+          ))}
+        </nav>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <NavItem
+            item={itemConfiguracoes}
+            leadsNovos={leadsNovos}
+            pathname={pathname}
+          />
+        </SidebarMenu>
+        <AccountMenu user={user} />
+      </SidebarFooter>
+
+      <SidebarRail />
+    </Sidebar>
   );
 }
 
-export function AdminTopbar({
-  user,
-  leadsNovos,
-}: {
-  user: User;
-  leadsNovos: number;
-}) {
-  const [isOpen, setOpen] = useState(false);
-
+export function AdminTopbar() {
   return (
-    <header
-      className="sticky top-0 z-30 flex h-16 items-center justify-between bg-brand-black px-4 lg:hidden"
-      data-surface="dark"
-    >
-      <Link className="inline-flex p-1" href="/admin">
-        <Image
-          alt="Miniverso — painel"
-          className="h-6 w-auto"
-          preload
-          src={logoWhite}
-        />
-      </Link>
-      <SheetTrigger isOpen={isOpen} onOpenChange={setOpen}>
-        <Button
-          aria-label="Abrir navegação"
-          className="text-brand-white hover:bg-white/10 hover:text-brand-white"
-          size="icon-lg"
-          variant="ghost"
-        >
-          <MenuIcon />
-        </Button>
-        <SheetContent
-          className="max-w-[min(18rem,100%)] bg-brand-black p-4 pt-5 text-brand-white sm:max-w-[18rem] [&_[data-slot=sheet-close]]:bg-white/10 [&_[data-slot=sheet-close]]:text-brand-white"
-          data-surface="dark"
-          side="left"
-        >
-          <SheetTitle className="flex h-9 items-center px-3 text-label font-semibold uppercase text-brand-mist">
-            Navegação
-          </SheetTitle>
-          <nav aria-label="Administração" className="flex-1">
-            <NavList
-              leadsNovos={leadsNovos}
-              onNavigate={() => setOpen(false)}
-            />
-          </nav>
-          <AccountBlock user={user} />
-        </SheetContent>
-      </SheetTrigger>
+    <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border/80 bg-admin-canvas/85 px-4 backdrop-blur md:rounded-t-xl lg:px-6">
+      <SidebarTrigger className="-ml-1" />
+      <Separator
+        className="mx-1 aria-[orientation=vertical]:h-4 aria-[orientation=vertical]:self-center"
+        orientation="vertical"
+      />
+      <AdminBreadcrumb />
     </header>
   );
 }
