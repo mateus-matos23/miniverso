@@ -1,0 +1,116 @@
+import Image from "next/image";
+
+import { Parallax } from "@/components/motion/parallax";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
+import { buttonVariants } from "@/components/ui/button-variants";
+import type { PropsSecao } from "@/features/landing/navigation";
+import type { MidiaRef } from "@/features/media/schema";
+import { cn } from "@/lib/utils";
+import { CtaLink } from "../components/cta-link";
+import { SectionIndex } from "../components/section-index";
+import { superficies } from "../surface";
+import { HeroVideo } from "./hero-video";
+import { DetectorEvent } from "./vr-headset-illustration";
+
+/** Moldura da mídia do hero: aspecto real quando a biblioteca informa, senão 4:5. */
+function MoldaMidia({ midia }: { midia: MidiaRef }) {
+  const aspecto =
+    midia.largura && midia.altura
+      ? { aspectRatio: `${midia.largura} / ${midia.altura}` }
+      : undefined;
+
+  return (
+    <div
+      className={cn(
+        "relative w-full overflow-hidden rounded-md bg-brand-violet/30 ring-1 ring-white/15",
+        !aspecto && "aspect-4/5",
+      )}
+      style={aspecto}
+    >
+      {midia.tipo === "imagem" ? (
+        <Image
+          alt={midia.alt}
+          className="object-cover"
+          fill
+          // LCP do hero: o preload coloca o <link> no <head>.
+          preload
+          sizes="(min-width: 1024px) 45vw, 100vw"
+          src={midia.url}
+        />
+      ) : (
+        <HeroVideo midia={midia} />
+      )}
+    </div>
+  );
+}
+
+export function HeroSection({ secao }: PropsSecao<"hero">) {
+  const { dados, aparencia } = secao;
+  const { escura, classe } = superficies[aparencia.superficie];
+  // Sem mídia do tipo do visual (ou ilustração), cai no detector.
+  const midia =
+    aparencia.midia && aparencia.midia.tipo === aparencia.visual
+      ? aparencia.midia
+      : null;
+
+  return (
+    <section
+      aria-labelledby="hero-title"
+      className={cn("relative isolate overflow-hidden", classe)}
+      data-surface={escura ? "dark" : undefined}
+    >
+      <Parallax
+        className="pointer-events-none absolute inset-0 -z-10"
+        fator={-0.12}
+      >
+        <div
+          aria-hidden="true"
+          className="mask-delineado absolute animate-float -right-[18%] -z-10 aspect-1600/930 w-[min(110rem,160%)] bg-brand-blue/55 top-auto -bottom-[4%] lg:top-[6%] lg:bottom-auto"
+        />
+      </Parallax>
+      <div className="mx-auto grid max-w-page items-center gap-10 px-5 pb-16 pt-14 sm:px-8 lg:min-h-[calc(100svh-var(--header-height))] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 lg:px-12 lg:py-20">
+        <Stagger className="max-w-[46rem]" interval={0.1} trigger="mount">
+          <StaggerItem>
+            <SectionIndex number={secao.numero}>{dados.rotulo}</SectionIndex>
+          </StaggerItem>
+          {/* fora do stagger: é o LCP, precisa pintar já no HTML do servidor */}
+          <h1
+            className="mt-8 font-display text-display-lg font-bold text-brand-violet surface-dark:text-brand-white"
+            id="hero-title"
+          >
+            {dados.titulo}
+          </h1>
+          {/* também fora do stagger: o parágrafo é o LCP no mobile */}
+          <p className="mt-8 max-w-[38rem] text-lg leading-relaxed text-brand-ink sm:text-xl surface-dark:text-brand-mist">
+            {dados.subtitulo}
+          </p>
+          <StaggerItem className="mt-10 flex flex-col gap-3 sm:flex-row">
+            <CtaLink
+              cta={dados.ctaPrimario}
+              className={cn(
+                buttonVariants({ variant: "signal", size: "lg" }),
+                "fill-sweep px-6 hover:text-brand-white surface-dark:[--sweep:var(--color-brand-white)] surface-dark:hover:text-brand-black",
+              )}
+              dataCta="hero-primario"
+            />
+            <CtaLink
+              cta={dados.ctaSecundario}
+              className={cn(
+                buttonVariants({ variant: "outline-dark", size: "lg" }),
+                "border-brand-ink/40 px-6 text-brand-violet hover:border-brand-blue hover:text-brand-blue surface-dark:border-brand-mist/50 surface-dark:text-brand-white surface-dark:hover:border-brand-cyan surface-dark:hover:text-brand-cyan",
+              )}
+              dataCta="hero-secundario"
+            />
+          </StaggerItem>
+        </Stagger>
+        {midia ? (
+          <MoldaMidia midia={midia} />
+        ) : (
+          <Parallax fator={0.06}>
+            <DetectorEvent />
+          </Parallax>
+        )}
+      </div>
+    </section>
+  );
+}

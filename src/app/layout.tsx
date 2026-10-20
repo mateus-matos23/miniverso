@@ -2,7 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { getLanding } from "@/lib/landing/get-landing";
+import { getLanding } from "@/features/landing/data";
 import { site } from "@/lib/site";
 import "./globals.css";
 

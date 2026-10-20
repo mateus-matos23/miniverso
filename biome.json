@@ -7,7 +7,13 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.next", "!dist", "!build"]
+    "includes": [
+      "**",
+      "!node_modules",
+      "!.next",
+      "!dist",
+      "!build"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -35,5 +41,66 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "src/features/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**"
+                    ],
+                    "message": "Código fora de src/app não importa rotas."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "src/components/**",
+        "src/lib/**",
+        "src/hooks/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/app",
+                      "@/app/**"
+                    ],
+                    "message": "Código fora de src/app não importa rotas."
+                  },
+                  {
+                    "group": [
+                      "@/features",
+                      "@/features/**"
+                    ],
+                    "message": "Camadas compartilhadas não dependem de features."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

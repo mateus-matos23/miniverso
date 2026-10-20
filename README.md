@@ -74,15 +74,34 @@ pnpm start
 
 ```text
 src/
-├── app/                  # páginas, layouts, ações e componentes da aplicação
-│   ├── _components/      # componentes da landing page
-│   ├── admin/            # área administrativa protegida
-│   └── login/            # tela e formulário de login
-├── components/ui/        # componentes reutilizáveis da interface
-├── config/               # validação de configuração e ambiente
-├── lib/                  # regras e utilitários compartilhados
-└── utils/supabase/       # clientes Supabase para browser, servidor e middleware
+├── app/                        # rotas (URLs) e layouts; sem lógica de negócio
+│   ├── (site)/                 # site público: `/`, `/previa`, `/projetos/[slug]`
+│   ├── (admin)/                # área administrativa: `/admin/*` e `/login`
+│   ├── api/eventos/            # endpoint de eventos de telemetria
+│   └── layout.tsx, providers.tsx, globals.css, metadados e ícones da raiz
+├── features/<domínio>/         # regras por domínio: auth, clients, leads, media, projects, landing, dashboard, telemetry, site
+│   ├── schema.ts               # validação zod e tipos (client-safe)
+│   ├── data.ts                 # acesso ao Supabase
+│   ├── actions.ts              # server actions
+│   ├── components/             # componentes do domínio
+│   └── site/                   # site público: components/ (landing, header, footer) e sections/ (seções da landing)
+├── components/
+│   ├── admin/                  # shell do admin: navegação, painel, cabeçalho, diálogos
+│   ├── motion/                 # wrappers de animação reutilizáveis
+│   └── ui/                     # componentes shadcn (gerados, não editar à mão)
+├── config/                     # validação de configuração e ambiente
+├── hooks/                      # hooks React compartilhados
+└── lib/                        # utilitários e clientes Supabase (lib/supabase/)
 ```
+
+## Regras de dependência
+
+- Fluxo permitido: `app/` → `features/` → `lib/`, `components/`, `hooks/`.
+- `src/features/**`, `src/components/**`, `src/lib/**` e `src/hooks/**` não importam de `@/app/*`.
+- `src/components/**`, `src/lib/**` e `src/hooks/**` não importam de `@/features/*`. Esta regra é imposta pelo Biome (`overrides` em `biome.json`).
+- Acesso ao Supabase só em `features/*/data.ts` (e nos clientes em `lib/supabase/`).
+- `schema.ts` deve ser client-safe. `constants.ts` deve ficar sem zod em componentes públicos.
+- Sem barrels (`index.ts` reexportando módulos).
 
 ## Documentação do produto
 

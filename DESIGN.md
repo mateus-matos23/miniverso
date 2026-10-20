@@ -82,7 +82,7 @@ Não usar gradiente em texto, nem destacar uma palavra isolada do título com ou
 - Shell: `Sidebar` do shadcn na variante `inset`, colapsável para ícones (Ctrl/⌘+B, estado no cookie `sidebar_state`), preta (`--sidebar*` em `globals.css`), com grupos Geral / Conteúdo / Contatos, conta no rodapé e `data-surface="dark"`. No mobile abre como `Sheet`. `aria-current="page"` no item ativo, skip link e um único `<main id="conteudo">` (`SidebarInset`).
 - Topbar do inset: `SidebarTrigger` + breadcrumb ("Painel / Seção / Página").
 - Área de trabalho clara (`#F5F7FB`), cantos um pouco maiores que os da landing (`[data-admin]` define `--radius: 0.375rem`). Títulos de página em Thunder contido (`text-4xl`/`text-5xl`), sem divisória; seções em Random Grotesk semibold. Acento azul; ciano só no indicador do item ativo e no contador de leads da sidebar.
-- Superfície padrão: `Painel` (`src/app/admin/_componentes/painel.tsx`), cartão com cabeçalho opcional. Para `<li>`/`<article>`, use a constante `superficie`. Estados vazios usam `Empty` com borda tracejada.
+- Superfície padrão: `Painel` (`src/components/admin/panel.tsx`), cartão com cabeçalho opcional. Para `<li>`/`<article>`, use a constante `superficie`. Estados vazios usam `Empty` com borda tracejada.
 - Listas: tabela no desktop, lista empilhada no mobile, sem rolagem horizontal. Status com `StatusBadge` (Rascunho/Publicado).
 - Exclusão física sempre por `Dialog` `role="alertdialog"`, foco inicial em “Cancelar”.
 - Sucesso: mensagem textual (`?feedback=` após o redirect) com estado de visibilidade na landing.

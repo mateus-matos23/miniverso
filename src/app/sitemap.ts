@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getPublishedConteudoSlugs } from "@/lib/public-content";
+import { getPublishedConteudoSlugs } from "@/features/projects/data";
 import { site } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
