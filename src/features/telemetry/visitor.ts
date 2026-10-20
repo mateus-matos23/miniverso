@@ -1,7 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { envServidor } from "@/config/env.server";
-import { diaNoFuso } from "@/lib/formatar";
+import { diaNoFuso } from "@/lib/format";
 
 /**
  * Helpers da telemetria anônima. Só para o servidor (Route Handlers e Server

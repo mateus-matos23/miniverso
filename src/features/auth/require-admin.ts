@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 
 // `cache` do React deduplica a leitura das claims dentro de uma mesma renderização.
 // Fora de render (Server Actions, Route Handlers) cada chamada executa de novo.

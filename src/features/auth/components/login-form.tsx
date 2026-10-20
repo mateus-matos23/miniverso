@@ -2,8 +2,6 @@
 
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useActionState, useState } from "react";
-
-import { type LoginState, login } from "@/app/actions/auth";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +18,8 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
+import { login } from "@/features/auth/actions";
+import type { LoginState } from "@/features/auth/schema";
 
 const initialState: LoginState = {};
 

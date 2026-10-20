@@ -2,39 +2,21 @@
 
 import { useReportWebVitals } from "next/web-vitals";
 import { useEffect } from "react";
+import {
+  LIMITE_ITENS_LOTE,
+  METRICAS_VITAIS,
+} from "@/features/telemetry/constants";
+import type {
+  EventoTelemetria,
+  VitalTelemetria,
+} from "@/features/telemetry/schema";
 
 type CallbackVitals = Parameters<typeof useReportWebVitals>[0];
 
 type Navegador = Navigator & { globalPrivacyControl?: boolean };
 
-type EventoTelemetria = {
-  tipo: "pageview" | "cta_click";
-  caminho: string;
-  alvo?: string;
-  referrer_host?: string;
-  utm_source?: string;
-  utm_medium?: string;
-  utm_campaign?: string;
-};
-
-type VitalTelemetria = {
-  metrica: "LCP" | "INP" | "CLS" | "FCP" | "TTFB";
-  valor: number;
-  rating: string;
-  navegacao?: string;
-  caminho: string;
-  versao_id?: string;
-};
-
-const LIMITE_LOTE = 20;
 const ATRASO_PAGEVIEW_MS = 3000;
-const METRICAS = new Set<VitalTelemetria["metrica"]>([
-  "LCP",
-  "INP",
-  "CLS",
-  "FCP",
-  "TTFB",
-]);
+const METRICAS = new Set<string>(METRICAS_VITAIS);
 
 // Estado de módulo: a fila e a Map sobrevivem a trocas de rota no client.
 const filaEventos: EventoTelemetria[] = [];
@@ -100,8 +82,11 @@ function montarLotes(
   const restoVitais = [...vitais];
 
   while (restoEventos.length || restoVitais.length) {
-    const loteEventos = restoEventos.splice(0, LIMITE_LOTE);
-    const loteVitais = restoVitais.splice(0, LIMITE_LOTE - loteEventos.length);
+    const loteEventos = restoEventos.splice(0, LIMITE_ITENS_LOTE);
+    const loteVitais = restoVitais.splice(
+      0,
+      LIMITE_ITENS_LOTE - loteEventos.length,
+    );
     lotes.push({ eventos: loteEventos, vitals: loteVitais });
   }
 
@@ -139,7 +124,7 @@ function enviarFila() {
 // a cada render faria a biblioteca reportar métricas duplicadas.
 const registrarVital: CallbackVitals = (metric) => {
   if (!coletaPermitida()) return;
-  if (!METRICAS.has(metric.name as VitalTelemetria["metrica"])) return;
+  if (!METRICAS.has(metric.name)) return;
 
   vitaisPorId.set(metric.id, {
     metrica: metric.name as VitalTelemetria["metrica"],

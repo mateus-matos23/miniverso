@@ -2,23 +2,9 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 
-import { createClient } from "@/utils/supabase/server";
-
-const loginSchema = z.object({
-  email: z.email({ error: "Informe um e-mail válido." }),
-  password: z.string().min(1, "Informe sua senha."),
-});
-
-export type LoginState = {
-  erro?: string;
-  values?: { email?: string };
-  erros?: {
-    email?: string;
-    password?: string;
-  };
-};
+import { createClient } from "@/lib/supabase/server";
+import { type LoginState, loginSchema } from "./schema";
 
 export async function login(
   _previousState: LoginState,
