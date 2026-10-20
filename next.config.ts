@@ -62,8 +62,14 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   images: {
     remotePatterns: imagensSupabase,
+    formats: ["image/avif", "image/webp"],
+    // 31 dias: poupa transformações e escritas em cache no plano gratuito da Vercel.
+    minimumCacheTTL: 2678400,
   },
   experimental: {
+    // CSS no <head> em vez de <link>: tira o request que bloqueava a renderização.
+    inlineCss: true,
+    optimizePackageImports: ["lucide-react", "motion"],
     serverActions: { bodySizeLimit: uploadBodyLimit },
     // O proxy cobre /admin e, acima do limite, entregaria o body truncado.
     proxyClientMaxBodySize: uploadBodyLimit,
