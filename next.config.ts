@@ -47,6 +47,8 @@ const contentSecurityPolicy = [
   diretiva("font-src", "'self'", "data:"),
   diretiva("connect-src", "'self'", ...supabase, ...supabaseWs),
   // A pré-visualização da landing é embutida em iframe pelo próprio admin.
+  diretiva("worker-src", "'self'"),
+  diretiva("manifest-src", "'self'"),
   diretiva("frame-ancestors", "'self'"),
   diretiva("base-uri", "'self'"),
   diretiva("form-action", "'self'"),
@@ -87,7 +89,23 @@ const nextConfig: NextConfig = {
       });
     }
 
-    return [{ source: "/:path*", headers: cabecalhos }];
+    return [
+      { source: "/:path*", headers: cabecalhos },
+      // O navegador precisa revalidar o service worker a cada visita para pegar atualizações.
+      {
+        source: "/sw.js",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/javascript; charset=utf-8",
+          },
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
+        ],
+      },
+    ];
   },
 };
 
