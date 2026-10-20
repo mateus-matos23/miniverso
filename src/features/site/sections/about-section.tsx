@@ -32,7 +32,7 @@ export function AboutSection({ secao }: PropsSecao<"sobre">) {
             </RevealTitulo>
           </Reveal>
           <Reveal
-            className="flex max-w-[36rem] flex-col gap-5 self-end text-lg text-brand-ink surface-dark:text-brand-mist"
+            className="flex max-w-xl flex-col gap-5 self-end text-lg text-brand-ink surface-dark:text-brand-mist"
             delay={0.15}
           >
             {dados.paragrafos.map((paragrafo, indice) => (

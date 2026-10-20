@@ -19,7 +19,7 @@ export function PrincipiosAneis({ principios }: { principios: Principio[] }) {
     <dl className="mt-20 grid border-t border-brand-line surface-dark:border-white/15 lg:mt-28 lg:grid-cols-3 lg:border-t-0">
       {principios.map((item, indice) => (
         <m.div
-          className="group relative grid gap-3 border-b border-brand-line py-8 surface-dark:border-white/15 lg:aspect-square lg:place-content-center lg:rounded-full lg:border-0 lg:px-[14%] lg:py-0 lg:text-center lg:not-first:-ml-[4%]"
+          className="group relative grid gap-3 border-b border-brand-line py-8 surface-dark:border-white/15 lg:aspect-square lg:place-content-center lg:rounded-full lg:border-0 lg:px-[14%] lg:py-0 lg:text-center lg:not-first:ml-[-4%]"
           // biome-ignore lint/suspicious/noArrayIndexKey: lista pode repetir o termo ou o trecho; o índice desempata
           key={`${item.termo}-${indice}`}
           initial={{ opacity: 0, scale: 0.88 }}
@@ -59,7 +59,7 @@ export function PrincipiosAneis({ principios }: { principios: Principio[] }) {
               strokeWidth="0.4"
             />
             <m.circle
-              className="origin-center -rotate-90 [transform-box:fill-box]"
+              className="origin-center -rotate-90 transform-fill"
               cx="50"
               cy="50"
               initial={{ pathLength: 0 }}
@@ -76,7 +76,7 @@ export function PrincipiosAneis({ principios }: { principios: Principio[] }) {
               whileInView={{ pathLength: 1 }}
             />
             <circle
-              className="origin-center animate-orbit stroke-brand-blue/40 [stroke-dasharray:0.4_2.2] [transform-box:fill-box] surface-dark:stroke-brand-cyan/50"
+              className="origin-center animate-orbit stroke-brand-blue/40 [stroke-dasharray:0.4_2.2] transform-fill surface-dark:stroke-brand-cyan/50"
               cx="50"
               cy="50"
               r="44"

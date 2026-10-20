@@ -47,7 +47,7 @@ export function Secao({
             {titulo}
           </h2>
           {descricao ? (
-            <p className="mt-1 max-w-[46rem] text-sm text-muted-foreground">
+            <p className="mt-1 max-w-184 text-sm text-muted-foreground">
               {descricao}
             </p>
           ) : null}

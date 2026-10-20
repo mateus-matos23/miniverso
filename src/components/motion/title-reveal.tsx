@@ -36,7 +36,7 @@ export function RevealTitulo({
       {palavras.map((palavra, indice) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: a mesma palavra pode se repetir no título
         <span key={`${palavra}-${indice}`}>
-          <span className="-mb-[0.14em] inline-block overflow-hidden pb-[0.14em] align-bottom">
+          <span className="mb-[-0.14em] inline-block overflow-hidden pb-[0.14em] align-bottom">
             <m.span className="inline-block" variants={filho}>
               {palavra}
             </m.span>

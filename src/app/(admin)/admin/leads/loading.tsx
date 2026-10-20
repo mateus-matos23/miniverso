@@ -16,7 +16,7 @@ export default function LeadsLoading() {
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:items-start">
         <div className="flex min-w-0 flex-col gap-6">
           <div className="flex flex-col gap-3">
-            <Skeleton className="h-11 w-full max-w-[22rem] rounded-lg" />
+            <Skeleton className="h-11 w-full max-w-88 rounded-lg" />
             <Skeleton className="h-9 w-full" />
           </div>
           <ul className="flex flex-col gap-2">

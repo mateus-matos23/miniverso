@@ -80,7 +80,7 @@ export function DesempenhoVersoes({
 
   return (
     <div className="-mx-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6">
-      <table className="w-full min-w-[40rem] text-left text-sm">
+      <table className="w-full min-w-160 text-left text-sm">
         <caption className="sr-only">
           Desempenho p75 no celular por versão publicada
         </caption>

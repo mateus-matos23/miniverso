@@ -30,7 +30,7 @@ export function PillarsSection({ secao }: PropsSecao<"pilares">) {
             >
               {dados.titulo}
             </RevealTitulo>
-            <p className="mt-8 max-w-[34rem] text-lg text-brand-ink surface-dark:text-brand-mist">
+            <p className="mt-8 max-w-136 text-lg text-brand-ink surface-dark:text-brand-mist">
               {dados.intro}
             </p>
           </Reveal>

@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Página não encontrada" };
 export default function NaoEncontrado() {
   return (
     <div className="flex min-h-svh flex-col items-start justify-center gap-8 bg-brand-black px-6 py-16 text-brand-white sm:px-12">
-      <div className="flex max-w-[44rem] flex-col gap-4">
+      <div className="flex max-w-176 flex-col gap-4">
         <p className="text-label font-semibold text-brand-cyan uppercase">
           Erro 404
         </p>

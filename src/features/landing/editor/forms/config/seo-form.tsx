@@ -45,7 +45,7 @@ export function FormConfigSeo({
           Prévia do compartilhamento
         </h3>
         <div className="overflow-hidden rounded-lg border border-border bg-card">
-          <div className="flex aspect-[1200/630] items-center justify-center bg-muted">
+          <div className="flex aspect-1200/630 items-center justify-center bg-muted">
             {imagem ? (
               // biome-ignore lint/performance/noImgElement: prévia no admin, a URL vem da biblioteca de mídia
               <img

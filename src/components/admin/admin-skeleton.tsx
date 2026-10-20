@@ -112,7 +112,7 @@ export function EsqueletoEditor({ quantidade }: { quantidade: number }) {
 
         <div className={cn(superficie, "flex flex-col gap-4 p-5 sm:p-6")}>
           <Skeleton className="h-7 w-48" />
-          <Skeleton className="h-4 w-full max-w-[36rem]" />
+          <Skeleton className="h-4 w-full max-w-xl" />
           <Skeleton className="mt-2 h-10 w-full" />
           <Skeleton className="h-24 w-full" />
           <Skeleton className="h-10 w-full" />

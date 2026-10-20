@@ -208,7 +208,7 @@ export function EnviarMidia({
     <form className="flex flex-col gap-4" onSubmit={enviar} noValidate>
       <DropZone
         aria-label="Área para soltar o arquivo"
-        className="flex flex-col items-center gap-3 rounded-xl border-2 border-dashed border-border bg-muted/40 px-6 py-8 text-center transition-colors hover:border-primary/50 data-[drop-target]:border-primary/60 data-[drop-target]:bg-accent"
+        className="flex flex-col items-center gap-3 rounded-xl border-2 border-dashed border-border bg-muted/40 px-6 py-8 text-center transition-colors hover:border-primary/50 data-drop-target:border-primary/60 data-drop-target:bg-accent"
         getDropOperation={() => (ocupado ? "cancel" : "copy")}
         isDisabled={ocupado}
         onDrop={async (event) => {

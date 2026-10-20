@@ -92,11 +92,11 @@ export function ContactSection({
             >
               {dados.titulo}
             </RevealTitulo>
-            <p className="mt-8 max-w-[34rem] text-lg text-brand-ink surface-dark:text-brand-white/85">
+            <p className="mt-8 max-w-136 text-lg text-brand-ink surface-dark:text-brand-white/85">
               {dados.intro}
             </p>
           </Reveal>
-          <div className="mt-12 max-w-[40rem]">
+          <div className="mt-12 max-w-160">
             <ContatoForm />
           </div>
         </div>

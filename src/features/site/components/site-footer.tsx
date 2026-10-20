@@ -9,7 +9,7 @@ import { BrandMark } from "./brand-mark";
 function ServicesMarquee({ services }: { services: string[] }) {
   return (
     <div className="group/marquee overflow-hidden border-b border-white/10 py-6">
-      <div className="flex w-max animate-marquee group-focus-within/marquee:[animation-play-state:paused] group-hover/marquee:[animation-play-state:paused] motion-reduce:animate-none">
+      <div className="flex w-max animate-marquee group-focus-within/marquee:paused group-hover/marquee:paused motion-reduce:animate-none">
         {/* Só a primeira cópia é lida; a duplicata existe para o loop sem emenda. */}
         {[0, 1].map((copy) => (
           <ul

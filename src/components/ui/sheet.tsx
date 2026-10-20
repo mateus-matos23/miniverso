@@ -30,8 +30,8 @@ const sheetVariants = cva(
     variants: {
       side: {
         right:
-          "inset-y-0 right-0 h-dvh w-full max-w-[min(22rem,100%)] sm:max-w-[22rem] data-entering:slide-in-from-right data-exiting:slide-out-to-right",
-        left: "inset-y-0 left-0 h-dvh w-full max-w-[min(22rem,100%)] sm:max-w-[22rem] data-entering:slide-in-from-left data-exiting:slide-out-to-left",
+          "inset-y-0 right-0 h-dvh w-full max-w-[min(22rem,100%)] sm:max-w-88 data-entering:slide-in-from-right data-exiting:slide-out-to-right",
+        left: "inset-y-0 left-0 h-dvh w-full max-w-[min(22rem,100%)] sm:max-w-88 data-entering:slide-in-from-left data-exiting:slide-out-to-left",
         top: "inset-x-0 top-0 max-h-dvh w-full data-entering:slide-in-from-top data-exiting:slide-out-to-top",
         bottom:
           "inset-x-0 bottom-0 max-h-dvh w-full data-entering:slide-in-from-bottom data-exiting:slide-out-to-bottom",
@@ -95,7 +95,7 @@ function SheetContent({
         <SheetPrimitive
           data-slot="sheet"
           role={role}
-          className="[display:inherit] h-full min-h-0 [flex-direction:inherit] [gap:inherit] outline-none"
+          className="[display:inherit] h-full min-h-0 [flex-direction:inherit] gap-[inherit] outline-none"
         >
           {children}
           {showCloseButton && (

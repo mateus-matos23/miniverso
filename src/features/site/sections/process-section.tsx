@@ -36,7 +36,7 @@ export function ProcessSection({ secao }: PropsSecao<"processo">) {
             </RevealTitulo>
           </Reveal>
           <Reveal
-            className="max-w-[36rem] self-end text-lg text-brand-ink surface-dark:text-brand-mist"
+            className="max-w-xl self-end text-lg text-brand-ink surface-dark:text-brand-mist"
             delay={0.15}
           >
             <p>{dados.intro}</p>

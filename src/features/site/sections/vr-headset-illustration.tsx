@@ -57,7 +57,7 @@ export function DetectorEvent() {
   return (
     <div
       aria-hidden="true"
-      className="relative mx-auto aspect-square w-full max-w-[38rem]"
+      className="relative mx-auto aspect-square w-full max-w-152"
     >
       <m.div
         animate={{ opacity: 1, scale: 1 }}
@@ -123,7 +123,7 @@ export function DetectorEvent() {
                   strokeWidth="1.5"
                 />
                 <circle
-                  className="origin-center animate-orbit stroke-brand-white/30 [stroke-dasharray:28_6_3_6] [transform-box:fill-box]"
+                  className="origin-center animate-orbit stroke-brand-white/30 [stroke-dasharray:28_6_3_6] transform-fill"
                   cx={cx}
                   cy="300"
                   r="38"
@@ -137,7 +137,7 @@ export function DetectorEvent() {
                 />
                 <circle className="fill-brand-cyan" cx={cx} cy="300" r="4" />
                 <circle
-                  className="origin-center animate-detector-pulse stroke-brand-cyan [transform-box:fill-box] motion-reduce:hidden"
+                  className="origin-center animate-detector-pulse stroke-brand-cyan transform-fill motion-reduce:hidden"
                   cx={cx}
                   cy="300"
                   r="70"

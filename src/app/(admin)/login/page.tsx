@@ -14,7 +14,7 @@ export default async function LoginPage() {
         className="relative isolate hidden overflow-hidden bg-brand-aurora p-12 text-brand-white lg:flex lg:flex-col lg:justify-between"
         data-surface="dark"
       >
-        <div className="mask-delineado absolute -right-[30%] bottom-[-8%] -z-10 aspect-[1600/930] w-[140%] bg-brand-white/25" />
+        <div className="mask-delineado absolute right-[-30%] bottom-[-8%] -z-10 aspect-1600/930 w-[140%] bg-brand-white/25" />
         <Image
           alt=""
           className="h-24 w-auto self-start"
@@ -27,7 +27,7 @@ export default async function LoginPage() {
       </aside>
 
       <div className="flex flex-col justify-center px-5 py-12 sm:px-12">
-        <div className="mx-auto w-full max-w-[26rem]">
+        <div className="mx-auto w-full max-w-104">
           <Image
             alt="Miniverso"
             className="h-8 w-auto lg:hidden"

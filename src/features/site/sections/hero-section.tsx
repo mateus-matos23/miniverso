@@ -65,11 +65,11 @@ export function HeroSection({ secao }: PropsSecao<"hero">) {
       >
         <div
           aria-hidden="true"
-          className="mask-delineado absolute animate-float -right-[18%] -z-10 aspect-1600/930 w-[min(110rem,160%)] bg-brand-blue/55 top-auto -bottom-[4%] lg:top-[6%] lg:bottom-auto"
+          className="mask-delineado absolute animate-float right-[-18%] -z-10 aspect-1600/930 w-[min(110rem,160%)] bg-brand-blue/55 top-auto bottom-[-4%] lg:top-[6%] lg:bottom-auto"
         />
       </Parallax>
       <div className="mx-auto grid max-w-page items-center gap-10 px-5 pb-16 pt-14 sm:px-8 lg:min-h-[calc(100svh-var(--header-height))] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 lg:px-12 lg:py-20">
-        <Stagger className="max-w-[46rem]" interval={0.1} trigger="mount">
+        <Stagger className="max-w-184" interval={0.1} trigger="mount">
           <StaggerItem>
             <SectionIndex number={secao.numero}>{dados.rotulo}</SectionIndex>
           </StaggerItem>
@@ -81,7 +81,7 @@ export function HeroSection({ secao }: PropsSecao<"hero">) {
             {dados.titulo}
           </h1>
           {/* também fora do stagger: o parágrafo é o LCP no mobile */}
-          <p className="mt-8 max-w-[38rem] text-lg leading-relaxed text-brand-ink sm:text-xl surface-dark:text-brand-mist">
+          <p className="mt-8 max-w-152 text-lg leading-relaxed text-brand-ink sm:text-xl surface-dark:text-brand-mist">
             {dados.subtitulo}
           </p>
           <StaggerItem className="mt-10 flex flex-col gap-3 sm:flex-row">

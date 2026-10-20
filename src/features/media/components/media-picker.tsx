@@ -139,7 +139,7 @@ export function SeletorMidia({
             <MiniaturaMidia midia={valor} className="rounded-md" />
           ) : (
             <div
-              className="flex aspect-[4/3] w-full items-center justify-center rounded-md border border-dashed border-border bg-muted text-muted-foreground"
+              className="flex aspect-4/3 w-full items-center justify-center rounded-md border border-dashed border-border bg-muted text-muted-foreground"
               aria-hidden="true"
             >
               <ImageIcon className="size-6" />

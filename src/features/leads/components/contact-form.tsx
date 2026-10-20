@@ -320,7 +320,7 @@ export function ContatoForm() {
       {/* Honeypot: fora da tela e fora da árvore de acessibilidade. Pessoas não preenchem. */}
       <div
         aria-hidden="true"
-        className="absolute -left-[10000px] h-px w-px overflow-hidden"
+        className="absolute left-[-10000px] h-px w-px overflow-hidden"
       >
         <label htmlFor="contato-site">Site</label>
         <input

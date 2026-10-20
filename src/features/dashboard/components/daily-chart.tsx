@@ -140,7 +140,7 @@ function GraficoSvg({ dias }: { dias: DiaMetrica[] }) {
   return (
     <svg
       aria-label={`Gráfico de visitantes e leads por dia, ${total} dias. Os valores estão na tabela abaixo.`}
-      className="hidden h-auto w-full sm:block sm:max-w-[40rem]"
+      className="hidden h-auto w-full sm:block sm:max-w-160"
       viewBox={`0 0 ${LARGURA} ${ALTURA}`}
     >
       <defs>

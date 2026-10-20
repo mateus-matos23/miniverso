@@ -14,7 +14,7 @@ export function MiniaturaMidia({
   return (
     <div
       className={cn(
-        "relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-muted",
+        "relative flex aspect-4/3 w-full items-center justify-center overflow-hidden bg-muted",
         className,
       )}
     >

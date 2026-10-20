@@ -123,7 +123,7 @@ export function DesempenhoWebVitals({
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="max-w-[46rem] text-sm text-muted-foreground">
+      <p className="max-w-184 text-sm text-muted-foreground">
         O p75 é o valor abaixo do qual ficam 75% das visitas: quanto menor,
         melhor. Um p75 “bom” quer dizer que a maioria das visitas carrega e
         responde rápido.

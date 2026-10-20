@@ -66,10 +66,10 @@ function LogoStrip({
     clientes.length * repeats * SECONDS_PER_ITEM * (reverse ? 1.2 : 1);
 
   return (
-    <div className="group/strip overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] motion-reduce:[mask-image:none]">
+    <div className="group/strip overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] motion-reduce:mask-none">
       <div
         className={cn(
-          "flex w-max [animation-duration:var(--marquee-duration)] group-focus-within/strip:[animation-play-state:paused] group-hover/strip:[animation-play-state:paused] motion-reduce:w-full motion-reduce:animate-none motion-reduce:justify-center",
+          "flex w-max [animation-duration:var(--marquee-duration)] group-focus-within/strip:paused group-hover/strip:paused motion-reduce:w-full motion-reduce:animate-none motion-reduce:justify-center",
           reverse ? "animate-marquee-reverse" : "animate-marquee",
         )}
         style={{ "--marquee-duration": `${duration}s` } as React.CSSProperties}
