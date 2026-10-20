@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { requireAdmin } from "@/lib/auth";
+import { Providers } from "../providers";
 
 import { AdminSidebar, AdminTopbar } from "./admin-nav";
 import { contarLeadsNovos } from "./leads/contagem";
@@ -35,27 +36,29 @@ export default async function AdminLayout({
   const sidebarState = cookieStore.get("sidebar_state")?.value;
 
   return (
-    <SidebarProvider
-      className="bg-sidebar text-foreground"
-      data-admin
-      defaultOpen={sidebarState !== "false"}
-    >
-      <a
-        className="sr-only z-50 bg-brand-cyan px-4 py-3 font-semibold text-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-3"
-        href="#conteudo"
+    <Providers>
+      <SidebarProvider
+        className="bg-sidebar text-foreground"
+        data-admin
+        defaultOpen={sidebarState !== "false"}
       >
-        Pular para o conteúdo
-      </a>
-      <AdminSidebar leadsNovos={leadsNovos} user={account} />
-      <SidebarInset
-        className="min-w-0 bg-admin-canvas outline-none md:peer-data-[variant=inset]:rounded-xl"
-        id="conteudo"
-        tabIndex={-1}
-      >
-        <AdminTopbar />
-        {children}
-      </SidebarInset>
-      <Toaster position="bottom-right" />
-    </SidebarProvider>
+        <a
+          className="sr-only z-50 bg-brand-cyan px-4 py-3 font-semibold text-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-3"
+          href="#conteudo"
+        >
+          Pular para o conteúdo
+        </a>
+        <AdminSidebar leadsNovos={leadsNovos} user={account} />
+        <SidebarInset
+          className="min-w-0 bg-admin-canvas outline-none md:peer-data-[variant=inset]:rounded-xl"
+          id="conteudo"
+          tabIndex={-1}
+        >
+          <AdminTopbar />
+          {children}
+        </SidebarInset>
+        <Toaster position="bottom-right" />
+      </SidebarProvider>
+    </Providers>
   );
 }
