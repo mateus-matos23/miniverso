@@ -2,7 +2,11 @@ import { Suspense } from "react";
 import { LinhaSecao } from "@/components/motion/linha-secao";
 import { Reveal } from "@/components/motion/reveal";
 import { RevealTitulo } from "@/components/motion/revelar-titulo";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarOptimizedImage,
+} from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PropsSecao } from "@/lib/landing/navegacao";
 import { getPublishedClientes } from "@/lib/public-content";
@@ -27,11 +31,10 @@ function LogoItems({ clientes }: { clientes: Cliente[] }) {
       key={cliente.id}
     >
       <Avatar className="size-14 bg-brand-white opacity-80 grayscale transition duration-300 group-hover/item:opacity-100 group-hover/item:grayscale-0 sm:size-20">
-        <AvatarImage
+        <AvatarOptimizedImage
           alt={cliente.nome}
           className="select-none"
-          decoding="async"
-          draggable={false}
+          sizes="80px"
           src={cliente.logoUrl}
         />
         <AvatarFallback>

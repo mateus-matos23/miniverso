@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
@@ -42,6 +43,35 @@ function AvatarImage({ className, ...props }: React.ComponentProps<"img">) {
         className,
       )}
       {...props}
+    />
+  );
+}
+
+/** Variante que passa pelo otimizador do Next (redimensiona e serve AVIF/WebP). */
+function AvatarOptimizedImage({
+  className,
+  alt,
+  src,
+  sizes,
+}: {
+  className?: string;
+  alt: string;
+  src: string;
+  sizes: string;
+}) {
+  const [failed, setFailed] = React.useState(false);
+  if (failed) return null;
+  return (
+    <Image
+      data-slot="avatar-image"
+      data-state="loaded"
+      alt={alt}
+      src={src}
+      fill
+      sizes={sizes}
+      draggable={false}
+      onError={() => setFailed(true)}
+      className={cn("peer rounded-full object-cover", className)}
     />
   );
 }
@@ -111,4 +141,5 @@ export {
   AvatarGroup,
   AvatarGroupCount,
   AvatarImage,
+  AvatarOptimizedImage,
 };
