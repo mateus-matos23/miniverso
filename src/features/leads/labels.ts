@@ -1,13 +1,4 @@
-import { INTERESSES, ROTULOS_INTERESSE } from "@/lib/leads";
-
-export const STATUS_LEAD = [
-  "novo",
-  "em_contato",
-  "convertido",
-  "arquivado",
-] as const;
-
-export type StatusLead = (typeof STATUS_LEAD)[number];
+import { INTERESSES, ROTULOS_INTERESSE, type StatusLead } from "./schema";
 
 export const rotulosStatusLead: Record<StatusLead, string> = {
   novo: "Novo",
@@ -19,5 +10,3 @@ export const rotulosStatusLead: Record<StatusLead, string> = {
 export const rotulosInteresseLead: Record<string, string> = Object.fromEntries(
   INTERESSES.map((valor) => [valor, ROTULOS_INTERESSE[valor].longo]),
 );
-
-// Temporário: detalhe-lead.tsx ainda importa daqui. Trocar para formatarDataHora.

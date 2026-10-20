@@ -1,10 +1,8 @@
 import { TriangleAlertIcon } from "lucide-react";
 import type { ReactNode } from "react";
-
+import { superficie } from "@/components/admin/panel";
 import { Alert } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
-
-import { superficie } from "../_componentes/painel";
 
 /**
  * Bloco da visão geral. Por padrão vira um cartão (`superficie`); com

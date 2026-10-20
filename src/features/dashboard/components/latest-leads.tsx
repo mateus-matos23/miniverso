@@ -1,10 +1,10 @@
 import Link from "next/link";
 
-import { formatarRelativo } from "@/lib/formatar";
+import { formatarRelativo } from "@/lib/format";
 
-import type { Resultado, UltimoLead } from "./dados";
-import { rotulosInteresse } from "./rotulos";
-import { AvisoBloco } from "./secao";
+import type { Resultado, UltimoLead } from "../data";
+import { rotulosInteresse } from "../labels";
+import { AvisoBloco } from "./section";
 
 export function UltimosLeads({
   leads,

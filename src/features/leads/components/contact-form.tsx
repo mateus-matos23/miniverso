@@ -3,9 +3,10 @@
 import { ArrowRightIcon } from "lucide-react";
 import { m } from "motion/react";
 import { useActionState, useEffect, useRef, useState } from "react";
-import { type EstadoContato, enviarContato } from "@/app/actions/contato";
 import { useSignalTransition } from "@/components/motion/transitions";
-import { INTERESSES, ROTULOS_INTERESSE } from "@/lib/leads";
+import { INTERESSES, ROTULOS_INTERESSE } from "@/features/leads/constants";
+import { enviarContato } from "@/features/leads/contact-action";
+import type { EstadoContato } from "@/features/leads/schema";
 import { cn } from "@/lib/utils";
 
 const TAMANHO_MAXIMO_MENSAGEM = 2000;

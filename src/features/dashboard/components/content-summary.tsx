@@ -5,15 +5,13 @@ import {
   UsersIcon,
 } from "lucide-react";
 import Link from "next/link";
-
+import { superficie } from "@/components/admin/panel";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
 
-import { superficie } from "../_componentes/painel";
-
-import type { Resultado, ResumoDeConteudo } from "./dados";
-import { formatarInteiro } from "./formatar";
-import { AvisoBloco } from "./secao";
+import type { Resultado, ResumoDeConteudo } from "../data";
+import { formatarInteiro } from "../format";
+import { AvisoBloco } from "./section";
 
 export function ResumoConteudo({
   conteudo,

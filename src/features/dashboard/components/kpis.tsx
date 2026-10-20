@@ -5,14 +5,12 @@ import {
   PercentIcon,
   UsersIcon,
 } from "lucide-react";
-
+import { superficie } from "@/components/admin/panel";
 import { cn } from "@/lib/utils";
-
-import { superficie } from "../_componentes/painel";
-import type { Resultado } from "./dados";
-import { formatarInteiro, formatarPercentual } from "./formatar";
-import type { Metricas } from "./schemas";
-import { AvisoBloco } from "./secao";
+import type { Resultado } from "../data";
+import { formatarInteiro, formatarPercentual } from "../format";
+import type { Metricas } from "../schema";
+import { AvisoBloco } from "./section";
 
 export function KpisPeriodo({ metricas }: { metricas: Resultado<Metricas> }) {
   if (!metricas.ok) {

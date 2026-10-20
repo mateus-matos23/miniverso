@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import { PERIODOS, type Periodo } from "./periodo";
+import { PERIODOS, type Periodo } from "../period";
 
 export function SeletorPeriodo({ atual }: { atual: Periodo }) {
   return (

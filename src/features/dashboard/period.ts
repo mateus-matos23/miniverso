@@ -1,4 +1,4 @@
-import { diaNoFuso } from "@/lib/formatar";
+import { diaNoFuso } from "@/lib/format";
 
 export const PERIODOS = [7, 30, 90] as const;
 

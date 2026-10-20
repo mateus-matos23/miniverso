@@ -1,11 +1,10 @@
 import { TriangleAlertIcon } from "lucide-react";
 
-import { formatarData } from "@/lib/formatar";
+import { formatarData } from "@/lib/format";
 
-import type { Resultado } from "./dados";
-import { formatarInteiro } from "./formatar";
-import type { VersaoVitalsLinha } from "./schemas";
-import { AvisoBloco } from "./secao";
+import type { Resultado } from "../data";
+import { formatarInteiro } from "../format";
+import type { VersaoVitalsLinha } from "../schema";
 import {
   AMOSTRAS_MINIMAS,
   formatarValorMetrica,
@@ -13,7 +12,8 @@ import {
   METRICAS_CORE,
   type Metrica,
   rotulosMetrica,
-} from "./web-vitals";
+} from "../web-vitals";
+import { AvisoBloco } from "./section";
 
 type Medida = { p75: number; amostras: number };
 

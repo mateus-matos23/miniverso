@@ -1,19 +1,19 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
 
-import { requireAdmin } from "@/lib/auth";
-
-import { STATUS_LEAD } from "./rotulos";
-
-const idSchema = z.uuid({ error: "Lead inválido." });
-const statusSchema = z.enum(STATUS_LEAD, { error: "Status inválido." });
-const notasSchema = z
-  .string({ error: "Informe as notas." })
-  .max(4000, "As notas devem ter no máximo 4000 caracteres.");
-
-export type AcaoLeadState = { erro?: string };
+import { requireAdmin } from "@/features/auth/require-admin";
+import {
+  atualizarNotasLeadBanco,
+  atualizarStatusLeadBanco,
+  excluirLeadBanco,
+} from "./data";
+import {
+  type AcaoLeadState,
+  idSchema,
+  notasSchema,
+  statusSchema,
+} from "./schema";
 
 function revalidarLeads() {
   revalidatePath("/admin/leads");
@@ -33,10 +33,11 @@ export async function atualizarStatusLead(
     return { erro: statusValido.error.issues[0].message };
   }
 
-  const { error } = await supabase
-    .from("leads")
-    .update({ status: statusValido.data })
-    .eq("id", idValido.data);
+  const { error } = await atualizarStatusLeadBanco(
+    supabase,
+    idValido.data,
+    statusValido.data,
+  );
 
   if (error)
     return { erro: "Não foi possível atualizar o status. Tente novamente." };
@@ -58,10 +59,11 @@ export async function salvarNotasLead(
     return { erro: notasValidas.error.issues[0].message };
   }
 
-  const { error } = await supabase
-    .from("leads")
-    .update({ notas: notasValidas.data })
-    .eq("id", idValido.data);
+  const { error } = await atualizarNotasLeadBanco(
+    supabase,
+    idValido.data,
+    notasValidas.data,
+  );
 
   if (error)
     return { erro: "Não foi possível salvar as notas. Tente novamente." };
@@ -76,10 +78,7 @@ export async function excluirLead(id: string): Promise<AcaoLeadState> {
 
   if (!idValido.success) return { erro: idValido.error.issues[0].message };
 
-  const { error } = await supabase
-    .from("leads")
-    .delete()
-    .eq("id", idValido.data);
+  const { error } = await excluirLeadBanco(supabase, idValido.data);
 
   if (error)
     return { erro: "Não foi possível excluir o lead. Tente novamente." };

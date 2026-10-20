@@ -2,7 +2,8 @@ import type { VariantProps } from "class-variance-authority";
 
 import { Badge, type badgeVariants } from "@/components/ui/badge";
 
-import { rotulosStatusLead, type StatusLead } from "./rotulos";
+import { rotulosStatusLead } from "../labels";
+import type { StatusLead } from "../schema";
 
 type VarianteBadge = NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
 

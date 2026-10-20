@@ -1,6 +1,6 @@
 /** Rótulos legíveis para os valores gravados no banco. Valores desconhecidos aparecem crus. */
 
-import { INTERESSES, ROTULOS_INTERESSE } from "@/lib/leads";
+import { INTERESSES, ROTULOS_INTERESSE } from "@/features/leads/schema";
 
 export const rotulosAlvoCta: Record<string, string> = {
   "hero-primario": "Hero · botão principal",

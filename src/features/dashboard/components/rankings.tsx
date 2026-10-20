@@ -1,8 +1,8 @@
-import type { Resultado } from "./dados";
-import { formatarInteiro } from "./formatar";
-import { rotulosAlvoCta, rotulosDispositivo, rotulosOrigem } from "./rotulos";
-import type { Metricas } from "./schemas";
-import { AvisoBloco } from "./secao";
+import type { Resultado } from "../data";
+import { formatarInteiro } from "../format";
+import { rotulosAlvoCta, rotulosDispositivo, rotulosOrigem } from "../labels";
+import type { Metricas } from "../schema";
+import { AvisoBloco } from "./section";
 
 type Item = { rotulo: string; valor: number };
 

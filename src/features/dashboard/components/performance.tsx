@@ -2,11 +2,10 @@ import { CircleCheckIcon, CircleXIcon, TriangleAlertIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { Resultado } from "./dados";
-import { formatarInteiro } from "./formatar";
-import { rotulosDispositivo } from "./rotulos";
-import type { WebVitalsLinha } from "./schemas";
-import { AvisoBloco } from "./secao";
+import type { Resultado } from "../data";
+import { formatarInteiro } from "../format";
+import { rotulosDispositivo } from "../labels";
+import type { WebVitalsLinha } from "../schema";
 import {
   AMOSTRAS_MINIMAS,
   type Classificacao,
@@ -17,7 +16,8 @@ import {
   type Metrica,
   rotulosClassificacao,
   rotulosMetrica,
-} from "./web-vitals";
+} from "../web-vitals";
+import { AvisoBloco } from "./section";
 
 const varianteClassificacao = {
   bom: "success",

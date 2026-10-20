@@ -8,9 +8,9 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
-import type { Resultado } from "./dados";
-import { rotulosDispositivo } from "./rotulos";
-import type { WebVitalsLinha } from "./schemas";
+import type { Resultado } from "../data";
+import { rotulosDispositivo } from "../labels";
+import type { WebVitalsLinha } from "../schema";
 import {
   AMOSTRAS_MINIMAS,
   classificarMetrica,
@@ -18,7 +18,7 @@ import {
   METRICAS_CORE,
   type Metrica,
   rotulosMetrica,
-} from "./web-vitals";
+} from "../web-vitals";
 
 // Tom de atenção usa o violeta da marca (o manual não tem amarelo); ver --warning em globals.css.
 const estiloIconePorTom: Record<"aviso" | "info", string> = {

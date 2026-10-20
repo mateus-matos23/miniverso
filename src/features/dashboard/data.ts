@@ -1,4 +1,7 @@
-import type { createClient } from "@/utils/supabase/server";
+import "server-only";
+
+import { listarUltimosLeads } from "@/features/leads/data";
+import type { createClient } from "@/lib/supabase/server";
 import {
   type Metricas,
   metricasSchema,
@@ -6,7 +9,7 @@ import {
   versaoVitalsLinhaSchema,
   type WebVitalsLinha,
   webVitalsLinhaSchema,
-} from "./schemas";
+} from "./schema";
 
 type Supabase = ReturnType<typeof createClient>;
 
@@ -118,11 +121,7 @@ export async function buscarResumoConteudo(supabase: Supabase) {
 export type ResumoDeConteudo = Awaited<ReturnType<typeof buscarResumoConteudo>>;
 
 export async function buscarUltimosLeads(supabase: Supabase) {
-  const { data, error } = await supabase
-    .from("leads")
-    .select("id, nome, escola, interesse, criado_em")
-    .order("criado_em", { ascending: false })
-    .limit(5);
+  const { data, error } = await listarUltimosLeads(supabase);
 
   if (error) throw error;
   return data ?? [];

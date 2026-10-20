@@ -10,12 +10,8 @@ import {
 import { useRouter } from "next/navigation";
 import { type ReactNode, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { superficie } from "@/app/admin/_componentes/painel";
-import {
-  atualizarStatusLead,
-  excluirLead,
-  salvarNotasLead,
-} from "@/app/admin/leads/actions";
+import { ConfirmarExclusaoDialog } from "@/components/admin/confirm-delete-dialog";
+import { superficie } from "@/components/admin/panel";
 import { Button, LinkButton } from "@/components/ui/button";
 import { FieldLabel } from "@/components/ui/field";
 import {
@@ -28,19 +24,17 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { formatarDataHora } from "@/lib/formatar";
-import { cn } from "@/lib/utils";
-import type { LeadRow } from "@/utils/supabase/database";
-
-import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
-
 import {
-  rotulosInteresseLead,
-  rotulosStatusLead,
-  STATUS_LEAD,
-  type StatusLead,
-} from "./rotulos";
-import { StatusLeadBadge } from "./status-lead-badge";
+  atualizarStatusLead,
+  excluirLead,
+  salvarNotasLead,
+} from "@/features/leads/actions";
+import { formatarDataHora } from "@/lib/format";
+import type { LeadRow } from "@/lib/supabase/database";
+import { cn } from "@/lib/utils";
+import { rotulosInteresseLead, rotulosStatusLead } from "../labels";
+import { STATUS_LEAD, type StatusLead } from "../schema";
+import { StatusLeadBadge } from "./lead-status-badge";
 
 const limiteNotas = 4000;
 

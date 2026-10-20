@@ -1,11 +1,11 @@
 "use client";
 
 import { type ReactNode, useId, useState } from "react";
-import { formatarDiaMes } from "@/lib/formatar";
-import type { Resultado } from "./dados";
-import { formatarCompacto, formatarInteiro } from "./formatar";
-import type { DiaMetrica, Metricas } from "./schemas";
-import { AvisoBloco } from "./secao";
+import { formatarDiaMes } from "@/lib/format";
+import type { Resultado } from "../data";
+import { formatarCompacto, formatarInteiro } from "../format";
+import type { DiaMetrica, Metricas } from "../schema";
+import { AvisoBloco } from "./section";
 
 // Cores dos dados vêm dos tokens da marca (globals.css); SVG não lê classes Tailwind.
 const COR_VISITANTES = "#1e4488"; // brand-blue

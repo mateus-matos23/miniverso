@@ -1,13 +1,13 @@
 import Link from "next/link";
 
-import { superficie } from "@/app/admin/_componentes/painel";
-import { formatarDataHora, formatarRelativo } from "@/lib/formatar";
+import { superficie } from "@/components/admin/panel";
+import { formatarDataHora, formatarRelativo } from "@/lib/format";
+import type { LeadRow } from "@/lib/supabase/database";
 import { cn } from "@/lib/utils";
-import type { LeadRow } from "@/utils/supabase/database";
 
-import { type FiltrosLeads, hrefLeads } from "./filtros";
-import { rotulosInteresseLead } from "./rotulos";
-import { StatusLeadBadge } from "./status-lead-badge";
+import { type FiltrosLeads, hrefLeads } from "../filters";
+import { rotulosInteresseLead } from "../labels";
+import { StatusLeadBadge } from "./lead-status-badge";
 
 export type LeadResumo = Pick<
   LeadRow,

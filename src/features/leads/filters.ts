@@ -1,8 +1,11 @@
-import { z } from "zod";
-
-import type { StatusLead } from "./rotulos";
+import { idSchema, type StatusLead } from "./schema";
 
 export const PORCAO_LEADS = 25;
+
+/** Número de páginas da lista. Nunca menos de 1, mesmo sem leads. */
+export function totalDePaginas(total: number) {
+  return Math.max(1, Math.ceil(total / PORCAO_LEADS));
+}
 
 export const OPCOES_STATUS_LEAD = [
   { valor: "todos", rotulo: "Todos" },
@@ -38,7 +41,7 @@ export function lerFiltrosLeads(params: ParamsLeads): FiltrosLeads {
     status: opcao?.valor ?? "todos",
     q: (primeiro(params.q) ?? "").trim().slice(0, 100),
     pagina: Number.isInteger(pagina) && pagina >= 1 ? pagina : 1,
-    selecionado: z.uuid().safeParse(selecionado).success
+    selecionado: idSchema.safeParse(selecionado).success
       ? selecionado
       : undefined,
   };

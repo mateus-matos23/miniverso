@@ -1,3 +1,5 @@
+// Constantes de leads sem dependência de zod: o formulário público importa daqui.
+
 /** Valores de interesse gravados em `leads.interesse`. Fonte única do formulário, da validação e dos rótulos. */
 export const INTERESSES = [
   "implantacao",
