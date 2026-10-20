@@ -356,3 +356,32 @@
     }
   }
 }
+
+/* Animações atreladas à rolagem: rodam fora da thread principal (sem JS). */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax-rolagem {
+      animation: parallax-rolagem linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 900px;
+    }
+
+    .progresso-rolagem {
+      transform: scaleX(0);
+      animation: progresso-rolagem linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes parallax-rolagem {
+  to {
+    transform: translateY(calc(900px * var(--parallax-fator, 0)));
+  }
+}
+
+@keyframes progresso-rolagem {
+  to {
+    transform: scaleX(1);
+  }
+}
