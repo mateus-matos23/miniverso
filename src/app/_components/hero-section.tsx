@@ -80,11 +80,10 @@ export function HeroSection({ secao }: PropsSecao<"hero">) {
           >
             {dados.titulo}
           </h1>
-          <StaggerItem>
-            <p className="mt-8 max-w-[38rem] text-lg leading-relaxed text-brand-ink sm:text-xl surface-dark:text-brand-mist">
-              {dados.subtitulo}
-            </p>
-          </StaggerItem>
+          {/* também fora do stagger: o parágrafo é o LCP no mobile */}
+          <p className="mt-8 max-w-[38rem] text-lg leading-relaxed text-brand-ink sm:text-xl surface-dark:text-brand-mist">
+            {dados.subtitulo}
+          </p>
           <StaggerItem className="mt-10 flex flex-col gap-3 sm:flex-row">
             <CtaLink
               cta={dados.ctaPrimario}

@@ -54,7 +54,7 @@ export function PillarsSection({ secao }: PropsSecao<"pilares">) {
                 <summary className="flex min-h-20 cursor-pointer list-none items-center gap-5 py-5 pl-5 [&::-webkit-details-marker]:hidden">
                   <span
                     aria-hidden="true"
-                    className="w-6 shrink-0 text-label font-semibold tabular-nums text-brand-ink/60 transition-colors group-open:text-brand-blue surface-dark:text-brand-mist/60 surface-dark:group-open:text-brand-cyan"
+                    className="w-6 shrink-0 text-label font-semibold tabular-nums text-brand-ink/70 transition-colors group-open:text-brand-blue surface-dark:text-brand-mist/75 surface-dark:group-open:text-brand-cyan"
                   >
                     {String(indice + 1).padStart(2, "0")}
                   </span>
