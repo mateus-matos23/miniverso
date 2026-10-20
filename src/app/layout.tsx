@@ -18,10 +18,14 @@ const displayFont = localFont({
 
 const bodyFont = localFont({
   src: [
-    { path: "./fonts/RG-StandardBook.ttf", weight: "400", style: "normal" },
-    { path: "./fonts/RG-StandardMedium.ttf", weight: "500", style: "normal" },
-    { path: "./fonts/RG-StandardSemibold.ttf", weight: "600", style: "normal" },
-    { path: "./fonts/RG-StandardBold.ttf", weight: "700", style: "normal" },
+    { path: "./fonts/RG-StandardBook.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/RG-StandardMedium.woff2", weight: "500", style: "normal" },
+    {
+      path: "./fonts/RG-StandardSemibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    { path: "./fonts/RG-StandardBold.woff2", weight: "700", style: "normal" },
   ],
   display: "swap",
   variable: "--font-brand-body",
