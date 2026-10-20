@@ -10,13 +10,10 @@ import {
   UsersIcon,
 } from "lucide-react";
 import { useActionState, useState } from "react";
-
-import {
-  type CadastroClienteState,
-  type Cliente,
-  excluirCliente,
-  reordenarClientes,
-} from "@/app/admin/clientes/actions";
+import { ConfirmarExclusaoDialog } from "@/components/admin/confirm-delete-dialog";
+import { PageHeader } from "@/components/admin/page-header";
+import { superficie } from "@/components/admin/panel";
+import { StatusBadge } from "@/components/admin/status-badge";
 import { Alert } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -48,27 +45,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { excluirCliente, reordenarClientes } from "@/features/clients/actions";
+import type { CadastroClienteState, Cliente } from "@/features/clients/schema";
+import { useListaReordenavel } from "@/hooks/use-reorderable-list";
 import { cn } from "@/lib/utils";
-import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
-import { superficie } from "../_componentes/painel";
-import { useListaReordenavel } from "../_componentes/use-lista-reordenavel";
-import { PageHeader } from "../page-header";
-import { StatusBadge } from "../status-badge";
-import FormularioCliente from "./cliente-form";
-
-export type ClienteListado = Cliente & { logoUrl: string | null };
+import FormularioCliente from "./client-form";
 
 const estadoInicial: CadastroClienteState = {};
 
-export default function TabelaClientes({
-  clientes,
-}: {
-  clientes: ClienteListado[];
-}) {
+export default function TabelaClientes({ clientes }: { clientes: Cliente[] }) {
   const [cadastroAberto, setCadastroAberto] = useState(false);
   const { ordemExibida, posicoes, dragAndDropHooks, erro } =
-    useListaReordenavel<ClienteListado>({
+    useListaReordenavel<Cliente>({
       itens: clientes,
       rotulo: (cliente) => cliente.nome,
       reordenar: reordenarClientes,
@@ -236,13 +224,13 @@ export default function TabelaClientes({
   );
 }
 
-function LogoCliente({ cliente }: { cliente: ClienteListado }) {
+function LogoCliente({ cliente }: { cliente: Cliente }) {
   return (
     <Avatar className="size-14 bg-brand-white">
       <AvatarImage
-        alt={`Logo de ${cliente.nome}`}
+        alt={cliente.logo?.alt || `Logo de ${cliente.nome}`}
         className="object-cover"
-        src={cliente.logoUrl ?? undefined}
+        src={cliente.logo?.url}
       />
       <AvatarFallback>
         <ImageOffIcon
@@ -254,7 +242,7 @@ function LogoCliente({ cliente }: { cliente: ClienteListado }) {
   );
 }
 
-function ClienteAcoes({ cliente }: { cliente: ClienteListado }) {
+function ClienteAcoes({ cliente }: { cliente: Cliente }) {
   const [dialogo, setDialogo] = useState<"edit" | "delete" | null>(null);
   const [estadoExclusao, acaoExclusao, excluindo] = useActionState(
     excluirCliente,

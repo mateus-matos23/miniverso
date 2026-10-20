@@ -17,14 +17,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { toast } from "sonner";
-
-import {
-  type AcaoConteudoState,
-  alternarStatusConteudo,
-  type CadastroConteudoState,
-  excluirConteudo,
-  reordenarConteudos,
-} from "@/app/admin/projetos/actions";
+import { ConfirmarExclusaoDialog } from "@/components/admin/confirm-delete-dialog";
+import { PageHeader } from "@/components/admin/page-header";
+import { superficie } from "@/components/admin/panel";
+import { StatusBadge } from "@/components/admin/status-badge";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
@@ -50,13 +46,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import type { MidiaRef } from "@/features/media/schema";
+import {
+  alternarStatusConteudo,
+  excluirConteudo,
+  reordenarConteudos,
+} from "@/features/projects/actions";
+import type {
+  AcaoConteudoState,
+  CadastroConteudoState,
+} from "@/features/projects/schema";
+import { useListaReordenavel } from "@/hooks/use-reorderable-list";
 import { cn } from "@/lib/utils";
-import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
-import { superficie } from "../_componentes/painel";
-import { useListaReordenavel } from "../_componentes/use-lista-reordenavel";
-import { PageHeader } from "../page-header";
-import { StatusBadge } from "../status-badge";
 
 export type ProjetoListItem = {
   id: string;
@@ -65,9 +66,8 @@ export type ProjetoListItem = {
   categoria: string | null;
   status: string;
   ordem: number;
-  tipoMidia: "imagem" | "video";
   clienteNome: string;
-  midiaUrl: string | null;
+  midia: MidiaRef | null;
 };
 
 const initialState: CadastroConteudoState = {};
@@ -280,23 +280,23 @@ function TituloProjeto({ projeto }: { projeto: ProjetoListItem }) {
 function Miniatura({ projeto }: { projeto: ProjetoListItem }) {
   return (
     <span className="grid aspect-video w-24 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted ring-1 ring-border/80">
-      {projeto.midiaUrl && projeto.tipoMidia === "imagem" ? (
+      {projeto.midia?.tipo === "imagem" ? (
         <Image
           alt=""
           className="size-full object-cover"
           height={54}
-          src={projeto.midiaUrl}
+          src={projeto.midia.url}
           width={96}
         />
       ) : null}
-      {projeto.tipoMidia === "video" ? (
+      {projeto.midia?.tipo === "video" ? (
         <FilmIcon
           aria-label="Vídeo"
           className="size-5 text-muted-foreground"
           role="img"
         />
       ) : null}
-      {!projeto.midiaUrl && projeto.tipoMidia === "imagem" ? (
+      {!projeto.midia ? (
         <ImageOffIcon
           aria-label="Mídia indisponível"
           className="size-5 text-muted-foreground"

@@ -1,23 +1,8 @@
 "use client";
 
-import { ImagePlus } from "lucide-react";
-import { useActionState, useRef, useState } from "react";
-import { FileTrigger } from "react-aria-components";
-import { Painel } from "@/app/admin/_componentes/painel";
-import {
-  atualizarCliente,
-  type CadastroClienteState,
-  type Cliente,
-  criarCliente,
-} from "@/app/admin/clientes/actions";
+import { useActionState, useState } from "react";
+import { Painel } from "@/components/admin/panel";
 import { Alert } from "@/components/ui/alert";
-import {
-  Attachment,
-  AttachmentContent,
-  AttachmentDescription,
-  AttachmentMedia,
-  AttachmentTitle,
-} from "@/components/ui/attachment";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -29,68 +14,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import { sincronizarArquivoFormulario } from "@/lib/arquivo-formulario";
+import { atualizarCliente, criarCliente } from "@/features/clients/actions";
+import type { CadastroClienteState, Cliente } from "@/features/clients/schema";
+import { SeletorMidia } from "@/features/media/components/media-picker";
+import type { MidiaRef } from "@/features/media/schema";
 
 const estadoInicial: CadastroClienteState = {};
-const TIPOS_LOGO = ["image/jpeg", "image/png", "image/webp"];
-
-function CampoLogo({
-  campoId,
-  mensagem,
-  obrigatorio,
-}: {
-  campoId: string;
-  mensagem?: string;
-  obrigatorio: boolean;
-}) {
-  const refInput = useRef<HTMLInputElement>(null);
-  const [nomeLogo, setNomeLogo] = useState<string>();
-  const temErro = Boolean(mensagem);
-
-  function escolherLogo(files: FileList | null) {
-    sincronizarArquivoFormulario(refInput.current, files);
-    setNomeLogo(files?.[0]?.name);
-  }
-
-  return (
-    <>
-      <Attachment
-        className="w-full"
-        state={temErro ? "error" : nomeLogo ? "done" : "idle"}
-        aria-invalid={temErro || undefined}
-        aria-describedby={temErro ? `${campoId}-logo-erro` : undefined}
-      >
-        <AttachmentMedia>
-          <ImagePlus aria-hidden="true" />
-        </AttachmentMedia>
-        <AttachmentContent>
-          <AttachmentTitle>
-            {nomeLogo ??
-              (obrigatorio ? "Selecione a logo" : "Selecione uma nova logo")}
-          </AttachmentTitle>
-          <AttachmentDescription>
-            PNG, JPG ou WebP, até 5 MB. Prefira fundo transparente.
-          </AttachmentDescription>
-        </AttachmentContent>
-        <FileTrigger acceptedFileTypes={TIPOS_LOGO} onSelect={escolherLogo}>
-          <Button
-            aria-label={nomeLogo ? "Trocar logo" : "Selecionar logo"}
-            variant="ghost"
-            className="absolute inset-0 z-10 h-full w-full rounded-none p-0 outline-none hover:bg-transparent"
-          />
-        </FileTrigger>
-      </Attachment>
-      {/* Recebe o arquivo do FileTrigger para o FormData; a validação real é no servidor. */}
-      <input
-        ref={refInput}
-        hidden
-        name="logo"
-        type="file"
-        accept={TIPOS_LOGO.join(",")}
-      />
-    </>
-  );
-}
 
 export default function FormularioCliente({ cliente }: { cliente?: Cliente }) {
   const acao = cliente ? atualizarCliente : criarCliente;
@@ -99,6 +28,7 @@ export default function FormularioCliente({ cliente }: { cliente?: Cliente }) {
     estadoInicial,
   );
   const campoId = cliente ? `cliente-${cliente.id}` : "cliente";
+  const [logo, setLogo] = useState<MidiaRef | null>(cliente?.logo ?? null);
 
   return (
     <form className="flex flex-col gap-5" action={acaoFormulario}>
@@ -124,17 +54,16 @@ export default function FormularioCliente({ cliente }: { cliente?: Cliente }) {
           </FieldError>
         </Field>
 
-        <Field data-invalid={Boolean(estado.erros?.logo) || undefined}>
-          <FieldLabel>Logo</FieldLabel>
-          <CampoLogo
-            campoId={campoId}
-            mensagem={estado.erros?.logo}
-            obrigatorio={!cliente}
-          />
-          <FieldError id={`${campoId}-logo-erro`}>
-            {estado.erros?.logo}
-          </FieldError>
-        </Field>
+        <SeletorMidia
+          erro={estado.erros?.logo}
+          id={`${campoId}-logo`}
+          onChange={setLogo}
+          rotulo="Logo"
+          tipo="imagem"
+          valor={logo}
+        />
+        {/* Leva a logo escolhida na biblioteca para o servidor. */}
+        <input name="logoId" type="hidden" value={logo?.id ?? ""} />
       </Painel>
 
       <Painel conteudoClassName="flex flex-col gap-5" titulo="Publicação">

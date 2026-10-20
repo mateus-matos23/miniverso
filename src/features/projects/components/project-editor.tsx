@@ -1,22 +1,8 @@
 "use client";
 
-import { ImagePlusIcon } from "lucide-react";
 import Image from "next/image";
-import {
-  type ChangeEvent,
-  useActionState,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from "react";
-import { FileTrigger } from "react-aria-components";
-import { Painel, superficie } from "@/app/admin/_componentes/painel";
-import {
-  atualizarConteudo,
-  type CadastroConteudoState,
-  criarConteudo,
-} from "@/app/admin/projetos/actions";
+import { type ChangeEvent, useActionState, useId, useState } from "react";
+import { Painel, superficie } from "@/components/admin/panel";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -37,37 +23,20 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { sincronizarArquivoFormulario } from "@/lib/arquivo-formulario";
-import { slugify } from "@/lib/slug";
+import { SeletorMidia } from "@/features/media/components/media-picker";
+import type { MidiaRef } from "@/features/media/schema";
+import { atualizarConteudo, criarConteudo } from "@/features/projects/actions";
+import type { CadastroConteudoState } from "@/features/projects/schema";
+import { slugify } from "@/features/projects/slug";
 import { cn } from "@/lib/utils";
 
 const estadoInicial: CadastroConteudoState = {};
 const TITULO_MAX = 90;
 const DESCRICAO_MAX = 400;
-const IMAGEM_MAX = 10 * 1024 * 1024;
-const VIDEO_MAX = 50 * 1024 * 1024;
-const tiposImagem = ["image/jpeg", "image/png", "image/webp"];
-const tiposVideo = ["video/mp4", "video/webm"];
-
-type Midia = { url: string; tipo: "imagem" | "video"; nome: string };
 
 /** Monta o aria-describedby ignorando ids ausentes, para não apontar para elementos que não existem. */
 function descreverPor(...ids: (string | false | null | undefined)[]) {
   return ids.filter(Boolean).join(" ") || undefined;
-}
-
-function validarMidia(arquivo: File): string | null {
-  if (tiposImagem.includes(arquivo.type)) {
-    return arquivo.size > IMAGEM_MAX
-      ? "A imagem deve ter no máximo 10 MB."
-      : null;
-  }
-  if (tiposVideo.includes(arquivo.type)) {
-    return arquivo.size > VIDEO_MAX
-      ? "O vídeo deve ter no máximo 50 MB."
-      : null;
-  }
-  return "Formato não aceito. Envie JPG, PNG, WebP, MP4 ou WebM.";
 }
 
 type ClienteOpcao = { id: string; nome: string };
@@ -82,9 +51,8 @@ export type ConteudoEditavel = {
   status: string;
   ordem: number;
   clienteId: string;
-  tipoMidia: "imagem" | "video";
-  /** URL assinada da mídia atual, gerada no servidor. */
-  midiaUrl: string | null;
+  /** Mídia da biblioteca escolhida para o projeto. */
+  midia: MidiaRef | null;
 };
 
 export default function EditorProjeto({
@@ -104,57 +72,13 @@ export default function EditorProjeto({
   const [slugEditado, setSlugEditado] = useState(Boolean(conteudo));
   const [categoria, setCategoria] = useState(conteudo?.categoria ?? "");
   const [descricao, setDescricao] = useState(conteudo?.descricao ?? "");
-  const [midia, setMidia] = useState<Midia | null>(null);
-  const [erroMidia, setErroMidia] = useState<string | null>(null);
-  // Input escondido que leva o arquivo escolhido pelo FileTrigger para o FormData.
-  const midiaInputRef = useRef<HTMLInputElement>(null);
-  // Mídia já salva: aparece até o usuário escolher um arquivo novo.
-  const midiaAtual: Midia | null = conteudo?.midiaUrl
-    ? {
-        url: conteudo.midiaUrl,
-        tipo: conteudo.tipoMidia === "video" ? "video" : "imagem",
-        nome: "Mídia atual",
-      }
-    : null;
-  const midiaExibida = midia ?? midiaAtual;
+  const [midia, setMidia] = useState<MidiaRef | null>(conteudo?.midia ?? null);
 
   function aoMudarTitulo(event: ChangeEvent<HTMLInputElement>) {
     const valor = event.currentTarget.value;
     setTitulo(valor);
     // O slug acompanha o título até o usuário editar o campo manualmente.
     if (!slugEditado) setSlug(slugify(valor));
-  }
-
-  useEffect(() => {
-    return () => {
-      if (midia) URL.revokeObjectURL(midia.url);
-    };
-  }, [midia]);
-
-  function aoMudarMidia(files: FileList | null) {
-    const arquivo = files?.[0];
-    setErroMidia(null);
-
-    if (!arquivo) {
-      sincronizarArquivoFormulario(midiaInputRef.current, null);
-      setMidia(null);
-      return;
-    }
-
-    const erro = validarMidia(arquivo);
-    if (erro) {
-      sincronizarArquivoFormulario(midiaInputRef.current, null);
-      setMidia(null);
-      setErroMidia(erro);
-      return;
-    }
-
-    sincronizarArquivoFormulario(midiaInputRef.current, files);
-    setMidia({
-      url: URL.createObjectURL(arquivo),
-      tipo: arquivo.type.startsWith("video/") ? "video" : "imagem",
-      nome: arquivo.name,
-    });
   }
 
   const erros = estado.erros ?? {};
@@ -305,58 +229,15 @@ export default function EditorProjeto({
         </Painel>
 
         <Painel conteudoClassName="flex flex-col gap-6" titulo="Mídia">
-          <Field data-invalid={erroMidia || erros.midia ? true : undefined}>
-            <FieldLabel id={`${id}-midia-rotulo`}>Imagem ou vídeo</FieldLabel>
-            <FileTrigger
-              acceptedFileTypes={[...tiposImagem, ...tiposVideo]}
-              onSelect={aoMudarMidia}
-            >
-              <Button
-                aria-describedby={descreverPor(
-                  `${id}-midia-texto`,
-                  (erroMidia || erros.midia) && `${id}-midia-erro`,
-                )}
-                aria-labelledby={`${id}-midia-rotulo`}
-                className="h-auto w-full justify-start gap-4 rounded-md border-dashed border-input bg-muted/40 p-4 text-left font-normal whitespace-normal hover:border-primary"
-                variant="outline"
-              >
-                <ImagePlusIcon
-                  aria-hidden="true"
-                  className="size-5 text-primary"
-                />
-                <span
-                  id={`${id}-midia-texto`}
-                  className="min-w-0 flex-1 text-sm"
-                >
-                  <span className="block truncate font-semibold text-heading">
-                    {midia
-                      ? midia.nome
-                      : conteudo
-                        ? "Trocar mídia (opcional)"
-                        : "Selecionar arquivo"}
-                  </span>
-                  <span className="text-muted-foreground">
-                    {conteudo && !midia
-                      ? "Sem novo arquivo, a mídia atual é mantida. "
-                      : null}
-                    Imagens JPG, PNG ou WebP até 10 MB. Vídeos MP4 ou WebM até
-                    50 MB.
-                  </span>
-                </span>
-              </Button>
-            </FileTrigger>
-            {/* Recebe o arquivo do FileTrigger para o FormData; a validação real é no servidor. */}
-            <input
-              ref={midiaInputRef}
-              accept={[...tiposImagem, ...tiposVideo].join(",")}
-              hidden
-              name="midia"
-              type="file"
-            />
-            <FieldError id={`${id}-midia-erro`}>
-              {erroMidia ?? erros.midia}
-            </FieldError>
-          </Field>
+          <SeletorMidia
+            erro={erros.midia}
+            id={`${id}-midia`}
+            onChange={setMidia}
+            rotulo="Imagem ou vídeo"
+            valor={midia}
+          />
+          {/* Leva a mídia escolhida para o servidor. */}
+          <input name="midiaId" type="hidden" value={midia?.id ?? ""} />
         </Painel>
 
         <Painel conteudoClassName="flex flex-col gap-6" titulo="Publicação">
@@ -443,26 +324,24 @@ export default function EditorProjeto({
         </div>
         <article className={cn(superficie, "overflow-hidden")}>
           <div className="grid aspect-video place-items-center overflow-hidden bg-brand-aurora text-sm text-brand-mist">
-            {midiaExibida?.tipo === "imagem" ? (
+            {midia?.tipo === "imagem" ? (
               <Image
-                alt=""
+                alt={midia.alt}
                 className="size-full object-cover"
                 height={500}
-                // blob: é a prévia local do upload recém-escolhido; a URL assinada do arquivo salvo passa pelo otimizador
-                src={midiaExibida.url}
-                unoptimized={midiaExibida.url.startsWith("blob:")}
+                src={midia.url}
                 width={900}
               />
             ) : null}
-            {midiaExibida?.tipo === "video" ? (
+            {midia?.tipo === "video" ? (
               // biome-ignore lint/a11y/useMediaCaption: prévia do arquivo do projeto
               <video
                 className="size-full object-cover"
                 controls
-                src={midiaExibida.url}
+                src={midia.url}
               />
             ) : null}
-            {!midiaExibida ? "A mídia aparece aqui" : null}
+            {!midia ? "A mídia aparece aqui" : null}
           </div>
           <div className="p-6">
             {categoria ? (
