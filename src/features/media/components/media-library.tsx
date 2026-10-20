@@ -4,20 +4,8 @@ import { ImageIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { superficie } from "@/app/admin/_componentes/painel";
-import {
-  atualizarAlt,
-  type CursorMidias,
-  excluirMidia,
-  listarMidias,
-  type MidiaBiblioteca,
-} from "@/app/admin/midia/actions";
-import { MiniaturaMidia } from "@/app/admin/midia/miniatura-midia";
-import {
-  formatarTamanho,
-  rotuloTipoMidia,
-  type TipoMidia,
-} from "@/app/admin/midia/utils";
+import { ConfirmarExclusaoDialog } from "@/components/admin/confirm-delete-dialog";
+import { superficie } from "@/components/admin/panel";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -34,10 +22,20 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { FUSO } from "@/lib/formatar";
+import {
+  atualizarAlt,
+  excluirMidia,
+  listarMidias,
+} from "@/features/media/actions";
+import { MiniaturaMidia } from "@/features/media/components/media-thumbnail";
+import {
+  formatarTamanho,
+  rotuloTipoMidia,
+  type TipoMidia,
+} from "@/features/media/rules";
+import type { CursorMidias, MidiaBiblioteca } from "@/features/media/schema";
+import { FUSO } from "@/lib/format";
 import { cn } from "@/lib/utils";
-
-import { ConfirmarExclusaoDialog } from "../_componentes/confirmar-exclusao-dialog";
 
 type Filtro = "todas" | TipoMidia;
 

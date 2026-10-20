@@ -1,5 +1,8 @@
-import type { MidiaRef } from "@/lib/landing/schema";
-import type { MidiaRow } from "@/utils/supabase/database";
+import type { MidiaRef } from "@/features/media/schema";
+import type { MidiaRow } from "@/lib/supabase/database";
+
+/** Bucket público da biblioteca de mídia do site. */
+export const BUCKET_SITE = "site";
 
 /** Colunas que a referência usa. Aceita a linha completa ou um select parcial. */
 type LinhaMidia = Pick<
@@ -12,7 +15,7 @@ type LinhaMidia = Pick<
  * `process.env.NEXT_PUBLIC_SUPABASE_URL` deixa o Next inlinar a variável no client.
  */
 export function urlPublicaMidia(caminho: string) {
-  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/site/${caminho}`;
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${BUCKET_SITE}/${caminho}`;
 }
 
 /** Converte a linha da tabela `midias` na referência guardada no documento da landing. */

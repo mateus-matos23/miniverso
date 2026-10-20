@@ -14,11 +14,20 @@ export const formatosPorTipo: Record<TipoMidia, Record<string, string>> = {
   },
 };
 
+/** Tipos MIME aceitos, derivados de `formatosPorTipo`. Fonte única para o servidor e o browser. */
+export const mimesAceitos = [
+  ...Object.keys(formatosPorTipo.imagem),
+  ...Object.keys(formatosPorTipo.video),
+] as [string, ...string[]];
+
 /** Limite por tipo no browser. O teto absoluto do bucket é 50 MB. */
 export const limiteBytesPorTipo: Record<TipoMidia, number> = {
   imagem: 10 * 1024 * 1024,
   video: 50 * 1024 * 1024,
 };
+
+/** Teto absoluto do arquivo no servidor (bucket `site`). */
+export const TAMANHO_MAXIMO_BYTES = 52_428_800;
 
 export const rotuloTipoMidia: Record<TipoMidia, string> = {
   imagem: "Imagem",

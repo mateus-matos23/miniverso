@@ -6,7 +6,12 @@ import type { FormEvent } from "react";
 import { useEffect, useId, useState } from "react";
 import { DropZone, FileTrigger } from "react-aria-components";
 import { toast } from "sonner";
-import { registrarMidia } from "@/app/admin/midia/actions";
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { registrarMidia } from "@/features/media/actions";
 import {
   classificarArquivo,
   descricaoFormatos,
@@ -16,15 +21,10 @@ import {
   limiteBytesPorTipo,
   rotuloTipoMidia,
   type TipoMidia,
-} from "@/app/admin/midia/utils";
-import { Alert } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import type { MidiaRef } from "@/lib/landing/schema";
-import { BUCKET_SITE } from "@/lib/storage";
-import { createClient } from "@/utils/supabase/client";
+} from "@/features/media/rules";
+import type { MidiaRef } from "@/features/media/schema";
+import { BUCKET_SITE } from "@/features/media/urls";
+import { createClient } from "@/lib/supabase/client";
 
 type Etapa = "idle" | "lendo" | "enviando" | "registrando";
 

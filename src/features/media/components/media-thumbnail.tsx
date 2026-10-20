@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import type { MidiaRef } from "@/lib/landing/schema";
+import type { MidiaRef } from "@/features/media/schema";
 import { cn } from "@/lib/utils";
 
 /** Prévia de uma mídia da biblioteca. Imagens usam a URL pública direta; vídeos mostram o primeiro quadro. */

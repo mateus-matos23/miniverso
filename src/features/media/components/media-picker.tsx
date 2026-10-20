@@ -4,15 +4,7 @@ import { ImageIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { GridList, GridListItem } from "react-aria-components";
 
-import { superficie } from "@/app/admin/_componentes/painel";
-import {
-  type CursorMidias,
-  listarMidias,
-  type MidiaBiblioteca,
-} from "@/app/admin/midia/actions";
-import { EnviarMidia } from "@/app/admin/midia/enviar-midia";
-import { MiniaturaMidia } from "@/app/admin/midia/miniatura-midia";
-import { rotuloTipoMidia, type TipoMidia } from "@/app/admin/midia/utils";
+import { superficie } from "@/components/admin/panel";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,7 +15,15 @@ import {
 } from "@/components/ui/dialog";
 import { FieldError } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
-import type { MidiaRef } from "@/lib/landing/schema";
+import { listarMidias } from "@/features/media/actions";
+import { MiniaturaMidia } from "@/features/media/components/media-thumbnail";
+import { EnviarMidia } from "@/features/media/components/media-upload";
+import { rotuloTipoMidia, type TipoMidia } from "@/features/media/rules";
+import type {
+  CursorMidias,
+  MidiaBiblioteca,
+  MidiaRef,
+} from "@/features/media/schema";
 import { cn } from "@/lib/utils";
 
 /**
