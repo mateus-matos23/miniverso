@@ -1,62 +1,74 @@
 "use client";
 
 import { MenuIcon } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
-import { SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import type { LinkNav } from "@/lib/landing/navegacao";
+import { cn } from "@/lib/utils";
 
 type MobileNavProps = {
   links: LinkNav[];
   ctaRotulo: string;
 };
 
+// react-aria (Dialog/Modal) pesa o bastante para não entrar no JS inicial da landing.
+const carregarPainel = () => import("./mobile-nav-painel");
+
+function BotaoMenu({ onClick }: { onClick?: () => void }) {
+  return (
+    <button
+      aria-label="Abrir menu"
+      className={classeBotao}
+      data-size="icon-lg"
+      data-slot="button"
+      data-variant="ghost"
+      onClick={onClick}
+      onFocus={carregarPainel}
+      onPointerEnter={carregarPainel}
+      onTouchStart={carregarPainel}
+      type="button"
+    >
+      <MenuIcon />
+    </button>
+  );
+}
+
+const MobileNavPainel = dynamic(
+  () => carregarPainel().then((mod) => mod.MobileNavPainel),
+  { loading: () => <BotaoMenu />, ssr: false },
+);
+
+const classeBotao = cn(
+  buttonVariants({ variant: "ghost", size: "icon-lg" }),
+  "ml-auto text-brand-white hover:bg-white/10 hover:text-brand-white sm:ml-0 lg:hidden",
+);
+
+/**
+ * Botão nativo até o primeiro toque (que já pré-carrega o painel); então o
+ * botão do react-aria assume e o painel abre, se o toque veio antes.
+ */
 export function MobileNav({ links, ctaRotulo }: MobileNavProps) {
-  const [isOpen, setOpen] = useState(false);
+  const [pronto, setPronto] = useState(false);
+  const [aberto, setAberto] = useState(false);
+
+  if (pronto) {
+    return (
+      <MobileNavPainel
+        aberto={aberto}
+        ctaRotulo={ctaRotulo}
+        links={links}
+        onAbertoChange={setAberto}
+      />
+    );
+  }
 
   return (
-    <SheetTrigger isOpen={isOpen} onOpenChange={setOpen}>
-      <Button
-        aria-label="Abrir menu"
-        className="ml-auto text-brand-white hover:bg-white/10 hover:text-brand-white sm:ml-0 lg:hidden"
-        size="icon-lg"
-        variant="ghost"
-      >
-        <MenuIcon />
-      </Button>
-      <SheetContent
-        className="bg-brand-black pt-5 text-brand-white [&_[data-slot=sheet-close]]:bg-white/10 [&_[data-slot=sheet-close]]:text-brand-white"
-        data-surface="dark"
-        side="right"
-      >
-        <SheetTitle className="flex h-9 items-center text-label font-semibold uppercase text-brand-mist">
-          Menu
-        </SheetTitle>
-        <nav aria-label="Principal">
-          <ul className="flex flex-col border-t border-white/15">
-            {links.map((link) => (
-              <li className="border-b border-white/15" key={link.href}>
-                <a
-                  className="flex min-h-14 items-center font-display text-4xl font-bold leading-none text-brand-white transition-colors hover:text-brand-cyan"
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        {/* biome-ignore lint/a11y/useValidAnchor: link real de âncora; onClick só fecha o menu */}
-        <a
-          className={buttonVariants({ variant: "signal", size: "lg" })}
-          href="/#contato"
-          onClick={() => setOpen(false)}
-        >
-          {ctaRotulo}
-        </a>
-      </SheetContent>
-    </SheetTrigger>
+    <BotaoMenu
+      onClick={() => {
+        setAberto(true);
+        setPronto(true);
+      }}
+    />
   );
 }
