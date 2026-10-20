@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { getLanding } from "@/lib/landing/get-landing";
@@ -105,6 +107,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </style>
         </noscript>
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
