@@ -1,8 +1,5 @@
 import type { NextConfig } from "next";
 
-// Vídeos de conteúdo vão até 50 MB; a folga cobre o overhead do multipart.
-const uploadBodyLimit = "51mb";
-
 const producao = process.env.NODE_ENV === "production";
 
 // Mídias da biblioteca, logos de clientes e o cliente Supabase falam com esta origem.
@@ -15,20 +12,19 @@ const supabaseWs = origemSupabase
   ? [origemSupabase.replace(/^https:/, "wss:")]
   : [];
 
-// Imagens do Storage passam pelo otimizador. Os caminhos cobrem as URLs públicas
-// (biblioteca do site) e as assinadas (logos e mídias de projetos). Sem `search`
-// de propósito: as URLs assinadas levam ?token=, e o padrão fixa só host e caminho.
+// Imagens da biblioteca de mídia (bucket público `site`) passam pelo otimizador.
+// Sem `search`: a URL pública não leva query string, e o padrão fixa só host e caminho.
 const imagensSupabase: NonNullable<
   NonNullable<NextConfig["images"]>["remotePatterns"]
 > = urlSupabase
-  ? ["/storage/v1/object/public/**", "/storage/v1/object/sign/**"].map(
-      (pathname) => ({
+  ? [
+      {
         protocol: urlSupabase.protocol === "http:" ? "http" : "https",
         hostname: urlSupabase.hostname,
         port: urlSupabase.port,
-        pathname,
-      }),
-    )
+        pathname: "/storage/v1/object/public/**",
+      },
+    ]
   : [];
 
 const diretiva = (nome: string, ...fontes: string[]) =>
@@ -70,9 +66,6 @@ const nextConfig: NextConfig = {
     // CSS no <head> em vez de <link>: tira o request que bloqueava a renderização.
     inlineCss: true,
     optimizePackageImports: ["lucide-react", "motion"],
-    serverActions: { bodySizeLimit: uploadBodyLimit },
-    // O proxy cobre /admin e, acima do limite, entregaria o body truncado.
-    proxyClientMaxBodySize: uploadBodyLimit,
   },
   async headers() {
     const cabecalhos: { key: string; value: string }[] = [
